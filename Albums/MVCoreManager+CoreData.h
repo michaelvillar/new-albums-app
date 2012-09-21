@@ -1,21 +1,23 @@
 //
-//  AppDelegate.h
+//  MVCoreManager+CoreData.h
 //  Albums
 //
 //  Created by Michaël on 9/16/12.
 //  Copyright (c) 2012 Michael Villar. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-@class MVAlbumsViewController;
+#import "MVCoreManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface MVCoreManager (CoreData)
 
-@property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) MVAlbumsViewController *albumsViewController;
+- (NSURL *)managedObjectModelURL;
+- (NSURL *)persistentStoreCoordinatorURL;
+- (NSDictionary *)persistentStoreCoordinatorOptions;
+- (NSManagedObjectContext *)setupMasterMoc;
+- (NSManagedObjectContext *)setupUIMocWithMasterMoc:(NSManagedObjectContext *)masterMoc;
+- (void)resetPSC:(NSPersistentStoreCoordinator *)psc;
 
 @end

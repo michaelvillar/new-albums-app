@@ -1,21 +1,19 @@
 //
-//  AppDelegate.h
+//  MVContextSource.h
 //  Albums
 //
 //  Created by Michaël on 9/16/12.
 //  Copyright (c) 2012 Michael Villar. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-@class MVAlbumsViewController;
+#import <Foundation/Foundation.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@protocol MVContextSource <NSObject>
 
-@property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) MVAlbumsViewController *albumsViewController;
+@property (strong, readonly, nonatomic) NSManagedObjectContext *masterMoc;
+@property (strong, readonly, nonatomic) NSManagedObjectContext *uiMoc;
 
 @end

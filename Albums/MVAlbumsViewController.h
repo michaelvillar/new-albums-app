@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  MVAlbumsViewController.h
 //  Albums
 //
 //  Created by Michaël on 9/16/12.
@@ -8,14 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class MVAlbumsViewController;
+@protocol MVContextSource;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface MVAlbumsViewController : UIViewController
 
-@property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) MVAlbumsViewController *albumsViewController;
+- (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource;
 
 @end
