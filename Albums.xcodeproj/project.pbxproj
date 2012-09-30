@@ -32,6 +32,8 @@
 		4C39069516063FD200155E4E /* MVArtistName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069416063FD200155E4E /* MVArtistName.m */; };
 		4C39069816063FE400155E4E /* _MVArtistName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069716063FE400155E4E /* _MVArtistName.m */; };
 		4C39069B160644DC00155E4E /* MVAlbumsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069A160644DB00155E4E /* MVAlbumsRequest.m */; };
+		4C4465C31618B97300F8D4E3 /* MVSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4465C21618B97300F8D4E3 /* MVSectionView.m */; };
+		4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4465C71618BA3700F8D4E3 /* MVView.m */; };
 		4C5140841606786100279CA0 /* MVAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5140831606786100279CA0 /* MVAlbumCell.m */; };
 		4C51408F16067C3400279CA0 /* MVAssetsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408816067C3400279CA0 /* MVAssetsManager.m */; };
 		4C51409016067C3400279CA0 /* MVAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408B16067C3400279CA0 /* MVAsset.m */; };
@@ -86,6 +88,10 @@
 		4C39069716063FE400155E4E /* _MVArtistName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVArtistName.m; sourceTree = "<group>"; };
 		4C390699160644DB00155E4E /* MVAlbumsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumsRequest.h; sourceTree = "<group>"; };
 		4C39069A160644DB00155E4E /* MVAlbumsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumsRequest.m; sourceTree = "<group>"; };
+		4C4465C11618B97300F8D4E3 /* MVSectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSectionView.h; sourceTree = "<group>"; };
+		4C4465C21618B97300F8D4E3 /* MVSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSectionView.m; sourceTree = "<group>"; };
+		4C4465C61618BA3700F8D4E3 /* MVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVView.h; sourceTree = "<group>"; };
+		4C4465C71618BA3700F8D4E3 /* MVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVView.m; sourceTree = "<group>"; };
 		4C5140821606786100279CA0 /* MVAlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumCell.h; sourceTree = "<group>"; };
 		4C5140831606786100279CA0 /* MVAlbumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumCell.m; sourceTree = "<group>"; };
 		4C51408716067C3400279CA0 /* MVAssetsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAssetsManager.h; sourceTree = "<group>"; };
@@ -150,6 +156,7 @@
 			children = (
 				4C51408616067C2B00279CA0 /* Assets */,
 				4C39069216063F3400155E4E /* Controllers */,
+				4C4465C51618BA2900F8D4E3 /* UI */,
 				4C39069116063F2800155E4E /* Categories */,
 				4C3906501606241400155E4E /* Management */,
 				4C3906371606212F00155E4E /* Supporting Files */,
@@ -263,10 +270,21 @@
 				4C3906401606212F00155E4E /* AppDelegate.m */,
 				4C39064D1606229300155E4E /* MVAlbumsViewController.h */,
 				4C39064E1606229300155E4E /* MVAlbumsViewController.m */,
-				4C5140821606786100279CA0 /* MVAlbumCell.h */,
-				4C5140831606786100279CA0 /* MVAlbumCell.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		4C4465C51618BA2900F8D4E3 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				4C4465C61618BA3700F8D4E3 /* MVView.h */,
+				4C4465C71618BA3700F8D4E3 /* MVView.m */,
+				4C5140821606786100279CA0 /* MVAlbumCell.h */,
+				4C5140831606786100279CA0 /* MVAlbumCell.m */,
+				4C4465C11618B97300F8D4E3 /* MVSectionView.h */,
+				4C4465C21618B97300F8D4E3 /* MVSectionView.m */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 		4C51408616067C2B00279CA0 /* Assets */ = {
@@ -370,6 +388,8 @@
 				4C51409016067C3400279CA0 /* MVAsset.m in Sources */,
 				4C51409116067C3400279CA0 /* MVFileDownload.m in Sources */,
 				4C51409416067C4B00279CA0 /* NSString+Digest.m in Sources */,
+				4C4465C31618B97300F8D4E3 /* MVSectionView.m in Sources */,
+				4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

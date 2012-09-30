@@ -11,6 +11,8 @@
 #import "MVArtist.h"
 #import "MVAsset.h"
 #import "MVAssetsManager.h"
+#import "MVView.h"
+#import "MVSectionView.h"
 
 static NSLock *artworkImagesCacheDictionaryLock = nil;
 static NSMutableDictionary *artworkImagesCacheDictionary = nil;
@@ -22,6 +24,7 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
 
 @property (strong, readwrite) MVAsset *artworkAsset;
 @property (strong, readwrite) UIImage *artworkImage;
+@property (strong, readwrite) MVView *albumView;
 
 - (void)generateArtworkImage;
 
@@ -35,7 +38,8 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
 @synthesize tableView     = tableView_,
             album         = album_,
             artworkAsset  = artworkAsset_,
-            artworkImage  = artworkImage_;
+            artworkImage  = artworkImage_,
+            albumView     = albumView_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (void)initialize
@@ -56,6 +60,101 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
     album_ = nil;
     artworkAsset_ = nil;
     artworkImage_ = nil;
+    
+    __block MVAlbumCell *cell = self;
+
+    self.selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    self.selectedBackgroundView.backgroundColor = [UIColor clearColor];
+    
+    albumView_ = [[MVView alloc] initWithFrame:self.contentView.bounds];
+    albumView_.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                  UIViewAutoresizingFlexibleHeight;
+    albumView_.drawBlock = ^(UIView *view, CGContextRef ctx)
+    {
+      if(!cell.album)
+        return;
+      if(!cell.artworkAsset)
+      {
+        NSURL *url = [NSURL URLWithString:cell.album.artworkUrl];
+        cell.artworkAsset = [[MVAssetsManager sharedAssetsManager] assetForRemoteURL:url];
+        [cell.artworkAsset addObserver:cell forKeyPath:@"existing" options:0 context:NULL];
+        if(cell.artworkAsset.isExisting)
+        {
+          [artworkImagesCacheDictionaryLock lock];
+          cell.artworkImage = [artworkImagesCacheDictionary valueForKey:cell.artworkAsset.localURL.path];
+          [artworkImagesCacheDictionaryLock unlock];
+          if(!cell.artworkImage)
+            [cell generateArtworkImage];
+        }
+      }
+      
+      if(cell.isHighlighted)
+        [[UIColor whiteColor] set];
+      else
+        [[UIColor colorWithRed:0.1451 green:0.1529 blue:0.1765 alpha:1.0000] set];
+      [[UIBezierPath bezierPathWithRect:cell.bounds] fill];
+      
+      float marginLeft = 50 + 3;
+      if(cell.isHighlighted)
+        [[UIColor colorWithRed:0.1451 green:0.1529 blue:0.1765 alpha:1.0000] set];
+      else
+        [[UIColor colorWithRed:0.7569 green:0.8000 blue:0.9059 alpha:1.0000] set];
+      [cell.album.name drawAtPoint:CGPointMake(marginLeft + 6, 6)
+                          forWidth:cell.bounds.size.width - marginLeft - 6 * 2
+                          withFont:[UIFont boldSystemFontOfSize:18]
+                     lineBreakMode:UILineBreakModeTailTruncation];
+      
+      if(cell.isHighlighted)
+        [[UIColor colorWithRed:0.1451 green:0.1529 blue:0.1765 alpha:1.0000] set];
+      else
+        [[UIColor colorWithRed:0.4471 green:0.4784 blue:0.5765 alpha:1.0000] set];
+      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft + 6, 27)
+                                 forWidth:cell.bounds.size.width - marginLeft - 6 * 2
+                                 withFont:[UIFont systemFontOfSize:13]
+                            lineBreakMode:UILineBreakModeTailTruncation];
+      if(cell.artworkImage)
+      {
+        [cell.artworkImage drawInRect:CGRectMake(0, 0, 50, 50)];
+      }
+      
+      [[UIColor colorWithRed:0.2863 green:0.3176 blue:0.4196 alpha:0.15] set];
+      [[UIBezierPath bezierPathWithRect:CGRectMake(0, 0,
+                                                   cell.bounds.size.width, 1)] fill];
+      
+      [[UIColor colorWithRed:0.1098 green:0.1176 blue:0.1373 alpha:0.79] set];
+      [[UIBezierPath bezierPathWithRect:CGRectMake(0, cell.bounds.size.height - 1,
+                                                   cell.bounds.size.width, 1)] fill];
+      if(!cell.isHighlighted)
+      {
+        [[UIBezierPath bezierPathWithRect:CGRectMake(49.5, 0,
+                                                     1, cell.bounds.size.height)] fill];
+      }
+      
+      NSIndexPath *indexPath = [cell.tableView indexPathForCell:cell];
+      NSInteger numberOfRows = [cell.tableView numberOfRowsInSection:indexPath.section];
+      if(indexPath.row == numberOfRows - 1)
+      {
+        float y = cell.bounds.size.height - 1 - kMVSectionViewRadius;
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        [path moveToPoint:CGPointMake(0, y)];
+        [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)
+                controlPoint1:CGPointMake(0, y + kMVSectionViewRadius)
+                controlPoint2:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)];
+        [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius,
+                                         y + kMVSectionViewRadius)];
+        [path addCurveToPoint:CGPointMake(view.frame.size.width, y)
+                controlPoint1:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)
+                controlPoint2:CGPointMake(view.frame.size.width, y)];
+        [path addLineToPoint:CGPointMake(view.frame.size.width,
+                                         y + kMVSectionViewRadius + 1)];
+        [path addLineToPoint:CGPointMake(0, y + kMVSectionViewRadius + 1)];
+        [path closePath];
+        
+        [[UIColor blackColor] set];
+        [path fill];
+      }
+    };
+    [self.contentView addSubview:albumView_];
   }
   return self;
 }
@@ -96,38 +195,12 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)drawRect:(CGRect)rect
 {
-  if(!self.album)
-    return;
-  if(!self.artworkAsset)
-  {
-    NSURL *url = [NSURL URLWithString:self.album.artworkUrl];
-    self.artworkAsset = [[MVAssetsManager sharedAssetsManager] assetForRemoteURL:url];
-    [self.artworkAsset addObserver:self forKeyPath:@"existing" options:0 context:NULL];
-    if(self.artworkAsset.isExisting)
-    {
-      [artworkImagesCacheDictionaryLock lock];
-      self.artworkImage = [artworkImagesCacheDictionary valueForKey:self.artworkAsset.localURL.path];
-      [artworkImagesCacheDictionaryLock unlock];
-      if(!self.artworkImage)
-        [self generateArtworkImage];
-    }
-  }
-  float marginLeft = 43 + 2;
-  [[UIColor blackColor] set];
-  [self.album.name drawAtPoint:CGPointMake(marginLeft + 6, 4)
-                      forWidth:self.bounds.size.width - marginLeft - 6 * 2
-                      withFont:[UIFont systemFontOfSize:[UIFont labelFontSize]]
-                 lineBreakMode:UILineBreakModeTailTruncation];
-  
-  [[UIColor grayColor] set];
-  [self.album.artist.name drawAtPoint:CGPointMake(marginLeft + 6, 23)
-                             forWidth:self.bounds.size.width - marginLeft - 6 * 2
-                             withFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]
-                        lineBreakMode:UILineBreakModeTailTruncation];
-  if(self.artworkImage)
-  {
-    [self.artworkImage drawInRect:CGRectMake(0, 0, 43, 43)];
-  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setNeedsDisplay
+{
+  [self.albumView setNeedsDisplay];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +221,7 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
     {
       image = [UIImage imageWithContentsOfFile:asset.localURL.path];
       
-      CGSize newSize = CGSizeMake(43, 43);
+      CGSize newSize = CGSizeMake(100, 100);
       UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
       [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
       UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
