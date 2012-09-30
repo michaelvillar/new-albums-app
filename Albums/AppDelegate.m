@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface AppDelegate ()
+@interface AppDelegate () <MVCoreManagerDelegate>
 @property (strong, readwrite) MVCoreManager *coreManager;
 @end
 
@@ -31,11 +31,22 @@
   if(self)
   {
     coreManager_ = [[MVCoreManager alloc] init];
+    coreManager_.delegate = self;
+    [coreManager_ addObserver:self forKeyPath:@"step" options:0 context:NULL];
+    [coreManager_ addObserver:self forKeyPath:@"stepProgression" options:0 context:NULL];
+    
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(masterMocDidSave:)
                name:NSManagedObjectContextDidSaveNotification object:nil];
   }
   return self;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)dealloc
+{
+  [coreManager_ removeObserver:self forKeyPath:@"step"];
+  [coreManager_ removeObserver:self forKeyPath:@"stepProgression"];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +59,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   
-  self.albumsViewController = [[MVAlbumsViewController alloc] initWithContextSource:self.coreManager];
+  self.albumsViewController = [[MVAlbumsViewController alloc] initWithContextSource:self.coreManager
+                                                                        coreManager:self.coreManager];
   self.window.rootViewController = self.albumsViewController;
   
   [self.window makeKeyAndVisible];
@@ -98,7 +110,44 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   if(notification.object != self.coreManager.masterMoc)
     return;
-  [self.coreManager.uiMoc mergeChangesFromContextDidSaveNotification:notification];
+  [self.coreManager.uiMoc performBlock:^{
+    [self.coreManager.uiMoc mergeChangesFromContextDidSaveNotification:notification];
+  }];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark KVO Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+  if(object == self.coreManager)
+  {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidProgress
+                                                        object:self.coreManager];
+  }
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark MVCoreManagerDelegate Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)coreManagerDidStartSync:(MVCoreManager *)coreManager
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)coreManagerDidFinishSync:(MVCoreManager *)coreManager
+{
 }
 
 @end

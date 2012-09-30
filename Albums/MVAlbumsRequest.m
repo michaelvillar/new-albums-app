@@ -12,6 +12,9 @@
 #import "MVAlbum.h"
 #import "MVContextSource.h"
 
+#define kMVAlbumsRequestLimit 500
+#define kMVAlbumsRequestNbAlbumsPerArtist 2
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +27,8 @@
 @property (strong, readwrite) NSObject <MVContextSource> *contextSource;
 
 - (void)complete;
+- (int)nbBatches;
+- (int)nbArtistsPerBatch;
 
 @end
 
@@ -62,16 +67,13 @@
 {
   if(self.artistIds.count == 0)
     return [self complete];
-  float limit = 500;
-  float nbAlbumsPerArtist = 2;
-  float nbPerBatch = floor(limit / (nbAlbumsPerArtist + 1.0));
   MViTunesSearchRequest *request;
   NSArray *artistIds = self.artistIds.allObjects;
-  int count = ceil(((float)(artistIds.count)) / nbPerBatch);
+  int count = self.nbBatches;
   self.batchesLeft = count;
   for(int i=0;i<count;i++)
   {
-    NSRange range = NSMakeRange(i*nbPerBatch, nbPerBatch);
+    NSRange range = NSMakeRange(i*self.nbArtistsPerBatch, self.nbArtistsPerBatch);
     if(range.location + range.length > artistIds.count)
       range.length = artistIds.count - range.location;
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
@@ -80,7 +82,7 @@
     request.method = kMViTunesMethodLookup;
     request.ids = [[artistIds objectsAtIndexes:indexSet] componentsJoinedByString:@","];
     request.entity = kMViTunesEntityAlbum;
-    request.limit = nbAlbumsPerArtist;
+    request.limit = kMVAlbumsRequestNbAlbumsPerArtist;
     request.sort = kMViTunesSortRecent;
     request.delegate = self;
     request.operationQueue = self.operationQueue;
@@ -103,6 +105,18 @@
     if([self.delegate respondsToSelector:@selector(albumsRequestDidFinish:)])
       [self.delegate albumsRequestDidFinish:self];
   });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (int)nbBatches
+{
+  return ceil(((float)(self.artistIds.allObjects.count)) / self.nbArtistsPerBatch);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (int)nbArtistsPerBatch
+{
+  return floor(kMVAlbumsRequestLimit / (kMVAlbumsRequestNbAlbumsPerArtist + 1.0));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,6 +174,15 @@
     }
     
     self.batchesLeft--;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if([self.delegate respondsToSelector:@selector(albumsRequestDidFinish:didChangeProgression:)])
+        [self.delegate albumsRequestDidFinish:self
+                         didChangeProgression:MIN(self.artistIds.count,
+                                                  (self.nbBatches - self.batchesLeft) *
+                                                  self.nbArtistsPerBatch)];
+    });
+    
     if(self.batchesLeft == 0)
       [self complete];
   });

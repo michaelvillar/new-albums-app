@@ -39,6 +39,7 @@
 		4C51409016067C3400279CA0 /* MVAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408B16067C3400279CA0 /* MVAsset.m */; };
 		4C51409116067C3400279CA0 /* MVFileDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408E16067C3400279CA0 /* MVFileDownload.m */; };
 		4C51409416067C4B00279CA0 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51409316067C4B00279CA0 /* NSString+Digest.m */; };
+		4C89E15B1618EF5600810C91 /* MVLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C89E15A1618EF5600810C91 /* MVLoadingView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -104,6 +105,9 @@
 		4C51408E16067C3400279CA0 /* MVFileDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVFileDownload.m; sourceTree = "<group>"; };
 		4C51409216067C4B00279CA0 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		4C51409316067C4B00279CA0 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
+		4C89E1591618EF5600810C91 /* MVLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVLoadingView.h; sourceTree = "<group>"; };
+		4C89E15A1618EF5600810C91 /* MVLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVLoadingView.m; sourceTree = "<group>"; };
+		4C89E15D1618F28B00810C91 /* MVConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,6 +270,7 @@
 		4C39069216063F3400155E4E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4C89E15D1618F28B00810C91 /* MVConstants.h */,
 				4C39063F1606212F00155E4E /* AppDelegate.h */,
 				4C3906401606212F00155E4E /* AppDelegate.m */,
 				4C39064D1606229300155E4E /* MVAlbumsViewController.h */,
@@ -283,6 +288,8 @@
 				4C5140831606786100279CA0 /* MVAlbumCell.m */,
 				4C4465C11618B97300F8D4E3 /* MVSectionView.h */,
 				4C4465C21618B97300F8D4E3 /* MVSectionView.m */,
+				4C89E1591618EF5600810C91 /* MVLoadingView.h */,
+				4C89E15A1618EF5600810C91 /* MVLoadingView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -390,6 +397,7 @@
 				4C51409416067C4B00279CA0 /* NSString+Digest.m in Sources */,
 				4C4465C31618B97300F8D4E3 /* MVSectionView.m in Sources */,
 				4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */,
+				4C89E15B1618EF5600810C91 /* MVLoadingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

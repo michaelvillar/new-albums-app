@@ -16,10 +16,6 @@
 #import "MVArtistIdsRequest.h"
 #import "MVAlbumsRequest.h"
 
-#define kMVCoreManagerStepIdle 0
-#define kMVCoreManagerStepSearchingArtistIds 1
-#define kMVCoreManagerStepSearchingNewAlbums 2
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +26,8 @@
 @property (strong, readwrite) MVArtistIdsRequest *artistIdsRequest;
 @property (strong, readwrite) MVAlbumsRequest *albumsRequest;
 @property (readwrite) int step;
+@property (readwrite) float stepProgression;
+@property (readwrite, getter = isSyncing) BOOL syncing;
 
 - (NSSet*)getArtistNamesFromiPod;
 - (void)searchAlbums;
@@ -45,8 +43,11 @@
             artistIdsRequest      = artistIdsRequest_,
             albumsRequest         = albumsRequest_,
             step                  = step_,
+            stepProgression       = stepProgression_,
             masterMoc             = masterMoc_,
-            uiMoc                 = uiMoc_;
+            uiMoc                 = uiMoc_,
+            syncing               = syncing_,
+            delegate              = delegate_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init
@@ -61,6 +62,8 @@
     step_ = kMVCoreManagerStepIdle;
     masterMoc_ = nil;
     uiMoc_ = nil;
+    syncing_ = NO;
+    delegate_ = nil;
   }
   return self;
 }
@@ -71,7 +74,15 @@
   if(self.step != kMVCoreManagerStepIdle)
     return;
   [self.operationQueue addOperationWithBlock:^{
+    self.syncing = YES;
     self.step = kMVCoreManagerStepSearchingArtistIds;
+    self.stepProgression = 0.0;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if([self.delegate respondsToSelector:@selector(coreManagerDidStartSync:)])
+        [self.delegate coreManagerDidStartSync:self];
+    });
+    
     NSSet *artistNames = [self getArtistNamesFromiPod];
     NSMutableSet *toFetchArtistNames = [NSMutableSet set];
     [self.masterMoc performBlockAndWait:^{
@@ -114,6 +125,8 @@
 - (void)searchAlbums
 {
   self.step = kMVCoreManagerStepSearchingNewAlbums;
+  self.stepProgression = 0.0;
+  
   NSMutableSet *artistIds = [NSMutableSet set];
   NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVArtist entityName]];
   req.predicate = [NSPredicate predicateWithFormat:@"fetchAlbums = YES"];
@@ -184,12 +197,23 @@
 #pragma mark MVArtistIdsRequestDelegate Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)artistIdsRequest:(MVArtistIdsRequest*)request
+    didChangeProgression:(int)nbFetchedArtists
+{
+  if(self.step == kMVCoreManagerStepSearchingArtistIds)
+    self.stepProgression = ((float)nbFetchedArtists) / ((float)(request.artistNames.count));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)artistIdsRequestDidFinish:(MVArtistIdsRequest *)request
 {
+  self.stepProgression = 1.0;
+  
   NSLog(@"artistIdsRequestDidFinish");
   [self.masterMoc performBlock:^{
     [self.masterMoc mv_save];
   }];
+    
   [self searchAlbums];
 }
 
@@ -199,12 +223,31 @@
 #pragma mark MVAlbumsRequestDelegate Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)albumsRequestDidFinish:(MVAlbumsRequest*)request
+          didChangeProgression:(int)nbFetchedArtists
+{
+  if(self.step == kMVCoreManagerStepSearchingNewAlbums)
+    self.stepProgression = ((float)nbFetchedArtists) / ((float)(request.artistIds.count));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumsRequestDidFinish:(MVAlbumsRequest *)request
 {
+  self.stepProgression = 1.0;
+  
   NSLog(@"albumsRequestDidFinish");
   [self.masterMoc performBlock:^{
     [self.masterMoc mv_save];
   }];
+  
+  self.syncing = NO;
+  self.step = kMVCoreManagerStepIdle;
+  self.stepProgression = 0.0;
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if([self.delegate respondsToSelector:@selector(coreManagerDidFinishSync:)])
+      [self.delegate coreManagerDidFinishSync:self];
+  });
 }
 
 @end

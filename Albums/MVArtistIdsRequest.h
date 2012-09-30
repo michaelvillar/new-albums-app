@@ -15,6 +15,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @protocol MVArtistIdsRequestDelegate
+- (void)artistIdsRequest:(MVArtistIdsRequest*)request
+    didChangeProgression:(int)nbFetchedArtists;
 - (void)artistIdsRequestDidFinish:(MVArtistIdsRequest*)request;
 @end
 
@@ -23,6 +25,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVArtistIdsRequest : NSObject
 
+@property (strong, readonly) NSSet *artistNames;
 @property (weak, readwrite) NSObject <MVArtistIdsRequestDelegate> *delegate;
 
 - (id)initWithArtistNames:(NSSet*)artistNames

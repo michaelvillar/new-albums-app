@@ -141,6 +141,12 @@
     }
     
     self.artistsFetchedCount++;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if([self.delegate respondsToSelector:@selector(artistIdsRequest:didChangeProgression:)])
+        [self.delegate artistIdsRequest:self didChangeProgression:self.artistsFetchedCount];
+    });
+    
     if(self.artistsFetchedCount == self.artistNames.count)
     {
       [self complete];

@@ -13,6 +13,8 @@
 #import "MVAlbumCell.h"
 #import "MVSectionView.h"
 #import "MVView.h"
+#import "MVLoadingView.h"
+#import "MVCoreManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,11 @@
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
 @property (strong, readwrite) MVView *roundedBottomCorners;
+@property (strong, readwrite) MVLoadingView *loadingView;
+@property (strong, readwrite) MVCoreManager *coreManager;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
+
+- (void)updateLoadingView;
 
 @end
 
@@ -38,16 +44,20 @@
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
             roundedBottomCorners      = roundedBottomCorners_,
+            loadingView               = loadingView_,
+            coreManager               = coreManager_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
+                coreManager:(MVCoreManager*)coreManager
 {
     self = [super init];
     if (self)
     {
       tableView_ = nil;
       contextSource_ = contextSource;
+      coreManager_ = coreManager;
 
       NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
       NSSortDescriptor *sort = [[NSSortDescriptor alloc]
@@ -65,8 +75,21 @@
       
       sectionDateFormatter_ = [[NSDateFormatter alloc] init];
       sectionDateFormatter_.dateFormat = @"d MMM YYYY";
+      
+      roundedBottomCorners_ = nil;
+      loadingView_ = nil;
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
+                                                   name:kMVNotificationSyncDidProgress
+                                                 object:self.coreManager];
     }
     return self;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,6 +138,7 @@
   }
   [self.view addSubview:self.roundedBottomCorners];
 
+  [self updateLoadingView];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,7 +248,64 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+  NSLog(@"reload data!");
   [self.tableView reloadData];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Notifications Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)syncProgress:(NSNotification*)notification
+{
+  [self updateLoadingView];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Private Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)updateLoadingView
+{
+  BOOL visible = self.coreManager.isSyncing;
+  if(visible)
+  {
+    if(!self.loadingView)
+    {
+      float height = 70;
+      float y = roundf((self.view.bounds.size.height - height) / 2);
+      self.loadingView = [[MVLoadingView alloc] initWithFrame:CGRectMake(25, y,
+                                                                         self.view.bounds.size.width
+                                                                         - 25 * 2, height)];
+    }
+    
+    NSMutableString *label = [NSMutableString string];
+    if(self.coreManager.step == kMVCoreManagerStepSearchingArtistIds)
+    {
+      [label appendString:NSLocalizedString(@"Syncing Artists",@"Loading")];
+      if(self.coreManager.stepProgression > 0)
+        [label appendFormat:@" (%i%%)",(int)(self.coreManager.stepProgression * 100)];
+    }
+    else if(self.coreManager.step == kMVCoreManagerStepSearchingNewAlbums)
+    {
+      [label appendString:NSLocalizedString(@"Syncing Albums",@"Loading")];
+      if(self.coreManager.stepProgression > 0)
+        [label appendFormat:@" (%i%%)",(int)(self.coreManager.stepProgression * 100)];
+    }
+    else
+      [label appendString:NSLocalizedString(@"Loading",@"Loading")];
+    
+    self.loadingView.label = label;
+    [self.loadingView setNeedsDisplay];
+    
+    [self.view addSubview:self.loadingView];
+  }
+  else
+    [self.loadingView removeFromSuperview];
 }
 
 @end

@@ -15,6 +15,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @protocol MVAlbumsRequestDelegate
+- (void)albumsRequestDidFinish:(MVAlbumsRequest*)request
+          didChangeProgression:(int)nbFetchedArtists;
 - (void)albumsRequestDidFinish:(MVAlbumsRequest*)request;
 @end
 
@@ -23,6 +25,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVAlbumsRequest : NSObject
 
+@property (strong, readonly) NSSet *artistIds;
 @property (weak, readwrite) NSObject <MVAlbumsRequestDelegate> *delegate;
 
 - (id)initWithArtistIds:(NSSet*)artistIds
