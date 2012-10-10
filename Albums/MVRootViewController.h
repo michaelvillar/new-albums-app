@@ -1,15 +1,12 @@
 //
-//  MVAlbumsViewController.h
+//  MVRootViewController.h
 //  Albums
 //
-//  Created by Michaël on 9/16/12.
+//  Created by Michaël on 10/10/12.
 //  Copyright (c) 2012 Michael Villar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-
-#define kMVAlbumsViewControllerTypeReleased 1
-#define kMVAlbumsViewControllerTypeUpcoming 2
 
 @protocol MVContextSource;
 @class MVCoreManager;
@@ -17,12 +14,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface MVAlbumsViewController : UIViewController
-
-@property (readwrite, nonatomic) float gradientOpacity;
+@interface MVRootViewController : UIViewController
 
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
-                coreManager:(MVCoreManager*)coreManager
-                       type:(int)type;
+                coreManager:(MVCoreManager*)coreManager;
 
 @end

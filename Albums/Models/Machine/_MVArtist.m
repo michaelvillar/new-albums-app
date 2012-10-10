@@ -3,6 +3,20 @@
 
 #import "_MVArtist.h"
 
+const struct MVArtistAttributes MVArtistAttributes = {
+	.fetchAlbums = @"fetchAlbums",
+	.iTunesId = @"iTunesId",
+	.name = @"name",
+};
+
+const struct MVArtistRelationships MVArtistRelationships = {
+	.albums = @"albums",
+	.names = @"names",
+};
+
+const struct MVArtistFetchedProperties MVArtistFetchedProperties = {
+};
+
 @implementation MVArtistID
 @end
 
@@ -74,21 +88,21 @@
 
 
 
-- (long long)iTunesIdValue {
+- (int64_t)iTunesIdValue {
 	NSNumber *result = [self iTunesId];
 	return [result longLongValue];
 }
 
-- (void)setITunesIdValue:(long long)value_ {
+- (void)setITunesIdValue:(int64_t)value_ {
 	[self setITunesId:[NSNumber numberWithLongLong:value_]];
 }
 
-- (long long)primitiveITunesIdValue {
+- (int64_t)primitiveITunesIdValue {
 	NSNumber *result = [self primitiveITunesId];
 	return [result longLongValue];
 }
 
-- (void)setPrimitiveITunesIdValue:(long long)value_ {
+- (void)setPrimitiveITunesIdValue:(int64_t)value_ {
 	[self setPrimitiveITunesId:[NSNumber numberWithLongLong:value_]];
 }
 
@@ -108,7 +122,9 @@
 	
 - (NSMutableSet*)albumsSet {
 	[self willAccessValueForKey:@"albums"];
+  
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"albums"];
+  
 	[self didAccessValueForKey:@"albums"];
 	return result;
 }
@@ -119,11 +135,14 @@
 	
 - (NSMutableSet*)namesSet {
 	[self willAccessValueForKey:@"names"];
+  
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"names"];
+  
 	[self didAccessValueForKey:@"names"];
 	return result;
 }
 	
+
 
 
 

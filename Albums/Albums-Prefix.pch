@@ -10,6 +10,7 @@
 
 #ifdef __OBJC__
   #import <UIKit/UIKit.h>
+  #import <QuartzCore/QuartzCore.h>
   #import <Foundation/Foundation.h>
   #import <CoreData/CoreData.h>
   #import "NSManagedObjectContext+Saving.h"

@@ -4,6 +4,20 @@
 #import <CoreData/CoreData.h>
 #import "MVBaseModel.h"
 
+extern const struct MVArtistAttributes {
+	__unsafe_unretained NSString *fetchAlbums;
+	__unsafe_unretained NSString *iTunesId;
+	__unsafe_unretained NSString *name;
+} MVArtistAttributes;
+
+extern const struct MVArtistRelationships {
+	__unsafe_unretained NSString *albums;
+	__unsafe_unretained NSString *names;
+} MVArtistRelationships;
+
+extern const struct MVArtistFetchedProperties {
+} MVArtistFetchedProperties;
+
 @class MVAlbum;
 @class MVArtistName;
 
@@ -23,7 +37,7 @@
 
 
 
-@property (nonatomic, strong) NSNumber *fetchAlbums;
+@property (nonatomic, strong) NSNumber* fetchAlbums;
 
 
 @property BOOL fetchAlbumsValue;
@@ -35,19 +49,19 @@
 
 
 
-@property (nonatomic, strong) NSNumber *iTunesId;
+@property (nonatomic, strong) NSNumber* iTunesId;
 
 
-@property long long iTunesIdValue;
-- (long long)iTunesIdValue;
-- (void)setITunesIdValue:(long long)value_;
+@property int64_t iTunesIdValue;
+- (int64_t)iTunesIdValue;
+- (void)setITunesIdValue:(int64_t)value_;
 
 //- (BOOL)validateITunesId:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString* name;
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -66,6 +80,7 @@
 @property (nonatomic, strong) NSSet* names;
 
 - (NSMutableSet*)namesSet;
+
 
 
 
@@ -101,8 +116,8 @@
 - (NSNumber*)primitiveITunesId;
 - (void)setPrimitiveITunesId:(NSNumber*)value;
 
-- (long long)primitiveITunesIdValue;
-- (void)setPrimitiveITunesIdValue:(long long)value_;
+- (int64_t)primitiveITunesIdValue;
+- (void)setPrimitiveITunesIdValue:(int64_t)value_;
 
 
 

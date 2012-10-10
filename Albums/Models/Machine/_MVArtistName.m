@@ -3,6 +3,17 @@
 
 #import "_MVArtistName.h"
 
+const struct MVArtistNameAttributes MVArtistNameAttributes = {
+	.name = @"name",
+};
+
+const struct MVArtistNameRelationships MVArtistNameRelationships = {
+	.artist = @"artist",
+};
+
+const struct MVArtistNameFetchedProperties MVArtistNameFetchedProperties = {
+};
+
 @implementation MVArtistNameID
 @end
 
@@ -46,6 +57,7 @@
 @dynamic artist;
 
 	
+
 
 
 

@@ -4,7 +4,24 @@
 #import <CoreData/CoreData.h>
 #import "MVBaseModel.h"
 
+extern const struct MVAlbumAttributes {
+	__unsafe_unretained NSString *artworkUrl;
+	__unsafe_unretained NSString *iTunesId;
+	__unsafe_unretained NSString *iTunesStoreUrl;
+	__unsafe_unretained NSString *name;
+	__unsafe_unretained NSString *releaseDate;
+	__unsafe_unretained NSString *sectionHeader;
+} MVAlbumAttributes;
+
+extern const struct MVAlbumRelationships {
+	__unsafe_unretained NSString *artist;
+} MVAlbumRelationships;
+
+extern const struct MVAlbumFetchedProperties {
+} MVAlbumFetchedProperties;
+
 @class MVArtist;
+
 
 
 
@@ -24,7 +41,7 @@
 
 
 
-@property (nonatomic, strong) NSString *artworkUrl;
+@property (nonatomic, strong) NSString* artworkUrl;
 
 
 //- (BOOL)validateArtworkUrl:(id*)value_ error:(NSError**)error_;
@@ -32,19 +49,19 @@
 
 
 
-@property (nonatomic, strong) NSNumber *iTunesId;
+@property (nonatomic, strong) NSNumber* iTunesId;
 
 
-@property long long iTunesIdValue;
-- (long long)iTunesIdValue;
-- (void)setITunesIdValue:(long long)value_;
+@property int64_t iTunesIdValue;
+- (int64_t)iTunesIdValue;
+- (void)setITunesIdValue:(int64_t)value_;
 
 //- (BOOL)validateITunesId:(id*)value_ error:(NSError**)error_;
 
 
 
 
-@property (nonatomic, strong) NSString *iTunesStoreUrl;
+@property (nonatomic, strong) NSString* iTunesStoreUrl;
 
 
 //- (BOOL)validateITunesStoreUrl:(id*)value_ error:(NSError**)error_;
@@ -52,7 +69,7 @@
 
 
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString* name;
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -60,10 +77,18 @@
 
 
 
-@property (nonatomic, strong) NSDate *releaseDate;
+@property (nonatomic, strong) NSDate* releaseDate;
 
 
 //- (BOOL)validateReleaseDate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSString* sectionHeader;
+
+
+//- (BOOL)validateSectionHeader:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -72,6 +97,7 @@
 @property (nonatomic, strong) MVArtist* artist;
 
 //- (BOOL)validateArtist:(id*)value_ error:(NSError**)error_;
+
 
 
 
@@ -94,8 +120,8 @@
 - (NSNumber*)primitiveITunesId;
 - (void)setPrimitiveITunesId:(NSNumber*)value;
 
-- (long long)primitiveITunesIdValue;
-- (void)setPrimitiveITunesIdValue:(long long)value_;
+- (int64_t)primitiveITunesIdValue;
+- (void)setPrimitiveITunesIdValue:(int64_t)value_;
 
 
 
@@ -114,6 +140,12 @@
 
 - (NSDate*)primitiveReleaseDate;
 - (void)setPrimitiveReleaseDate:(NSDate*)value;
+
+
+
+
+- (NSString*)primitiveSectionHeader;
+- (void)setPrimitiveSectionHeader:(NSString*)value;
 
 
 

@@ -3,6 +3,22 @@
 
 #import "_MVAlbum.h"
 
+const struct MVAlbumAttributes MVAlbumAttributes = {
+	.artworkUrl = @"artworkUrl",
+	.iTunesId = @"iTunesId",
+	.iTunesStoreUrl = @"iTunesStoreUrl",
+	.name = @"name",
+	.releaseDate = @"releaseDate",
+	.sectionHeader = @"sectionHeader",
+};
+
+const struct MVAlbumRelationships MVAlbumRelationships = {
+	.artist = @"artist",
+};
+
+const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
+};
+
 @implementation MVAlbumID
 @end
 
@@ -51,21 +67,21 @@
 
 
 
-- (long long)iTunesIdValue {
+- (int64_t)iTunesIdValue {
 	NSNumber *result = [self iTunesId];
 	return [result longLongValue];
 }
 
-- (void)setITunesIdValue:(long long)value_ {
+- (void)setITunesIdValue:(int64_t)value_ {
 	[self setITunesId:[NSNumber numberWithLongLong:value_]];
 }
 
-- (long long)primitiveITunesIdValue {
+- (int64_t)primitiveITunesIdValue {
 	NSNumber *result = [self primitiveITunesId];
 	return [result longLongValue];
 }
 
-- (void)setPrimitiveITunesIdValue:(long long)value_ {
+- (void)setPrimitiveITunesIdValue:(int64_t)value_ {
 	[self setPrimitiveITunesId:[NSNumber numberWithLongLong:value_]];
 }
 
@@ -94,9 +110,17 @@
 
 
 
+@dynamic sectionHeader;
+
+
+
+
+
+
 @dynamic artist;
 
 	
+
 
 
 

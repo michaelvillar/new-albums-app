@@ -8,13 +8,18 @@
 
 #import "AppDelegate.h"
 #import "MVAlbumsViewController.h"
+#import "MVRootViewController.h"
 #import "MVCoreManager.h"
+#import "MVWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface AppDelegate () <MVCoreManagerDelegate>
+
 @property (strong, readwrite) MVCoreManager *coreManager;
+@property (strong, nonatomic) MVRootViewController *rootViewController;
+
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,11 +62,11 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   
   [self.coreManager sync];
 
-  self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+  self.window = [[MVWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   
-  self.albumsViewController = [[MVAlbumsViewController alloc] initWithContextSource:self.coreManager
-                                                                        coreManager:self.coreManager];
-  self.window.rootViewController = self.albumsViewController;
+  self.rootViewController = [[MVRootViewController alloc] initWithContextSource:self.coreManager
+                                                                    coreManager:self.coreManager];
+  self.window.rootViewController = self.rootViewController;
   
   [self.window makeKeyAndVisible];
   

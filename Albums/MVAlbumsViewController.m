@@ -27,8 +27,10 @@
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
 @property (strong, readwrite) MVView *roundedBottomCorners;
+@property (strong, readwrite) MVView *gradientShadowView;
 @property (strong, readwrite) MVLoadingView *loadingView;
 @property (strong, readwrite) MVCoreManager *coreManager;
+@property (readwrite) int type;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)updateLoadingView;
@@ -44,46 +46,63 @@
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
             roundedBottomCorners      = roundedBottomCorners_,
+            gradientShadowView        = gradientShadowView_,
             loadingView               = loadingView_,
             coreManager               = coreManager_,
+            type                      = type_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
                 coreManager:(MVCoreManager*)coreManager
+                       type:(int)type
 {
-    self = [super init];
-    if (self)
-    {
-      tableView_ = nil;
-      contextSource_ = contextSource;
-      coreManager_ = coreManager;
+  self = [super init];
+  if (self)
+  {
+    tableView_ = nil;
+    contextSource_ = contextSource;
+    type_ = type;
+    coreManager_ = coreManager;
 
-      NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
-      NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                                initWithKey:@"releaseDate" ascending:NO];
-      req.sortDescriptors = [NSArray arrayWithObject:sort];
+    NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
+                              initWithKey:@"releaseDate" ascending:NO];
+    req.sortDescriptors = [NSArray arrayWithObject:sort];
+    req.fetchBatchSize = 20;
+
+    if(type_ == kMVAlbumsViewControllerTypeReleased)
+    {
+      req.predicate = [NSPredicate predicateWithFormat:
+                       @"releaseDate > %@ && releaseDate <= %@",
+                       [NSDate dateWithTimeIntervalSinceNow:- 365 * 24 * 3600],
+                       [NSDate date]];
+    }
+    else if(type_ == kMVAlbumsViewControllerTypeUpcoming)
+    {
       req.predicate = [NSPredicate predicateWithFormat:
                        @"releaseDate > %@",
-                       [NSDate dateWithTimeIntervalSinceNow:- 365 * 24 * 3600]];
-
-      fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
-                                                          managedObjectContext:contextSource.uiMoc
-                                                                        sectionNameKeyPath:@"releaseDate"
-                                                                                 cacheName:@"Albums"];
-      fetchedResultsController_.delegate = self;
-      
-      sectionDateFormatter_ = [[NSDateFormatter alloc] init];
-      sectionDateFormatter_.dateFormat = @"d MMM YYYY";
-      
-      roundedBottomCorners_ = nil;
-      loadingView_ = nil;
-      
-      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
-                                                   name:kMVNotificationSyncDidProgress
-                                                 object:self.coreManager];
+                       [NSDate date]];
     }
-    return self;
+
+    fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
+                                                        managedObjectContext:contextSource.uiMoc
+                                                                      sectionNameKeyPath:@"releaseDate"
+                                                                               cacheName:nil];
+    fetchedResultsController_.delegate = self;
+   
+    sectionDateFormatter_ = [[NSDateFormatter alloc] init];
+    sectionDateFormatter_.dateFormat = @"d MMM YYYY";
+    
+    roundedBottomCorners_ = nil;
+    gradientShadowView_ = nil;
+    loadingView_ = nil;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
+                                                 name:kMVNotificationSyncDidProgress
+                                               object:self.coreManager];
+  }
+  return self;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,10 +112,24 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setGradientOpacity:(float)gradientOpacity
+{
+  CATransform3D transform;
+  if(gradientOpacity < 0)
+  {
+    transform = CATransform3DMakeScale(-1, 1, 1);
+  }
+  else
+  {
+    transform = CATransform3DIdentity;
+  }
+  self.gradientShadowView.layer.transform = transform;
+  self.gradientShadowView.alpha = fabs(gradientOpacity);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)loadView
 {
-  [self.fetchedResultsController performFetch:nil];
-
   self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 	self.view.backgroundColor = [UIColor blackColor];
   
@@ -107,7 +140,10 @@
   self.tableView.rowHeight = 50.0;
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
+  self.tableView.canCancelContentTouches = NO;
   [self.view addSubview:self.tableView];
+  if(self.type == 2)
+    [self.tableView setScrollsToTop:NO];
   
   if(!self.roundedBottomCorners)
   {
@@ -116,6 +152,7 @@
                                                                          kMVSectionViewRadius,
                                                                          self.view.bounds.size.width,
                                                                          kMVSectionViewRadius)];
+    self.roundedBottomCorners.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     self.roundedBottomCorners.backgroundColor = [UIColor clearColor];
     self.roundedBottomCorners.drawBlock = ^(UIView *view, CGContextRef ref)
     {
@@ -139,6 +176,41 @@
   [self.view addSubview:self.roundedBottomCorners];
 
   [self updateLoadingView];
+  
+  if(!self.gradientShadowView)
+  {
+    self.gradientShadowView = [[MVView alloc] initWithFrame:self.view.bounds];
+    self.gradientShadowView.userInteractionEnabled = NO;
+    self.gradientShadowView.backgroundColor = [UIColor clearColor];
+    self.gradientShadowView.opaque = NO;
+    self.gradientShadowView.alpha = 0.0;
+    self.gradientShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                               UIViewAutoresizingFlexibleHeight;
+    self.gradientShadowView.drawBlock = ^(UIView *view, CGContextRef ref)
+    {
+      CGContextRef context = UIGraphicsGetCurrentContext();
+      
+      CGContextSaveGState(context);
+      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+      CGGradientRef gradient = CGGradientCreateWithColorComponents
+      (colorSpace,
+       (const CGFloat[8]){0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.4},
+       (const CGFloat[2]){0.0f,1.0f},
+       2);
+      
+      CGContextDrawLinearGradient(context,
+                                  gradient,
+                                  CGPointMake(CGRectGetMinX(view.bounds), CGRectGetMidY(view.bounds)),
+                                  CGPointMake(CGRectGetMaxX(view.bounds), CGRectGetMidY(view.bounds)),
+                                  0);
+      
+      CGColorSpaceRelease(colorSpace);
+      CGContextRestoreGState(context);
+    };
+  }
+  [self.view addSubview:self.gradientShadowView];
+  
+  [self.fetchedResultsController performFetch:nil];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +320,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-  NSLog(@"reload data!");
   [self.tableView reloadData];
 }
 
