@@ -67,7 +67,8 @@
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                              initWithKey:@"releaseDate" ascending:NO];
+                              initWithKey:@"releaseDate"
+                              ascending:type_ == kMVAlbumsViewControllerTypeUpcoming];
     req.sortDescriptors = [NSArray arrayWithObject:sort];
     req.fetchBatchSize = 20;
 
@@ -251,7 +252,19 @@
   if(objects.count > 0)
   {
     MVAlbum *album = [objects objectAtIndex:0];
-    sectionView.label = [self.sectionDateFormatter stringFromDate:album.releaseDate];
+    if(self.type == kMVAlbumsViewControllerTypeReleased)
+      sectionView.label = [self.sectionDateFormatter stringFromDate:album.releaseDate];
+    else
+    {
+      NSString *label;
+      if([album.releaseDate compare:[NSDate dateWithTimeIntervalSinceNow:1*24*3600]] == NSOrderedAscending)
+        label = NSLocalizedString(@"Tomorrow", @"Section header");
+      else
+        label = [NSString stringWithFormat:
+                 NSLocalizedString(@"In %i days", @"Section header"),
+                 ((int)ceil([album.releaseDate timeIntervalSinceDate:[NSDate date]] / (24*3600)))];
+      sectionView.label = label;
+    }
   }
   return sectionView;
 }
