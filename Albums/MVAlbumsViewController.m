@@ -27,7 +27,6 @@
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
 @property (strong, readwrite) MVView *roundedBottomCorners;
-@property (strong, readwrite) MVView *gradientShadowView;
 @property (strong, readwrite) MVLoadingView *loadingView;
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (readwrite) int type;
@@ -46,7 +45,6 @@
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
             roundedBottomCorners      = roundedBottomCorners_,
-            gradientShadowView        = gradientShadowView_,
             loadingView               = loadingView_,
             coreManager               = coreManager_,
             type                      = type_,
@@ -96,7 +94,6 @@
     sectionDateFormatter_.dateFormat = @"d MMM YYYY";
     
     roundedBottomCorners_ = nil;
-    gradientShadowView_ = nil;
     loadingView_ = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
@@ -110,22 +107,6 @@
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)setGradientOpacity:(float)gradientOpacity
-{
-  CATransform3D transform;
-  if(gradientOpacity < 0)
-  {
-    transform = CATransform3DMakeScale(-1, 1, 1);
-  }
-  else
-  {
-    transform = CATransform3DIdentity;
-  }
-  self.gradientShadowView.layer.transform = transform;
-  self.gradientShadowView.alpha = fabs(gradientOpacity);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,38 +159,7 @@
 
   [self updateLoadingView];
   
-  if(!self.gradientShadowView)
-  {
-    self.gradientShadowView = [[MVView alloc] initWithFrame:self.view.bounds];
-    self.gradientShadowView.userInteractionEnabled = NO;
-    self.gradientShadowView.backgroundColor = [UIColor clearColor];
-    self.gradientShadowView.opaque = NO;
-    self.gradientShadowView.alpha = 0.0;
-    self.gradientShadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-                                               UIViewAutoresizingFlexibleHeight;
-    self.gradientShadowView.drawBlock = ^(UIView *view, CGContextRef ref)
-    {
-      CGContextRef context = UIGraphicsGetCurrentContext();
-      
-      CGContextSaveGState(context);
-      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-      CGGradientRef gradient = CGGradientCreateWithColorComponents
-      (colorSpace,
-       (const CGFloat[8]){0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.4},
-       (const CGFloat[2]){0.0f,1.0f},
-       2);
-      
-      CGContextDrawLinearGradient(context,
-                                  gradient,
-                                  CGPointMake(CGRectGetMinX(view.bounds), CGRectGetMidY(view.bounds)),
-                                  CGPointMake(CGRectGetMaxX(view.bounds), CGRectGetMidY(view.bounds)),
-                                  0);
-      
-      CGColorSpaceRelease(colorSpace);
-      CGContextRestoreGState(context);
-    };
-  }
-  [self.view addSubview:self.gradientShadowView];
+  [super loadView];
   
   [self.fetchedResultsController performFetch:nil];
 }

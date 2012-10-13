@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MVViewController.h"
 
 #define kMVAlbumsViewControllerTypeReleased 1
 #define kMVAlbumsViewControllerTypeUpcoming 2
@@ -17,9 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface MVAlbumsViewController : UIViewController
-
-@property (readwrite, nonatomic) float gradientOpacity;
+@interface MVAlbumsViewController : MVViewController
 
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
                 coreManager:(MVCoreManager*)coreManager
