@@ -72,10 +72,10 @@
 
     if(type_ == kMVAlbumsViewControllerTypeReleased)
     {
-      req.predicate = [NSPredicate predicateWithFormat:
-                       @"releaseDate > %@ && releaseDate <= %@",
-                       [NSDate dateWithTimeIntervalSinceNow:- 365 * 24 * 3600],
-                       [NSDate date]];
+//      req.predicate = [NSPredicate predicateWithFormat:
+//                       @"releaseDate > %@ && releaseDate <= %@",
+//                       [NSDate dateWithTimeIntervalSinceNow:- 365 * 24 * 3600],
+//                       [NSDate date]];
     }
     else if(type_ == kMVAlbumsViewControllerTypeUpcoming)
     {
@@ -86,12 +86,12 @@
 
     fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
                                                         managedObjectContext:contextSource.uiMoc
-                                                                      sectionNameKeyPath:@"releaseDate"
+                                                                      sectionNameKeyPath:nil
                                                                                cacheName:nil];
     fetchedResultsController_.delegate = self;
    
     sectionDateFormatter_ = [[NSDateFormatter alloc] init];
-    sectionDateFormatter_.dateFormat = @"d MMM YYYY";
+    sectionDateFormatter_.dateFormat = @"MM/dd";
     
     roundedBottomCorners_ = nil;
     loadingView_ = nil;
@@ -190,40 +190,40 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-  NSObject <NSFetchedResultsSectionInfo> *sectionInfo = [self.fetchedResultsController.sections
-                                                         objectAtIndex:section];
-  
-  MVSectionView* sectionView = [[MVSectionView alloc] initWithFrame:CGRectMake(0, 0,
-                                                                               tableView.bounds.size.width,
-                                                                               48)];
-  NSArray *objects = sectionInfo.objects;
-  if(objects.count > 0)
-  {
-    MVAlbum *album = [objects objectAtIndex:0];
-    if(self.type == kMVAlbumsViewControllerTypeReleased)
-      sectionView.label = [self.sectionDateFormatter stringFromDate:album.releaseDate];
-    else
-    {
-      NSString *label;
-      if([album.releaseDate compare:[NSDate dateWithTimeIntervalSinceNow:1*24*3600]] == NSOrderedAscending)
-        label = NSLocalizedString(@"Tomorrow", @"Section header");
-      else
-        label = [NSString stringWithFormat:
-                 NSLocalizedString(@"In %i days", @"Section header"),
-                 ((int)ceil([album.releaseDate timeIntervalSinceDate:[NSDate date]] / (24*3600)))];
-      sectionView.label = label;
-    }
-  }
-  return sectionView;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//  NSObject <NSFetchedResultsSectionInfo> *sectionInfo = [self.fetchedResultsController.sections
+//                                                         objectAtIndex:section];
+//  
+//  MVSectionView* sectionView = [[MVSectionView alloc] initWithFrame:CGRectMake(0, 0,
+//                                                                               tableView.bounds.size.width,
+//                                                                               48)];
+//  NSArray *objects = sectionInfo.objects;
+//  if(objects.count > 0)
+//  {
+//    MVAlbum *album = [objects objectAtIndex:0];
+//    if(self.type == kMVAlbumsViewControllerTypeReleased)
+//      sectionView.label = [self.sectionDateFormatter stringFromDate:album.releaseDate];
+//    else
+//    {
+//      NSString *label;
+//      if([album.releaseDate compare:[NSDate dateWithTimeIntervalSinceNow:1*24*3600]] == NSOrderedAscending)
+//        label = NSLocalizedString(@"Tomorrow", @"Section header");
+//      else
+//        label = [NSString stringWithFormat:
+//                 NSLocalizedString(@"In %i days", @"Section header"),
+//                 ((int)ceil([album.releaseDate timeIntervalSinceDate:[NSDate date]] / (24*3600)))];
+//      sectionView.label = label;
+//    }
+//  }
+//  return sectionView;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-  return 48;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//  return 48;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,6 +241,12 @@
  numberOfRowsInSection:(NSInteger)section
 {
   return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  return 50 + 12;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
