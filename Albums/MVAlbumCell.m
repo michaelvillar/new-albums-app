@@ -14,10 +14,11 @@
 #import "MVView.h"
 #import "MVSectionView.h"
 
-#define kMVAlbumArtSize 50
+#define kMVAlbumArtSize 60
 
-static NSLock *artworkImagesCacheDictionaryLock = nil;
-static NSMutableDictionary *artworkImagesCacheDictionary = nil;
+#define kMVAlbumBgColor [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000]
+
+static NSCache *artworkImagesCache = nil;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +28,8 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
 @property (strong, readwrite) MVAsset *artworkAsset;
 @property (strong, readwrite) UIImage *artworkImage;
 @property (strong, readwrite) MVView *albumView;
+@property (strong, readwrite) MVView *topCorners;
+@property (strong, readwrite) MVView *bottomCorners;
 
 - (void)generateArtworkImage;
 
@@ -41,15 +44,21 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
             album         = album_,
             artworkAsset  = artworkAsset_,
             artworkImage  = artworkImage_,
-            albumView     = albumView_;
+            albumView     = albumView_,
+            topCorners    = topCorners_,
+            bottomCorners = bottomCorners_;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
++ (CGFloat)rowHeight
+{
+  return kMVAlbumArtSize;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (void)initialize
 {
-  if(!artworkImagesCacheDictionary)
-    artworkImagesCacheDictionary = [NSMutableDictionary dictionary];
-  if(!artworkImagesCacheDictionaryLock)
-    artworkImagesCacheDictionaryLock = [[NSLock alloc] init];
+  if(!artworkImagesCache)
+    artworkImagesCache = [[NSCache alloc] init];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +73,9 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
     artworkImage_ = nil;
     
     __block MVAlbumCell *cell = self;
+    
+    self.contentView.backgroundColor = [UIColor colorWithRed:0.4365 green:0.4365
+                                                        blue:0.4365 alpha:1.0000];
 
     self.selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     self.selectedBackgroundView.backgroundColor = [UIColor clearColor];
@@ -75,6 +87,12 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
     {
       if(!cell.album)
         return;
+
+      float marginLeft = kMVAlbumArtSize + 3;
+      float marginTop = 0;
+      float availableWidth = view.bounds.size.width - marginLeft - 6 * 2 - 12;
+      CGRect artworkRect = CGRectMake(0, 0, kMVAlbumArtSize, kMVAlbumArtSize);
+
       if(!cell.artworkAsset)
       {
         NSURL *url = [NSURL URLWithString:cell.album.artworkUrl];
@@ -82,49 +100,140 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
         [cell.artworkAsset addObserver:cell forKeyPath:@"existing" options:0 context:NULL];
         if(cell.artworkAsset.isExisting)
         {
-          [artworkImagesCacheDictionaryLock lock];
-          cell.artworkImage = [artworkImagesCacheDictionary valueForKey:cell.artworkAsset.localURL.path];
-          [artworkImagesCacheDictionaryLock unlock];
+          cell.artworkImage = [artworkImagesCache objectForKey:cell.artworkAsset.localURL.path];
           if(!cell.artworkImage)
             [cell generateArtworkImage];
         }
       }
-      
-      [[UIColor blackColor] set];
+
+      [kMVAlbumBgColor set];
       [[UIBezierPath bezierPathWithRect:view.bounds] fill];
       
-      float marginLeft = 12 + kMVAlbumArtSize + 3;
-      float marginTop = 6;
-      CGRect artworkRect = CGRectMake(12, 6, kMVAlbumArtSize, kMVAlbumArtSize);
-      
-      if(cell.isHighlighted)
-        [[UIColor colorWithRed:0.1451 green:0.1529 blue:0.1765 alpha:1.0000] set];
-      else
-        [[UIColor colorWithRed:0.7569 green:0.8000 blue:0.9059 alpha:1.0000] set];
-      
-      [[UIColor whiteColor] set];
-      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft + 6, marginTop + 6)
-                               forWidth:cell.bounds.size.width - marginLeft - 6 * 2 - 12
-                               withFont:[UIFont boldSystemFontOfSize:16]
-                          lineBreakMode:NSLineBreakByTruncatingMiddle];
-      
-      [[UIColor colorWithRed:0.8966 green:0.8965 blue:0.8966 alpha:1.0000] set];
-      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft + 6, marginTop + 27)
-                                 forWidth:cell.bounds.size.width - marginLeft - 6 * 2 - 12
-                                 withFont:[UIFont systemFontOfSize:13]
-                            lineBreakMode:NSLineBreakByTruncatingMiddle];
       if(cell.artworkImage)
       {
         [cell.artworkImage drawInRect:artworkRect];
       }
-      
-      if(cell.isHighlighted)
+
+      if(self.isHighlighted)
       {
         [[UIColor colorWithWhite:0 alpha:0.5] set];
-        [[UIBezierPath bezierPathWithRect:artworkRect] fill];
+        [[UIBezierPath bezierPathWithRect:view.bounds] fill];
       }
+      
+      if([cell.album.releaseDate compare:[NSDate date]] == NSOrderedDescending)
+      {
+        NSString *releaseDate = cell.album.monthDayReleaseDate;
+        UIFont *font = [UIFont boldSystemFontOfSize:14];
+        CGSize labelSize = [releaseDate sizeWithFont:font];
+        
+        CGFloat labelWidth = ceilf(labelSize.width + 5 * 2);
+        CGRect labelRect = CGRectMake(cell.frame.size.width - labelWidth - 10, 20, labelWidth, 20);
+        availableWidth -= labelRect.size.width + 2;
+        
+        [[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
+        [[UIBezierPath bezierPathWithRoundedRect:labelRect
+                                    cornerRadius:10] fill];
+        
+        [[UIColor whiteColor] set];
+        [releaseDate drawAtPoint:CGPointMake(labelRect.origin.x + 5, labelRect.origin.y + 1)
+                        forWidth:labelWidth
+                        withFont:font
+                   lineBreakMode:NSLineBreakByCharWrapping];
+      }
+      
+      if(self.isHighlighted)
+      {
+        [[UIColor whiteColor] set];
+      }
+      else
+      {
+        [[UIColor colorWithRed:0.1971 green:0.1971 blue:0.1971 alpha:1.0000] set];
+      }
+      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft + 8, marginTop + 11)
+                                 forWidth:availableWidth
+                                 withFont:[UIFont boldSystemFontOfSize:18]
+                            lineBreakMode:NSLineBreakByTruncatingMiddle];
+      
+      if(self.isHighlighted)
+      {
+        [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
+      }
+      else
+      {
+        [[UIColor colorWithRed:0.5581 green:0.5581 blue:0.5581 alpha:1.0000] set];
+      }
+      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft + 8, marginTop + 33)
+                               forWidth:availableWidth
+                               withFont:[UIFont systemFontOfSize:13]
+                          lineBreakMode:NSLineBreakByTruncatingMiddle];
     };
+    albumView_.layer.shadowColor = [UIColor blackColor].CGColor;
+    albumView_.layer.shadowRadius = 3;
+    albumView_.layer.shadowOffset = CGSizeMake(0, 0);
+    albumView_.layer.shadowOpacity = 0.0;
     [self.contentView addSubview:albumView_];
+    
+    topCorners_ = [[MVView alloc] initWithFrame:self.contentView.bounds];
+    topCorners_.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                   UIViewAutoresizingFlexibleHeight;
+    topCorners_.userInteractionEnabled = NO;
+    topCorners_.backgroundColor = [UIColor clearColor];
+    topCorners_.drawBlock = ^(UIView *view, CGContextRef ctx)
+    {
+      float y = 0;
+      UIBezierPath *path = [UIBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(0, y + kMVSectionViewRadius)];
+      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, y)
+              controlPoint1:CGPointMake(0, y)
+              controlPoint2:CGPointMake(kMVSectionViewRadius, y)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius,
+                                       y)];
+      [path addCurveToPoint:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)
+              controlPoint1:CGPointMake(view.frame.size.width, y)
+              controlPoint2:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width,
+                                       y)];
+      [path addLineToPoint:CGPointMake(0, y)];
+      [path closePath];
+      
+      [[UIColor blackColor] set];
+      [path fill];
+    };
+    
+    bottomCorners_ = [[MVView alloc] initWithFrame:self.contentView.bounds];
+    bottomCorners_.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                      UIViewAutoresizingFlexibleHeight;
+    bottomCorners_.userInteractionEnabled = NO;
+    bottomCorners_.backgroundColor = [UIColor clearColor];
+    bottomCorners_.drawBlock = ^(UIView *view, CGContextRef ctx)
+    {
+      float y = cell.bounds.size.height - 1 - kMVSectionViewRadius;
+      UIBezierPath *path = [UIBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(0, y)];
+      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)
+              controlPoint1:CGPointMake(0, y + kMVSectionViewRadius)
+              controlPoint2:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius,
+                                       y + kMVSectionViewRadius)];
+      [path addCurveToPoint:CGPointMake(view.frame.size.width, y)
+              controlPoint1:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)
+              controlPoint2:CGPointMake(view.frame.size.width, y)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width,
+                                       y + kMVSectionViewRadius + 1)];
+      [path addLineToPoint:CGPointMake(0, y + kMVSectionViewRadius + 1)];
+      [path closePath];
+      
+      [[UIColor blackColor] set];
+      [path fill];
+    };
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
+                                          initWithTarget:self
+                                          action:@selector(panGestureRecognizer:)];
+    panGesture.delegate = self;
+    panGesture.maximumNumberOfTouches = 1;
+    panGesture.minimumNumberOfTouches = 1;
+    [self.contentView addGestureRecognizer:panGesture];
   }
   return self;
 }
@@ -174,6 +283,91 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)layoutSubviews
+{
+  [super layoutSubviews];
+  
+  NSIndexPath *indexPath = [self.tableView indexPathForCell:self];
+  NSInteger numberOfRows = [self.tableView numberOfRowsInSection:indexPath.section];
+
+  [self.bottomCorners removeFromSuperview];
+  [self.topCorners removeFromSuperview];
+  
+  if(indexPath.row == numberOfRows - 1)
+  {
+    [self.contentView addSubview:self.bottomCorners];
+  }
+  if(indexPath.row == 0)
+  {
+    [self.contentView addSubview:self.topCorners];
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Pan Gesture
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+  if (gestureRecognizer.view == self.contentView &&
+      [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+  {
+    UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
+    CGPoint translate = [pan translationInView:self.contentView];
+    BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
+    return possible;
+  }
+  return NO;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGesture
+{
+  CGPoint translate = [panGesture translationInView:self.contentView];
+  CGRect frame = self.albumView.frame;
+  
+  if(panGesture.state == UIGestureRecognizerStateEnded)
+  {
+    frame.origin.x = 0;
+    
+    [UIView animateWithDuration:0.15 animations:^{
+      self.albumView.frame = frame;
+    }];
+    
+    if(self.albumView.layer.shadowOpacity != 0.0)
+    {
+      CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
+      anim.fromValue = [NSNumber numberWithFloat:self.albumView.layer.shadowOpacity];
+      anim.toValue = [NSNumber numberWithFloat:0.0];
+      anim.duration = 0.15;
+      [self.albumView.layer addAnimation:anim forKey:@"shadowOpacity"];
+      self.albumView.layer.shadowOpacity = 0.0;
+    }
+    
+    self.layer.zPosition = 0;
+  }
+  else
+  {
+    frame.origin.x = translate.x;
+    self.albumView.frame = frame;
+    
+    if(self.albumView.layer.shadowOpacity != 0.5)
+    {
+      CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
+      anim.fromValue = [NSNumber numberWithFloat:self.albumView.layer.shadowOpacity];
+      anim.toValue = [NSNumber numberWithFloat:0.5];
+      anim.duration = 0.15;
+      [self.albumView.layer addAnimation:anim forKey:@"shadowOpacity"];
+      self.albumView.layer.shadowOpacity = 0.5;
+    }
+    
+    self.layer.zPosition = 1000;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark Private Methods
@@ -184,9 +378,7 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
   __strong __block MVAlbumCell *cell = self;
   __strong __block MVAsset *asset = self.artworkAsset;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-    [artworkImagesCacheDictionaryLock lock];
-    UIImage *image = [artworkImagesCacheDictionary valueForKey:asset.localURL.path];
-    [artworkImagesCacheDictionaryLock unlock];
+    UIImage *image = [artworkImagesCache objectForKey:asset.localURL.path];
     if(!image)
     {
       image = [UIImage imageWithContentsOfFile:asset.localURL.path];
@@ -201,9 +393,7 @@ static NSMutableDictionary *artworkImagesCacheDictionary = nil;
       
       if(image)
       {
-        [artworkImagesCacheDictionaryLock lock];
-        [artworkImagesCacheDictionary setValue:image forKey:asset.localURL.path];
-        [artworkImagesCacheDictionaryLock unlock];
+        [artworkImagesCache setObject:image forKey:asset.localURL.path];
       }
     }
     if(asset == cell.artworkAsset)

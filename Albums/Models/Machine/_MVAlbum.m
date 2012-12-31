@@ -5,6 +5,7 @@
 
 const struct MVAlbumAttributes MVAlbumAttributes = {
 	.artworkUrl = @"artworkUrl",
+	.createdAt = @"createdAt",
 	.iTunesId = @"iTunesId",
 	.iTunesStoreUrl = @"iTunesStoreUrl",
 	.name = @"name",
@@ -42,12 +43,13 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 	return (MVAlbumID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"iTunesIdValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"iTunesId"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 
 	return keyPaths;
@@ -57,6 +59,13 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 
 
 @dynamic artworkUrl;
+
+
+
+
+
+
+@dynamic createdAt;
 
 
 

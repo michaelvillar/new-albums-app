@@ -26,6 +26,7 @@
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
+@property (strong, readwrite) MVView *roundedTopCorners;
 @property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVLoadingView *loadingView;
 @property (strong, readwrite) MVCoreManager *coreManager;
@@ -44,6 +45,7 @@
 @synthesize tableView                 = tableView_,
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
+            roundedTopCorners         = roundedTopCorners_,
             roundedBottomCorners      = roundedBottomCorners_,
             loadingView               = loadingView_,
             coreManager               = coreManager_,
@@ -64,25 +66,14 @@
     coreManager_ = coreManager;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                              initWithKey:@"releaseDate"
-                              ascending:type_ == kMVAlbumsViewControllerTypeUpcoming];
-    req.sortDescriptors = [NSArray arrayWithObject:sort];
+    NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
+                                          initWithKey:@"createdAt"
+                                            ascending:NO];
+    NSSortDescriptor *sortReleaseDate = [[NSSortDescriptor alloc]
+                                         initWithKey:@"releaseDate"
+                                           ascending:NO];
+    req.sortDescriptors = [NSArray arrayWithObjects:sortCreatedAt, sortReleaseDate, nil];
     req.fetchBatchSize = 20;
-
-    if(type_ == kMVAlbumsViewControllerTypeReleased)
-    {
-//      req.predicate = [NSPredicate predicateWithFormat:
-//                       @"releaseDate > %@ && releaseDate <= %@",
-//                       [NSDate dateWithTimeIntervalSinceNow:- 365 * 24 * 3600],
-//                       [NSDate date]];
-    }
-    else if(type_ == kMVAlbumsViewControllerTypeUpcoming)
-    {
-      req.predicate = [NSPredicate predicateWithFormat:
-                       @"releaseDate > %@",
-                       [NSDate date]];
-    }
 
     fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
                                                         managedObjectContext:contextSource.uiMoc
@@ -93,6 +84,7 @@
     sectionDateFormatter_ = [[NSDateFormatter alloc] init];
     sectionDateFormatter_.dateFormat = @"MM/dd";
     
+    roundedTopCorners_ = nil;
     roundedBottomCorners_ = nil;
     loadingView_ = nil;
     
@@ -127,6 +119,35 @@
   if(self.type == 2)
     [self.tableView setScrollsToTop:NO];
   
+  if(!self.roundedTopCorners)
+  {
+    self.roundedTopCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
+                                                                      0,
+                                                                      self.view.bounds.size.width,
+                                                                      kMVSectionViewRadius)];
+    self.roundedTopCorners.autoresizingMask = UIViewAutoresizingNone;
+    self.roundedTopCorners.backgroundColor = [UIColor clearColor];
+    self.roundedTopCorners.drawBlock = ^(UIView *view, CGContextRef ref)
+    {
+      UIBezierPath *path = [UIBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(0, kMVSectionViewRadius)];
+      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, 0)
+              controlPoint1:CGPointMake(0, 0)
+              controlPoint2:CGPointMake(kMVSectionViewRadius, 0)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius, 0)];
+      [path addCurveToPoint:CGPointMake(view.frame.size.width, kMVSectionViewRadius)
+              controlPoint1:CGPointMake(view.frame.size.width, 0)
+              controlPoint2:CGPointMake(view.frame.size.width, kMVSectionViewRadius)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width, 0)];
+      [path addLineToPoint:CGPointMake(0, 0)];
+      [path closePath];
+      
+      [[UIColor blackColor] set];
+      [path fill];
+    };
+  }
+  [self.view addSubview:self.roundedTopCorners];
+
   if(!self.roundedBottomCorners)
   {
     self.roundedBottomCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
@@ -246,7 +267,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  return 50 + 12;
+  return [MVAlbumCell rowHeight];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

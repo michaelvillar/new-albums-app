@@ -26,4 +26,6 @@
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite, nonatomic) MVAlbum *album;
 
++ (CGFloat)rowHeight;
+
 @end

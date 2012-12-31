@@ -21,6 +21,7 @@
 @interface MVAlbumsRequest () <MViTunesSearchRequestDelegate>
 
 @property (strong, readwrite) NSSet *artistIds;
+@property (strong, readwrite) NSDate *batchDate;
 @property (readwrite) int batchesLeft;
 @property (readwrite) BOOL completed;
 @property (strong, readwrite) NSOperationQueue *operationQueue;
@@ -38,6 +39,7 @@
 @implementation MVAlbumsRequest
 
 @synthesize artistIds       = artistIds_,
+            batchDate       = batchDate_,
             batchesLeft     = batchesLeft_,
             completed       = completed_,
             operationQueue  = operationQueue_,
@@ -53,6 +55,7 @@
   if(self)
   {
     artistIds_ = artistIds;
+    batchDate_ = [NSDate date];
     batchesLeft_ = 0;
     completed_ = NO;
     operationQueue_ = operationQueue;
@@ -153,6 +156,7 @@
             NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
 
             album = [MVAlbum insertInManagedObjectContext:self.contextSource.masterMoc];
+            album.createdAt = self.batchDate;
             album.name = name;
             album.iTunesIdValue = albumId;
             album.releaseDate = releaseDate;

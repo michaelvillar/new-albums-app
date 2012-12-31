@@ -31,7 +31,9 @@ extern const struct MVArtistNameFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* name;
+
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -40,7 +42,7 @@ extern const struct MVArtistNameFetchedProperties {
 
 
 
-@property (nonatomic, strong) MVArtist* artist;
+@property (nonatomic, strong) MVArtist *artist;
 
 //- (BOOL)validateArtist:(id*)value_ error:(NSError**)error_;
 

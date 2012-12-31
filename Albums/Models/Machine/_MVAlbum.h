@@ -6,6 +6,7 @@
 
 extern const struct MVAlbumAttributes {
 	__unsafe_unretained NSString *artworkUrl;
+	__unsafe_unretained NSString *createdAt;
 	__unsafe_unretained NSString *iTunesId;
 	__unsafe_unretained NSString *iTunesStoreUrl;
 	__unsafe_unretained NSString *name;
@@ -29,6 +30,7 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @interface MVAlbumID : NSManagedObjectID {}
 @end
 
@@ -41,7 +43,9 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* artworkUrl;
+
 
 
 //- (BOOL)validateArtworkUrl:(id*)value_ error:(NSError**)error_;
@@ -49,7 +53,19 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
+@property (nonatomic, strong) NSDate* createdAt;
+
+
+
+//- (BOOL)validateCreatedAt:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* iTunesId;
+
 
 
 @property int64_t iTunesIdValue;
@@ -61,7 +77,9 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* iTunesStoreUrl;
+
 
 
 //- (BOOL)validateITunesStoreUrl:(id*)value_ error:(NSError**)error_;
@@ -69,7 +87,9 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* name;
+
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -77,7 +97,9 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSDate* releaseDate;
+
 
 
 //- (BOOL)validateReleaseDate:(id*)value_ error:(NSError**)error_;
@@ -85,7 +107,9 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* sectionHeader;
+
 
 
 //- (BOOL)validateSectionHeader:(id*)value_ error:(NSError**)error_;
@@ -94,7 +118,7 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
-@property (nonatomic, strong) MVArtist* artist;
+@property (nonatomic, strong) MVArtist *artist;
 
 //- (BOOL)validateArtist:(id*)value_ error:(NSError**)error_;
 
@@ -113,6 +137,12 @@ extern const struct MVAlbumFetchedProperties {
 
 - (NSString*)primitiveArtworkUrl;
 - (void)setPrimitiveArtworkUrl:(NSString*)value;
+
+
+
+
+- (NSDate*)primitiveCreatedAt;
+- (void)setPrimitiveCreatedAt:(NSDate*)value;
 
 
 

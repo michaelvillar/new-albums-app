@@ -37,7 +37,7 @@ const struct MVArtistNameFetchedProperties MVArtistNameFetchedProperties = {
 	return (MVArtistNameID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 

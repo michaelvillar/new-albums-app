@@ -37,7 +37,9 @@ extern const struct MVArtistFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* fetchAlbums;
+
 
 
 @property BOOL fetchAlbumsValue;
@@ -49,7 +51,9 @@ extern const struct MVArtistFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSNumber* iTunesId;
+
 
 
 @property int64_t iTunesIdValue;
@@ -61,7 +65,9 @@ extern const struct MVArtistFetchedProperties {
 
 
 
+
 @property (nonatomic, strong) NSString* name;
+
 
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -70,14 +76,14 @@ extern const struct MVArtistFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSSet* albums;
+@property (nonatomic, strong) NSSet *albums;
 
 - (NSMutableSet*)albumsSet;
 
 
 
 
-@property (nonatomic, strong) NSSet* names;
+@property (nonatomic, strong) NSSet *names;
 
 - (NSMutableSet*)namesSet;
 

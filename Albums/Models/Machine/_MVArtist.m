@@ -40,16 +40,18 @@ const struct MVArtistFetchedProperties MVArtistFetchedProperties = {
 	return (MVArtistID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
 	if ([key isEqualToString:@"fetchAlbumsValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"fetchAlbums"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 	if ([key isEqualToString:@"iTunesIdValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"iTunesId"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
 	}
 
 	return keyPaths;
