@@ -6,6 +6,7 @@
 
 extern const struct MVArtistAttributes {
 	__unsafe_unretained NSString *fetchAlbums;
+	__unsafe_unretained NSString *hidden;
 	__unsafe_unretained NSString *iTunesId;
 	__unsafe_unretained NSString *name;
 } MVArtistAttributes;
@@ -20,6 +21,7 @@ extern const struct MVArtistFetchedProperties {
 
 @class MVAlbum;
 @class MVArtistName;
+
 
 
 
@@ -47,6 +49,20 @@ extern const struct MVArtistFetchedProperties {
 - (void)setFetchAlbumsValue:(BOOL)value_;
 
 //- (BOOL)validateFetchAlbums:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* hidden;
+
+
+
+@property BOOL hiddenValue;
+- (BOOL)hiddenValue;
+- (void)setHiddenValue:(BOOL)value_;
+
+//- (BOOL)validateHidden:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -115,6 +131,15 @@ extern const struct MVArtistFetchedProperties {
 
 - (BOOL)primitiveFetchAlbumsValue;
 - (void)setPrimitiveFetchAlbumsValue:(BOOL)value_;
+
+
+
+
+- (NSNumber*)primitiveHidden;
+- (void)setPrimitiveHidden:(NSNumber*)value;
+
+- (BOOL)primitiveHiddenValue;
+- (void)setPrimitiveHiddenValue:(BOOL)value_;
 
 
 

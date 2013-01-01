@@ -21,7 +21,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVAlbumsViewController () <UITableViewDataSource,
                                       UITableViewDelegate,
-                                      NSFetchedResultsControllerDelegate>
+                                      NSFetchedResultsControllerDelegate,
+                                      MVAlbumCellDelegate>
 
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
@@ -74,6 +75,7 @@
                                            ascending:NO];
     req.sortDescriptors = [NSArray arrayWithObjects:sortCreatedAt, sortReleaseDate, nil];
     req.fetchBatchSize = 20;
+    req.predicate = [NSPredicate predicateWithFormat:@"hidden == %d AND artist.hidden == %d",NO,NO];
 
     fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
                                                         managedObjectContext:contextSource.uiMoc
@@ -211,42 +213,6 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//  NSObject <NSFetchedResultsSectionInfo> *sectionInfo = [self.fetchedResultsController.sections
-//                                                         objectAtIndex:section];
-//  
-//  MVSectionView* sectionView = [[MVSectionView alloc] initWithFrame:CGRectMake(0, 0,
-//                                                                               tableView.bounds.size.width,
-//                                                                               48)];
-//  NSArray *objects = sectionInfo.objects;
-//  if(objects.count > 0)
-//  {
-//    MVAlbum *album = [objects objectAtIndex:0];
-//    if(self.type == kMVAlbumsViewControllerTypeReleased)
-//      sectionView.label = [self.sectionDateFormatter stringFromDate:album.releaseDate];
-//    else
-//    {
-//      NSString *label;
-//      if([album.releaseDate compare:[NSDate dateWithTimeIntervalSinceNow:1*24*3600]] == NSOrderedAscending)
-//        label = NSLocalizedString(@"Tomorrow", @"Section header");
-//      else
-//        label = [NSString stringWithFormat:
-//                 NSLocalizedString(@"In %i days", @"Section header"),
-//                 ((int)ceil([album.releaseDate timeIntervalSinceDate:[NSDate date]] / (24*3600)))];
-//      sectionView.label = label;
-//    }
-//  }
-//  return sectionView;
-//}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-//{
-//  return 48;
-//}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark UITableViewDataSource Methods
@@ -283,6 +249,7 @@
                               reuseIdentifier:cellIdentifier];
     cell.tableView = tableView;
   }
+  cell.delegate = self;
 
   MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
   cell.album = album;
@@ -310,6 +277,35 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+  [self.tableView reloadData];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark MVAlbumCellDelegate Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)albumCellDidTriggerHideAlbum:(MVAlbumCell *)albumCell
+{
+  MVAlbum *album = albumCell.album;
+  album.hiddenValue = YES;
+  [self.contextSource.uiMoc mv_save];
+  [self.contextSource.masterMoc performBlock:^{
+    [self.contextSource.masterMoc mv_save];
+  }];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)albumCellDidTriggerHideArtist:(MVAlbumCell *)albumCell
+{
+  MVAlbum *album = albumCell.album;
+  album.artist.hiddenValue = YES;
+  [self.contextSource.uiMoc mv_save];
+  [self.contextSource.masterMoc performBlock:^{
+    [self.contextSource.masterMoc mv_save];
+  }];
+  [self.fetchedResultsController performFetch:nil];
   [self.tableView reloadData];
 }
 

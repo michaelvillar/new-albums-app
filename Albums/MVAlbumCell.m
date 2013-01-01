@@ -13,9 +13,13 @@
 #import "MVAssetsManager.h"
 #import "MVView.h"
 #import "MVSectionView.h"
+#import "MVRoundedLabelView.h"
 
 #define kMVAlbumArtSize 60
 
+#define kMVAlbumContentViewBgColor0 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
+#define kMVAlbumContentViewBgColor1 [UIColor colorWithRed:0.4365 green:0.4365 blue:0.4365 alpha:1]
+#define kMVAlbumContentViewBgColor2 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
 #define kMVAlbumBgColor [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000]
 
 static NSCache *artworkImagesCache = nil;
@@ -30,6 +34,8 @@ static NSCache *artworkImagesCache = nil;
 @property (strong, readwrite) MVView *albumView;
 @property (strong, readwrite) MVView *topCorners;
 @property (strong, readwrite) MVView *bottomCorners;
+@property (strong, readwrite) MVRoundedLabelView *hideAlbumLabelView;
+@property (strong, readwrite) MVRoundedLabelView *hideArtistLabelView;
 
 - (void)generateArtworkImage;
 
@@ -46,7 +52,10 @@ static NSCache *artworkImagesCache = nil;
             artworkImage  = artworkImage_,
             albumView     = albumView_,
             topCorners    = topCorners_,
-            bottomCorners = bottomCorners_;
+            bottomCorners = bottomCorners_,
+            hideAlbumLabelView = hideAlbumLabelView_,
+            hideArtistLabelView = hideArtistLabelView_,
+            delegate      = delegate_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (CGFloat)rowHeight
@@ -71,11 +80,52 @@ static NSCache *artworkImagesCache = nil;
     album_ = nil;
     artworkAsset_ = nil;
     artworkImage_ = nil;
+    delegate_ = nil;
     
     __block MVAlbumCell *cell = self;
     
-    self.contentView.backgroundColor = [UIColor colorWithRed:0.4365 green:0.4365
-                                                        blue:0.4365 alpha:1.0000];
+    MVView *contentView = [[MVView alloc] initWithFrame:self.contentView.bounds];
+    contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                   UIViewAutoresizingFlexibleHeight;
+    contentView.drawBlock = ^(UIView *view, CGContextRef ctx)
+    {
+      CGContextRef context = UIGraphicsGetCurrentContext();
+      
+      CGContextSaveGState(context);
+      CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+      
+      CGFloat locations[4];
+      NSMutableArray *colors = [NSMutableArray arrayWithCapacity:4];
+      [colors addObject:(id)kMVAlbumContentViewBgColor0.CGColor];
+      locations[0] = 0.0;
+      [colors addObject:(id)kMVAlbumContentViewBgColor1.CGColor];
+      locations[1] = 0.05;
+      [colors addObject:(id)kMVAlbumContentViewBgColor1.CGColor];
+      locations[2] = 0.95;
+      [colors addObject:(id)kMVAlbumContentViewBgColor2.CGColor];
+      locations[3] = 1;
+      CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+      
+      CGContextDrawLinearGradient(context,
+                                  gradient,
+                                  CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds)),
+                                  CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMaxY(self.bounds)),
+                                  0);
+      
+      CGColorSpaceRelease(colorSpace);
+      CGContextRestoreGState(context);
+    };
+    [self.contentView addSubview:contentView];
+    
+    hideAlbumLabelView_ = [[MVRoundedLabelView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    hideAlbumLabelView_.text = NSLocalizedString(@"Hide Album", @"Hide Album Label");
+    [hideAlbumLabelView_ sizeToFit];
+    [self.contentView addSubview:hideAlbumLabelView_];
+    
+    hideArtistLabelView_ = [[MVRoundedLabelView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    hideArtistLabelView_.text = NSLocalizedString(@"Hide Artist", @"Hide Artist Label");
+    [hideArtistLabelView_ sizeToFit];
+    [self.contentView addSubview:hideArtistLabelView_];
 
     self.selectedBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     self.selectedBackgroundView.backgroundColor = [UIColor clearColor];
@@ -88,9 +138,9 @@ static NSCache *artworkImagesCache = nil;
       if(!cell.album)
         return;
 
-      float marginLeft = kMVAlbumArtSize + 3;
+      float marginLeft = kMVAlbumArtSize + 11;
       float marginTop = 0;
-      float availableWidth = view.bounds.size.width - marginLeft - 6 * 2 - 12;
+      float marginRight = 10;
       CGRect artworkRect = CGRectMake(0, 0, kMVAlbumArtSize, kMVAlbumArtSize);
 
       if(!cell.artworkAsset)
@@ -123,16 +173,17 @@ static NSCache *artworkImagesCache = nil;
       if([cell.album.releaseDate compare:[NSDate date]] == NSOrderedDescending)
       {
         NSString *releaseDate = cell.album.monthDayReleaseDate;
-        UIFont *font = [UIFont boldSystemFontOfSize:14];
+        UIFont *font = [UIFont boldSystemFontOfSize:13];
         CGSize labelSize = [releaseDate sizeWithFont:font];
         
         CGFloat labelWidth = ceilf(labelSize.width + 5 * 2);
-        CGRect labelRect = CGRectMake(cell.frame.size.width - labelWidth - 10, 20, labelWidth, 20);
-        availableWidth -= labelRect.size.width + 2;
+        CGRect labelRect = CGRectMake(cell.frame.size.width - marginRight - labelWidth, 21,
+                                      labelWidth, 18);
+        marginRight += labelRect.size.width + 3;
         
         [[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
         [[UIBezierPath bezierPathWithRoundedRect:labelRect
-                                    cornerRadius:10] fill];
+                                    cornerRadius:9] fill];
         
         [[UIColor whiteColor] set];
         [releaseDate drawAtPoint:CGPointMake(labelRect.origin.x + 5, labelRect.origin.y + 1)
@@ -141,6 +192,29 @@ static NSCache *artworkImagesCache = nil;
                    lineBreakMode:NSLineBreakByCharWrapping];
       }
       
+      if(cell.album.albumType)
+      {
+        NSString *albumType = cell.album.albumType;
+        UIFont *font = [UIFont systemFontOfSize:13];
+        CGSize labelSize = [albumType sizeWithFont:font];
+        
+        marginRight += 3;
+        CGPoint labelPoint = CGPointMake(cell.frame.size.width - marginRight - labelSize.width, 22);
+        marginRight += labelSize.width + 3;
+        
+        if(self.isHighlighted)
+        {
+          [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
+        }
+        else
+        {
+          [[UIColor colorWithRed:0.5581 green:0.5581 blue:0.5581 alpha:1.0000] set];
+        }
+        [albumType drawAtPoint:labelPoint withFont:font];
+      }
+      
+      float availableWidth = view.bounds.size.width - marginLeft - marginRight;
+
       if(self.isHighlighted)
       {
         [[UIColor whiteColor] set];
@@ -149,7 +223,7 @@ static NSCache *artworkImagesCache = nil;
       {
         [[UIColor colorWithRed:0.1971 green:0.1971 blue:0.1971 alpha:1.0000] set];
       }
-      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft + 8, marginTop + 11)
+      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft, marginTop + 11)
                                  forWidth:availableWidth
                                  withFont:[UIFont boldSystemFontOfSize:18]
                             lineBreakMode:NSLineBreakByTruncatingMiddle];
@@ -162,7 +236,7 @@ static NSCache *artworkImagesCache = nil;
       {
         [[UIColor colorWithRed:0.5581 green:0.5581 blue:0.5581 alpha:1.0000] set];
       }
-      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft + 8, marginTop + 33)
+      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft, marginTop + 33)
                                forWidth:availableWidth
                                withFont:[UIFont systemFontOfSize:13]
                           lineBreakMode:NSLineBreakByTruncatingMiddle];
@@ -295,12 +369,24 @@ static NSCache *artworkImagesCache = nil;
   
   if(indexPath.row == numberOfRows - 1)
   {
+    self.bottomCorners.frame = self.contentView.bounds;
     [self.contentView addSubview:self.bottomCorners];
   }
   if(indexPath.row == 0)
   {
+    self.topCorners.frame = self.contentView.bounds;
     [self.contentView addSubview:self.topCorners];
   }
+  
+  CGRect hideAlbumLabelViewFrame = self.hideAlbumLabelView.frame;
+  hideAlbumLabelViewFrame.origin.y = roundf((self.frame.size.height -
+                                             hideAlbumLabelViewFrame.size.height) / 2);
+  self.hideAlbumLabelView.frame = hideAlbumLabelViewFrame;
+  
+  CGRect hideArtistLabelViewFrame = self.hideArtistLabelView.frame;
+  hideArtistLabelViewFrame.origin.y = roundf((self.frame.size.height -
+                                             hideArtistLabelViewFrame.size.height) / 2);
+  self.hideArtistLabelView.frame = hideArtistLabelViewFrame;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,6 +432,17 @@ static NSCache *artworkImagesCache = nil;
       self.albumView.layer.shadowOpacity = 0.0;
     }
     
+    if(self.hideAlbumLabelView.isEnabled)
+    {
+      if([self.delegate respondsToSelector:@selector(albumCellDidTriggerHideAlbum:)])
+        [self.delegate albumCellDidTriggerHideAlbum:self];
+    }
+    if(self.hideArtistLabelView.isEnabled)
+    {
+      if([self.delegate respondsToSelector:@selector(albumCellDidTriggerHideArtist:)])
+        [self.delegate albumCellDidTriggerHideArtist:self];
+    }
+    
     self.layer.zPosition = 0;
   }
   else
@@ -361,6 +458,46 @@ static NSCache *artworkImagesCache = nil;
       anim.duration = 0.15;
       [self.albumView.layer addAnimation:anim forKey:@"shadowOpacity"];
       self.albumView.layer.shadowOpacity = 0.5;
+    }
+    
+    CGRect hideAlbumLabelViewFrame = self.hideAlbumLabelView.frame;
+    float finalX = hideAlbumLabelViewFrame.origin.y - 2;
+    float treshholdX = finalX + hideAlbumLabelViewFrame.size.width + finalX;
+    hideAlbumLabelViewFrame.origin.x = 5 + (finalX - 5) * (MIN(translate.x, treshholdX) / treshholdX);
+    self.hideAlbumLabelView.frame = hideAlbumLabelViewFrame;
+    self.hideAlbumLabelView.hidden = translate.x < 0;
+    
+    BOOL hideAlbumLabelViewEnabled = (translate.x >= treshholdX && translate.x > 0);
+    if(self.hideAlbumLabelView.isEnabled != hideAlbumLabelViewEnabled)
+    {
+      self.hideAlbumLabelView.enabled = hideAlbumLabelViewEnabled;
+      [self.hideAlbumLabelView setNeedsDisplay];
+      CATransition *transition = [CATransition animation];
+      transition.duration = 0.15f;
+      transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+      transition.type = kCATransitionFade;
+      [self.hideAlbumLabelView.layer addAnimation:transition forKey:nil];
+    }
+    
+    CGRect hideArtistLabelViewFrame = self.hideArtistLabelView.frame;
+    float beginX = self.frame.size.width - hideArtistLabelViewFrame.size.width - 5;
+    finalX = self.frame.size.width - (hideArtistLabelViewFrame.origin.y - 2) -
+             hideArtistLabelViewFrame.size.width;
+    treshholdX = (hideArtistLabelViewFrame.origin.y - 2) * 2 + hideArtistLabelViewFrame.size.width;
+    hideArtistLabelViewFrame.origin.x = beginX + (finalX - beginX) * (MIN(fabs(translate.x), treshholdX) / treshholdX);
+    self.hideArtistLabelView.frame = hideArtistLabelViewFrame;
+    self.hideArtistLabelView.hidden = translate.x > 0;
+    
+    BOOL hideArtistLabelViewEnabled = (fabs(translate.x) >= treshholdX && translate.x < 0);
+    if(self.hideArtistLabelView.isEnabled != hideArtistLabelViewEnabled)
+    {
+      self.hideArtistLabelView.enabled = hideArtistLabelViewEnabled;
+      [self.hideArtistLabelView setNeedsDisplay];
+      CATransition *transition = [CATransition animation];
+      transition.duration = 0.15f;
+      transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+      transition.type = kCATransitionFade;
+      [self.hideArtistLabelView.layer addAnimation:transition forKey:nil];
     }
     
     self.layer.zPosition = 1000;

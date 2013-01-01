@@ -3,6 +3,7 @@
     <entity name="Album" representedClassName="MVAlbum" syncable="YES">
         <attribute name="artworkUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="iTunesId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="iTunesStoreUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -12,6 +13,7 @@
     </entity>
     <entity name="Artist" representedClassName="MVArtist" syncable="YES">
         <attribute name="fetchAlbums" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="hidden" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="iTunesId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="albums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="artist" inverseEntity="Album" syncable="YES"/>
@@ -22,8 +24,8 @@
         <relationship name="artist" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Artist" inverseName="names" inverseEntity="Artist" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Album" positionX="160" positionY="192" width="128" height="165"/>
-        <element name="Artist" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="Album" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="Artist" positionX="160" positionY="192" width="128" height="135"/>
         <element name="ArtistName" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>

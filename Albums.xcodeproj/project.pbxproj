@@ -46,6 +46,7 @@
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
 		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
+		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -124,6 +125,8 @@
 		4CBDAB1F1628F5CB00903D59 /* MVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVViewController.m; sourceTree = "<group>"; };
 		4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSettingsViewController.h; sourceTree = "<group>"; };
 		4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSettingsViewController.m; sourceTree = "<group>"; };
+		4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRoundedLabelView.h; sourceTree = "<group>"; };
+		4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRoundedLabelView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -317,6 +320,8 @@
 				4C4465C21618B97300F8D4E3 /* MVSectionView.m */,
 				4C89E1591618EF5600810C91 /* MVLoadingView.h */,
 				4C89E15A1618EF5600810C91 /* MVLoadingView.m */,
+				4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */,
+				4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -430,6 +435,7 @@
 				4C68CA3816260173005B6878 /* MVWindow.m in Sources */,
 				4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */,
 				4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */,
+				4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

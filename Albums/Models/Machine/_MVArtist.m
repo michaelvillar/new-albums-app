@@ -5,6 +5,7 @@
 
 const struct MVArtistAttributes MVArtistAttributes = {
 	.fetchAlbums = @"fetchAlbums",
+	.hidden = @"hidden",
 	.iTunesId = @"iTunesId",
 	.name = @"name",
 };
@@ -48,6 +49,11 @@ const struct MVArtistFetchedProperties MVArtistFetchedProperties = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"hiddenValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"hidden"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"iTunesIdValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"iTunesId"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -80,6 +86,32 @@ const struct MVArtistFetchedProperties MVArtistFetchedProperties = {
 
 - (void)setPrimitiveFetchAlbumsValue:(BOOL)value_ {
 	[self setPrimitiveFetchAlbums:[NSNumber numberWithBool:value_]];
+}
+
+
+
+
+
+@dynamic hidden;
+
+
+
+- (BOOL)hiddenValue {
+	NSNumber *result = [self hidden];
+	return [result boolValue];
+}
+
+- (void)setHiddenValue:(BOOL)value_ {
+	[self setHidden:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveHiddenValue {
+	NSNumber *result = [self primitiveHidden];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveHiddenValue:(BOOL)value_ {
+	[self setPrimitiveHidden:[NSNumber numberWithBool:value_]];
 }
 
 

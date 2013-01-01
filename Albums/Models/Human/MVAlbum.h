@@ -6,6 +6,7 @@
 @interface MVAlbum : _MVAlbum {}
 
 @property (readonly, nonatomic) NSString *shortName;
+@property (readonly, nonatomic) NSString *albumType;
 @property (readonly, nonatomic) NSString *monthDayReleaseDate;
 
 @end
