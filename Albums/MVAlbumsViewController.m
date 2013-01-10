@@ -11,9 +11,8 @@
 #import "MVAlbum.h"
 #import "MVArtist.h"
 #import "MVAlbumCell.h"
-#import "MVSectionView.h"
 #import "MVView.h"
-#import "MVLoadingView.h"
+#import "MVLoadingCell.h"
 #import "MVCoreManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,13 +28,12 @@
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
 @property (strong, readwrite) MVView *roundedTopCorners;
 @property (strong, readwrite) MVView *roundedBottomCorners;
-@property (strong, readwrite) MVLoadingView *loadingView;
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (readwrite) int type;
+@property (readwrite) BOOL showsLoadingCell;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
-- (void)updateLoadingView;
 
 @end
 
@@ -49,9 +47,9 @@
             sectionDateFormatter      = sectionDateFormatter_,
             roundedTopCorners         = roundedTopCorners_,
             roundedBottomCorners      = roundedBottomCorners_,
-            loadingView               = loadingView_,
             coreManager               = coreManager_,
             type                      = type_,
+            showsLoadingCell          = showsLoadingCell_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +63,7 @@
     tableView_ = nil;
     contextSource_ = contextSource;
     type_ = type;
+    showsLoadingCell_ = NO;
     coreManager_ = coreManager;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
@@ -89,10 +88,15 @@
     
     roundedTopCorners_ = nil;
     roundedBottomCorners_ = nil;
-    loadingView_ = nil;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncDidStart:)
+                                                 name:kMVNotificationSyncDidStart
+                                               object:self.coreManager];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
                                                  name:kMVNotificationSyncDidProgress
+                                               object:self.coreManager];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncDidFinish:)
+                                                 name:kMVNotificationSyncDidFinish
                                                object:self.coreManager];
   }
   return self;
@@ -127,20 +131,20 @@
     self.roundedTopCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
                                                                       0,
                                                                       self.view.bounds.size.width,
-                                                                      kMVSectionViewRadius)];
+                                                                      kMVCellRadius)];
     self.roundedTopCorners.autoresizingMask = UIViewAutoresizingNone;
     self.roundedTopCorners.backgroundColor = [UIColor clearColor];
     self.roundedTopCorners.drawBlock = ^(UIView *view, CGContextRef ref)
     {
       UIBezierPath *path = [UIBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(0, kMVSectionViewRadius)];
-      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, 0)
+      [path moveToPoint:CGPointMake(0, kMVCellRadius)];
+      [path addCurveToPoint:CGPointMake(kMVCellRadius, 0)
               controlPoint1:CGPointMake(0, 0)
-              controlPoint2:CGPointMake(kMVSectionViewRadius, 0)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius, 0)];
-      [path addCurveToPoint:CGPointMake(view.frame.size.width, kMVSectionViewRadius)
+              controlPoint2:CGPointMake(kMVCellRadius, 0)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVCellRadius, 0)];
+      [path addCurveToPoint:CGPointMake(view.frame.size.width, kMVCellRadius)
               controlPoint1:CGPointMake(view.frame.size.width, 0)
-              controlPoint2:CGPointMake(view.frame.size.width, kMVSectionViewRadius)];
+              controlPoint2:CGPointMake(view.frame.size.width, kMVCellRadius)];
       [path addLineToPoint:CGPointMake(view.frame.size.width, 0)];
       [path addLineToPoint:CGPointMake(0, 0)];
       [path closePath];
@@ -155,24 +159,24 @@
   {
     self.roundedBottomCorners = [[MVView alloc] initWithFrame:CGRectMake(0,
                                                                          self.view.bounds.size.height -
-                                                                         kMVSectionViewRadius,
+                                                                         kMVCellRadius,
                                                                          self.view.bounds.size.width,
-                                                                         kMVSectionViewRadius)];
+                                                                         kMVCellRadius)];
     self.roundedBottomCorners.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     self.roundedBottomCorners.backgroundColor = [UIColor clearColor];
     self.roundedBottomCorners.drawBlock = ^(UIView *view, CGContextRef ref)
     {
       UIBezierPath *path = [UIBezierPath bezierPath];
       [path moveToPoint:CGPointMake(0, 0)];
-      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, kMVSectionViewRadius)
-              controlPoint1:CGPointMake(0, kMVSectionViewRadius)
-              controlPoint2:CGPointMake(kMVSectionViewRadius, kMVSectionViewRadius)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius, kMVSectionViewRadius)];
+      [path addCurveToPoint:CGPointMake(kMVCellRadius, kMVCellRadius)
+              controlPoint1:CGPointMake(0, kMVCellRadius)
+              controlPoint2:CGPointMake(kMVCellRadius, kMVCellRadius)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVCellRadius, kMVCellRadius)];
       [path addCurveToPoint:CGPointMake(view.frame.size.width, 0)
-              controlPoint1:CGPointMake(view.frame.size.width, kMVSectionViewRadius)
+              controlPoint1:CGPointMake(view.frame.size.width, kMVCellRadius)
               controlPoint2:CGPointMake(view.frame.size.width, 0)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width, kMVSectionViewRadius + 1)];
-      [path addLineToPoint:CGPointMake(0, kMVSectionViewRadius + 1)];
+      [path addLineToPoint:CGPointMake(view.frame.size.width, kMVCellRadius + 1)];
+      [path addLineToPoint:CGPointMake(0, kMVCellRadius + 1)];
       [path closePath];
       
       [[UIColor blackColor] set];
@@ -181,8 +185,6 @@
   }
   [self.view addSubview:self.roundedBottomCorners];
 
-  [self updateLoadingView];
-  
   [super loadView];
   
   [self.fetchedResultsController performFetch:nil];
@@ -228,7 +230,11 @@
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section
 {
-  return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
+  NSInteger rows =  [[[self.fetchedResultsController sections] objectAtIndex:section]
+                     numberOfObjects];
+  if(self.showsLoadingCell)
+    rows += 1;
+  return rows;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,8 +246,20 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{  
-  static NSString *cellIdentifier = @"AlbumCell";
+{
+  if(self.showsLoadingCell && indexPath.row == 0)
+  {
+    NSString *loadingCellIdentifier = @"loadingCellIdentifier";
+    MVLoadingCell *cell = [tableView dequeueReusableCellWithIdentifier:loadingCellIdentifier];
+    if(!cell)
+    {
+      cell = [[MVLoadingCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                  reuseIdentifier:loadingCellIdentifier];
+    }
+    return cell;
+  }
+  
+  NSString *cellIdentifier = @"cellIdentifier";
   
   MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
   if(!cell)
@@ -252,6 +270,12 @@
   }
   cell.delegate = self;
 
+  if(self.showsLoadingCell ||
+     indexPath.row > self.fetchedResultsController.fetchedObjects.count - 1)
+  {
+    indexPath = [NSIndexPath indexPathForRow:indexPath.row - 1
+                                   inSection:indexPath.section];
+  }
   MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
   cell.album = album;
   [cell setNeedsDisplay];
@@ -312,10 +336,36 @@
 #pragma mark Notifications Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)syncProgress:(NSNotification*)notification
+- (void)syncDidStart:(NSNotification*)notification
 {
-  [self updateLoadingView];
+  if(!self.showsLoadingCell && self.coreManager.isSyncing)
+  {
+    self.showsLoadingCell = self.coreManager.isSyncing;
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:
+                                            [NSIndexPath indexPathForRow:0 inSection:0]]
+                          withRowAnimation:UITableViewRowAnimationBottom];
+    [self.tableView endUpdates];
+  }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)syncDidFinish:(NSNotification*)notification
+{
+  if(self.showsLoadingCell && !self.coreManager.isSyncing)
+  {
+    self.showsLoadingCell = self.coreManager.isSyncing;
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:
+                                            [NSIndexPath indexPathForRow:0 inSection:0]]
+                          withRowAnimation:UITableViewRowAnimationBottom];
+    [self.tableView endUpdates];
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)syncProgress:(NSNotification*)notification
+{}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -383,46 +433,6 @@
     else if (indexPath.row == newObjects.count - 1)
       [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
   }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)updateLoadingView
-{
-  BOOL visible = self.coreManager.isSyncing;
-  if(visible)
-  {
-    if(!self.loadingView)
-    {
-      float height = 70;
-      float y = roundf((self.view.bounds.size.height - height) / 2);
-      self.loadingView = [[MVLoadingView alloc] initWithFrame:CGRectMake(25, y,
-                                                                         self.view.bounds.size.width
-                                                                         - 25 * 2, height)];
-    }
-    
-    NSMutableString *label = [NSMutableString string];
-    if(self.coreManager.step == kMVCoreManagerStepSearchingArtistIds)
-    {
-      [label appendString:NSLocalizedString(@"Syncing Artists",@"Loading")];
-      if(self.coreManager.stepProgression > 0)
-        [label appendFormat:@" (%i%%)",(int)(self.coreManager.stepProgression * 100)];
-    }
-    else if(self.coreManager.step == kMVCoreManagerStepSearchingNewAlbums)
-    {
-      [label appendString:NSLocalizedString(@"Syncing Albums",@"Loading")];
-      if(self.coreManager.stepProgression > 0)
-        [label appendFormat:@" (%i%%)",(int)(self.coreManager.stepProgression * 100)];
-    }
-    else
-      [label appendString:NSLocalizedString(@"Loading",@"Loading")];
-    
-    self.loadingView.label = label;
-    [self.loadingView setNeedsDisplay];
-    
-    [self.view addSubview:self.loadingView];
-  }
-  else
-    [self.loadingView removeFromSuperview];
 }
 
 @end

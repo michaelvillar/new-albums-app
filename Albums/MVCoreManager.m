@@ -190,7 +190,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSSet*)getArtistNamesFromiPod
 {
-//  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",@"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",@"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",@"Death Cab For Cutie", nil];
+  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",@"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",@"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",@"Death Cab For Cutie", nil];
   NSMutableSet *artistNames = [NSMutableSet set];
   MPMediaQuery *query = [MPMediaQuery artistsQuery];
   NSArray *artists = [query collections];

@@ -31,7 +31,6 @@
 		4C39069516063FD200155E4E /* MVArtistName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069416063FD200155E4E /* MVArtistName.m */; };
 		4C39069816063FE400155E4E /* _MVArtistName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069716063FE400155E4E /* _MVArtistName.m */; };
 		4C39069B160644DC00155E4E /* MVAlbumsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069A160644DB00155E4E /* MVAlbumsRequest.m */; };
-		4C4465C31618B97300F8D4E3 /* MVSectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4465C21618B97300F8D4E3 /* MVSectionView.m */; };
 		4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4465C71618BA3700F8D4E3 /* MVView.m */; };
 		4C5140841606786100279CA0 /* MVAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5140831606786100279CA0 /* MVAlbumCell.m */; };
 		4C51408F16067C3400279CA0 /* MVAssetsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408816067C3400279CA0 /* MVAssetsManager.m */; };
@@ -41,10 +40,11 @@
 		4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA331625FC57005B6878 /* MVRootViewController.m */; };
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
-		4C89E15B1618EF5600810C91 /* MVLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C89E15A1618EF5600810C91 /* MVLoadingView.m */; };
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
 		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
+		4CE87C54169E754600395FAA /* MVLoadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C53169E754600395FAA /* MVLoadingCell.m */; };
+		4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C57169E7A0E00395FAA /* MVCell.m */; };
 		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
 		4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */; };
 		4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */; };
@@ -96,8 +96,6 @@
 		4C39069716063FE400155E4E /* _MVArtistName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVArtistName.m; sourceTree = "<group>"; };
 		4C390699160644DB00155E4E /* MVAlbumsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumsRequest.h; sourceTree = "<group>"; };
 		4C39069A160644DB00155E4E /* MVAlbumsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumsRequest.m; sourceTree = "<group>"; };
-		4C4465C11618B97300F8D4E3 /* MVSectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSectionView.h; sourceTree = "<group>"; };
-		4C4465C21618B97300F8D4E3 /* MVSectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSectionView.m; sourceTree = "<group>"; };
 		4C4465C61618BA3700F8D4E3 /* MVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVView.h; sourceTree = "<group>"; };
 		4C4465C71618BA3700F8D4E3 /* MVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVView.m; sourceTree = "<group>"; };
 		4C5140821606786100279CA0 /* MVAlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumCell.h; sourceTree = "<group>"; };
@@ -117,14 +115,16 @@
 		4C68CA3616260173005B6878 /* MVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVWindow.h; sourceTree = "<group>"; };
 		4C68CA3716260173005B6878 /* MVWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVWindow.m; sourceTree = "<group>"; };
 		4C68CA4116260EC3005B6878 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		4C89E1591618EF5600810C91 /* MVLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVLoadingView.h; sourceTree = "<group>"; };
-		4C89E15A1618EF5600810C91 /* MVLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVLoadingView.m; sourceTree = "<group>"; };
 		4C89E15D1618F28B00810C91 /* MVConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
 		4C9E36761654859E00EBF020 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4CBDAB1E1628F5CB00903D59 /* MVViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVViewController.h; sourceTree = "<group>"; };
 		4CBDAB1F1628F5CB00903D59 /* MVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVViewController.m; sourceTree = "<group>"; };
 		4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSettingsViewController.h; sourceTree = "<group>"; };
 		4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSettingsViewController.m; sourceTree = "<group>"; };
+		4CE87C52169E754600395FAA /* MVLoadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVLoadingCell.h; sourceTree = "<group>"; };
+		4CE87C53169E754600395FAA /* MVLoadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVLoadingCell.m; sourceTree = "<group>"; };
+		4CE87C56169E7A0E00395FAA /* MVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCell.h; sourceTree = "<group>"; };
+		4CE87C57169E7A0E00395FAA /* MVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCell.m; sourceTree = "<group>"; };
 		4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRoundedLabelView.h; sourceTree = "<group>"; };
 		4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRoundedLabelView.m; sourceTree = "<group>"; };
 		4CFE72D31694B90A00DDDF61 /* MVCoreDataFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCoreDataFactory.h; sourceTree = "<group>"; };
@@ -324,12 +324,12 @@
 				4C68CA3716260173005B6878 /* MVWindow.m */,
 				4C4465C61618BA3700F8D4E3 /* MVView.h */,
 				4C4465C71618BA3700F8D4E3 /* MVView.m */,
+				4CE87C56169E7A0E00395FAA /* MVCell.h */,
+				4CE87C57169E7A0E00395FAA /* MVCell.m */,
 				4C5140821606786100279CA0 /* MVAlbumCell.h */,
 				4C5140831606786100279CA0 /* MVAlbumCell.m */,
-				4C4465C11618B97300F8D4E3 /* MVSectionView.h */,
-				4C4465C21618B97300F8D4E3 /* MVSectionView.m */,
-				4C89E1591618EF5600810C91 /* MVLoadingView.h */,
-				4C89E15A1618EF5600810C91 /* MVLoadingView.m */,
+				4CE87C52169E754600395FAA /* MVLoadingCell.h */,
+				4CE87C53169E754600395FAA /* MVLoadingCell.m */,
 				4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */,
 				4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */,
 			);
@@ -437,9 +437,7 @@
 				4C51409016067C3400279CA0 /* MVAsset.m in Sources */,
 				4C51409116067C3400279CA0 /* MVFileDownload.m in Sources */,
 				4C51409416067C4B00279CA0 /* NSString+Digest.m in Sources */,
-				4C4465C31618B97300F8D4E3 /* MVSectionView.m in Sources */,
 				4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */,
-				4C89E15B1618EF5600810C91 /* MVLoadingView.m in Sources */,
 				4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */,
 				4C68CA3816260173005B6878 /* MVWindow.m in Sources */,
 				4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */,
@@ -448,6 +446,8 @@
 				4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */,
 				4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */,
 				4CFE72DB1694B9A100DDDF61 /* MVManagedObjectContext.m in Sources */,
+				4CE87C54169E754600395FAA /* MVLoadingCell.m in Sources */,
+				4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

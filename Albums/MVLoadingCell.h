@@ -1,18 +1,19 @@
 //
-//  MVLoadingView.h
+//  MVLoadingCell.h
 //  Albums
 //
-//  Created by Michaël on 9/30/12.
-//  Copyright (c) 2012 Michael Villar. All rights reserved.
+//  Created by Michaël Villar on 1/9/13.
+//  Copyright (c) 2013 Michael Villar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "MVCell.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface MVLoadingView : UIView
+@interface MVLoadingCell : MVCell
 
-@property (copy, readwrite) NSString *label;
++ (CGFloat)rowHeight;
 
 @end

@@ -1,1 +1,3 @@
+#define kMVNotificationSyncDidStart @"kMVNotificationSyncDidStart"
 #define kMVNotificationSyncDidProgress @"kMVNotificationSyncDidProgress"
+#define kMVNotificationSyncDidFinish @"kMVNotificationSyncDidFinish"

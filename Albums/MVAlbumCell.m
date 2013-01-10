@@ -12,7 +12,6 @@
 #import "MVAsset.h"
 #import "MVAssetsManager.h"
 #import "MVView.h"
-#import "MVSectionView.h"
 #import "MVRoundedLabelView.h"
 
 #define kMVAlbumArtSize 60
@@ -20,7 +19,6 @@
 #define kMVAlbumContentViewBgColor0 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
 #define kMVAlbumContentViewBgColor1 [UIColor colorWithRed:0.4365 green:0.4365 blue:0.4365 alpha:1]
 #define kMVAlbumContentViewBgColor2 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
-#define kMVAlbumBgColor [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000]
 
 #define kMVAlbumControlStartMargin 2
 #define kMVAlbumControlEndMarginFromY -6
@@ -35,8 +33,6 @@ static NSCache *artworkImagesCache = nil;
 @property (strong, readwrite) MVAsset *artworkAsset;
 @property (strong, readwrite) UIImage *artworkImage;
 @property (strong, readwrite) MVView *albumView;
-@property (strong, readwrite) MVView *topCorners;
-@property (strong, readwrite) MVView *bottomCorners;
 @property (strong, readwrite) MVRoundedLabelView *hideAlbumLabelView;
 @property (strong, readwrite) MVRoundedLabelView *hideArtistLabelView;
 
@@ -49,13 +45,10 @@ static NSCache *artworkImagesCache = nil;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVAlbumCell
 
-@synthesize tableView     = tableView_,
-            album         = album_,
+@synthesize album         = album_,
             artworkAsset  = artworkAsset_,
             artworkImage  = artworkImage_,
             albumView     = albumView_,
-            topCorners    = topCorners_,
-            bottomCorners = bottomCorners_,
             hideAlbumLabelView = hideAlbumLabelView_,
             hideArtistLabelView = hideArtistLabelView_,
             delegate      = delegate_;
@@ -79,7 +72,6 @@ static NSCache *artworkImagesCache = nil;
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if(self)
   {
-    tableView_ = nil;
     album_ = nil;
     artworkAsset_ = nil;
     artworkImage_ = nil;
@@ -159,7 +151,7 @@ static NSCache *artworkImagesCache = nil;
         }
       }
 
-      [kMVAlbumBgColor set];
+      [kMVCellBgColor set];
       [[UIBezierPath bezierPathWithRect:view.bounds] fill];
       
       if(cell.artworkImage)
@@ -249,61 +241,7 @@ static NSCache *artworkImagesCache = nil;
     albumView_.layer.shadowOffset = CGSizeMake(0, 0);
     albumView_.layer.shadowOpacity = 0.0;
     [self.contentView addSubview:albumView_];
-    
-    topCorners_ = [[MVView alloc] initWithFrame:self.contentView.bounds];
-    topCorners_.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-                                   UIViewAutoresizingFlexibleHeight;
-    topCorners_.userInteractionEnabled = NO;
-    topCorners_.backgroundColor = [UIColor clearColor];
-    topCorners_.drawBlock = ^(UIView *view, CGContextRef ctx)
-    {
-      float y = 0;
-      UIBezierPath *path = [UIBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(0, y + kMVSectionViewRadius)];
-      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, y)
-              controlPoint1:CGPointMake(0, y)
-              controlPoint2:CGPointMake(kMVSectionViewRadius, y)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius,
-                                       y)];
-      [path addCurveToPoint:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)
-              controlPoint1:CGPointMake(view.frame.size.width, y)
-              controlPoint2:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width,
-                                       y)];
-      [path addLineToPoint:CGPointMake(0, y)];
-      [path closePath];
-      
-      [[UIColor blackColor] set];
-      [path fill];
-    };
-    
-    bottomCorners_ = [[MVView alloc] initWithFrame:self.contentView.bounds];
-    bottomCorners_.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-                                      UIViewAutoresizingFlexibleHeight;
-    bottomCorners_.userInteractionEnabled = NO;
-    bottomCorners_.backgroundColor = [UIColor clearColor];
-    bottomCorners_.drawBlock = ^(UIView *view, CGContextRef ctx)
-    {
-      float y = cell.bounds.size.height - 1 - kMVSectionViewRadius;
-      UIBezierPath *path = [UIBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(0, y)];
-      [path addCurveToPoint:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)
-              controlPoint1:CGPointMake(0, y + kMVSectionViewRadius)
-              controlPoint2:CGPointMake(kMVSectionViewRadius, y + kMVSectionViewRadius)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width - kMVSectionViewRadius,
-                                       y + kMVSectionViewRadius)];
-      [path addCurveToPoint:CGPointMake(view.frame.size.width, y)
-              controlPoint1:CGPointMake(view.frame.size.width, y + kMVSectionViewRadius)
-              controlPoint2:CGPointMake(view.frame.size.width, y)];
-      [path addLineToPoint:CGPointMake(view.frame.size.width,
-                                       y + kMVSectionViewRadius + 1)];
-      [path addLineToPoint:CGPointMake(0, y + kMVSectionViewRadius + 1)];
-      [path closePath];
-      
-      [[UIColor blackColor] set];
-      [path fill];
-    };
-    
+        
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
                                           initWithTarget:self
                                           action:@selector(panGestureRecognizer:)];
@@ -363,23 +301,6 @@ static NSCache *artworkImagesCache = nil;
 - (void)layoutSubviews
 {
   [super layoutSubviews];
-  
-  NSIndexPath *indexPath = [self.tableView indexPathForCell:self];
-  NSInteger numberOfRows = [self.tableView numberOfRowsInSection:indexPath.section];
-
-  [self.bottomCorners removeFromSuperview];
-  [self.topCorners removeFromSuperview];
-  
-  if(indexPath.row == numberOfRows - 1)
-  {
-    self.bottomCorners.frame = self.contentView.bounds;
-    [self.contentView addSubview:self.bottomCorners];
-  }
-  if(indexPath.row == 0)
-  {
-    self.topCorners.frame = self.contentView.bounds;
-    [self.contentView addSubview:self.topCorners];
-  }
   
   CGRect hideAlbumLabelViewFrame = self.hideAlbumLabelView.frame;
   hideAlbumLabelViewFrame.origin.y = roundf((self.frame.size.height -

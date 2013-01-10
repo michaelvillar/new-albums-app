@@ -1,21 +1,21 @@
 //
-//  MVSectionView.h
+//  MVCell.h
 //  Albums
 //
-//  Created by Michaël on 9/30/12.
-//  Copyright (c) 2012 Michael Villar. All rights reserved.
+//  Created by Michaël Villar on 1/9/13.
+//  Copyright (c) 2013 Michael Villar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-#define kMVSectionViewRadius 8.0
-#define kMVSectionViewRoundedRectHeight 23.0
+#define kMVCellRadius 8.0
+#define kMVCellBgColor [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000]
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface MVSectionView : UIView
+@interface MVCell : UITableViewCell
 
-@property (copy, readwrite) NSString *label;
+@property (strong, readwrite) UITableView *tableView;
 
 @end
