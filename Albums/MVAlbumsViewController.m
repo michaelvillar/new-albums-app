@@ -34,6 +34,7 @@
 @property (readwrite) int type;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
+- (void)reloadTableViewAfterBlock:(void(^)(void))block;
 - (void)updateLoadingView;
 
 @end
@@ -288,25 +289,21 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumCellDidTriggerHideAlbum:(MVAlbumCell *)albumCell
 {
-  MVAlbum *album = albumCell.album;
-  album.hiddenValue = YES;
-  [self.contextSource.uiMoc mv_save];
-  [self.contextSource.masterMoc performBlock:^{
-    [self.contextSource.masterMoc mv_save];
+  [self reloadTableViewAfterBlock:^{
+    MVAlbum *album = albumCell.album;
+    album.hiddenValue = YES;
+    [self.contextSource.uiMoc mv_save];
   }];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumCellDidTriggerHideArtist:(MVAlbumCell *)albumCell
 {
-  MVAlbum *album = albumCell.album;
-  album.artist.hiddenValue = YES;
-  [self.contextSource.uiMoc mv_save];
-  [self.contextSource.masterMoc performBlock:^{
-    [self.contextSource.masterMoc mv_save];
+  [self reloadTableViewAfterBlock:^{
+    MVAlbum *album = albumCell.album;
+    album.artist.hiddenValue = YES;
+    [self.contextSource.uiMoc mv_save];
   }];
-  [self.fetchedResultsController performFetch:nil];
-  [self.tableView reloadData];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,6 +321,69 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark Private Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)reloadTableViewAfterBlock:(void(^)(void))block
+{
+  NSArray *oldObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
+  self.fetchedResultsController.delegate = nil;
+  
+  block();
+  
+  [self.fetchedResultsController performFetch:nil];
+  self.fetchedResultsController.delegate = self;
+  
+  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+  NSIndexPath *indexPath;
+  MVAlbum *album;
+  NSArray *newObjects = [NSArray arrayWithArray:self.fetchedResultsController.fetchedObjects];
+  NSUInteger oldObjectsCount = oldObjects.count;
+  NSUInteger newObjectsCount = newObjects.count;
+  
+  for(NSUInteger i=0;i<oldObjectsCount;i++)
+  {
+    album = [oldObjects objectAtIndex:i];
+    if(![newObjects containsObject:album])
+    {
+      indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+      [indexPathsToDelete addObject:indexPath];
+    }
+  }
+  for(NSUInteger i=0;i<newObjectsCount;i++)
+  {
+    album = [newObjects objectAtIndex:i];
+    if(![oldObjects containsObject:album])
+    {
+      indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+      [indexPathsToInsert addObject:indexPath];
+    }
+  }
+  
+  [self.tableView beginUpdates];
+  if ([indexPathsToDelete count] > 0) {
+    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                          withRowAnimation:UITableViewRowAnimationBottom];
+  }
+  if ([indexPathsToInsert count] > 0) {
+    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                          withRowAnimation:UITableViewRowAnimationBottom];
+  }
+  [self.tableView endUpdates];
+  
+  NSArray *visibleIndexPaths = self.tableView.indexPathsForVisibleRows;
+  for (NSIndexPath *indexPath in visibleIndexPaths)
+  {
+    // if first row is visible, layout it
+    // (because if the row before it was removed, corners have changed
+    if (indexPath.row == 0)
+      [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
+    // if last row is visible, layout it
+    // (because if the row after it was removed, corners have changed
+    else if (indexPath.row == newObjects.count - 1)
+      [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)updateLoadingView

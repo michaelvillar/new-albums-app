@@ -22,4 +22,17 @@
     NSLog(@"Save error on context: %@\n%@", [error localizedDescription], [error userInfo]);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)mv_mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
+                                withUpdatedObjectsIDs:(NSArray*)updatedObjectsIDS {
+  // Fault in all updated objects
+  NSManagedObjectID *updatedObjectID;
+  for (updatedObjectID in updatedObjectsIDS)
+  {
+    [[self objectWithID:updatedObjectID] willAccessValueForKey:nil];
+  }
+  
+  [self mergeChangesFromContextDidSaveNotification:notification];
+}
+
 @end

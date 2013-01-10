@@ -1,21 +1,24 @@
 //
-//  MVContextSource.h
-//  Albums
+//  KOSCoreDataFactory.h
+//  SyncKit
 //
-//  Created by Michaël on 9/16/12.
-//  Copyright (c) 2012 Michael Villar. All rights reserved.
+//  Created by Michaël on 10/2/12.
+//  Copyright (c) 2012 Kickoff. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@protocol MVContextSource <NSObject>
+@interface MVCoreDataFactory : NSObject
 
-@property (strong, readonly, nonatomic) NSManagedObjectContext *uiMoc;
-
-- (NSManagedObjectContext*)createDraftMoc;
++ (MVCoreDataFactory*)sharedInstance;
+- (NSManagedObjectContext *)createMOC;
+- (NSManagedObjectContext *)createDraftMOC;
 - (void)performBlockAndWaitOnMasterMoc:(void (^)(NSManagedObjectContext* moc))block;
+- (void)resetPSC:(NSPersistentStoreCoordinator *)psc;
+- (void)assertThreadForMOC:(NSManagedObjectContext*)moc;
 
 @end

@@ -22,6 +22,9 @@
 #define kMVAlbumContentViewBgColor2 [UIColor colorWithRed:0.2703 green:0.2703 blue:0.2703 alpha:1]
 #define kMVAlbumBgColor [UIColor colorWithRed:0.9129 green:0.9129 blue:0.9129 alpha:1.0000]
 
+#define kMVAlbumControlStartMargin 2
+#define kMVAlbumControlEndMarginFromY -6
+
 static NSCache *artworkImagesCache = nil;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +180,7 @@ static NSCache *artworkImagesCache = nil;
         CGSize labelSize = [releaseDate sizeWithFont:font];
         
         CGFloat labelWidth = ceilf(labelSize.width + 5 * 2);
-        CGRect labelRect = CGRectMake(cell.frame.size.width - marginRight - labelWidth, 21,
+        CGRect labelRect = CGRectMake(cell.frame.size.width - marginRight - labelWidth, 20.5,
                                       labelWidth, 18);
         marginRight += labelRect.size.width + 3;
         
@@ -199,7 +202,7 @@ static NSCache *artworkImagesCache = nil;
         CGSize labelSize = [albumType sizeWithFont:font];
         
         marginRight += 3;
-        CGPoint labelPoint = CGPointMake(cell.frame.size.width - marginRight - labelSize.width, 22);
+        CGPoint labelPoint = CGPointMake(cell.frame.size.width - marginRight - labelSize.width, 21.5);
         marginRight += labelSize.width + 3;
         
         if(self.isHighlighted)
@@ -223,7 +226,7 @@ static NSCache *artworkImagesCache = nil;
       {
         [[UIColor colorWithRed:0.1971 green:0.1971 blue:0.1971 alpha:1.0000] set];
       }
-      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft, marginTop + 11)
+      [cell.album.artist.name drawAtPoint:CGPointMake(marginLeft, marginTop + 10.5)
                                  forWidth:availableWidth
                                  withFont:[UIFont boldSystemFontOfSize:18]
                             lineBreakMode:NSLineBreakByTruncatingMiddle];
@@ -236,7 +239,7 @@ static NSCache *artworkImagesCache = nil;
       {
         [[UIColor colorWithRed:0.5581 green:0.5581 blue:0.5581 alpha:1.0000] set];
       }
-      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft, marginTop + 33)
+      [cell.album.shortName drawAtPoint:CGPointMake(marginLeft, marginTop + 32.5)
                                forWidth:availableWidth
                                withFont:[UIFont systemFontOfSize:13]
                           lineBreakMode:NSLineBreakByTruncatingMiddle];
@@ -461,9 +464,11 @@ static NSCache *artworkImagesCache = nil;
     }
     
     CGRect hideAlbumLabelViewFrame = self.hideAlbumLabelView.frame;
-    float finalX = hideAlbumLabelViewFrame.origin.y - 2;
+    float finalX = hideAlbumLabelViewFrame.origin.y + kMVAlbumControlEndMarginFromY;
     float treshholdX = finalX + hideAlbumLabelViewFrame.size.width + finalX;
-    hideAlbumLabelViewFrame.origin.x = 5 + (finalX - 5) * (MIN(translate.x, treshholdX) / treshholdX);
+    hideAlbumLabelViewFrame.origin.x = kMVAlbumControlStartMargin +
+                                       (finalX - kMVAlbumControlStartMargin) *
+                                       (MIN(translate.x, treshholdX) / treshholdX);
     self.hideAlbumLabelView.frame = hideAlbumLabelViewFrame;
     self.hideAlbumLabelView.hidden = translate.x < 0;
     
@@ -474,17 +479,22 @@ static NSCache *artworkImagesCache = nil;
       [self.hideAlbumLabelView setNeedsDisplay];
       CATransition *transition = [CATransition animation];
       transition.duration = 0.15f;
-      transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+      transition.timingFunction = [CAMediaTimingFunction functionWithName:
+                                   kCAMediaTimingFunctionEaseInEaseOut];
       transition.type = kCATransitionFade;
       [self.hideAlbumLabelView.layer addAnimation:transition forKey:nil];
     }
     
     CGRect hideArtistLabelViewFrame = self.hideArtistLabelView.frame;
-    float beginX = self.frame.size.width - hideArtistLabelViewFrame.size.width - 5;
-    finalX = self.frame.size.width - (hideArtistLabelViewFrame.origin.y - 2) -
+    float beginX = self.frame.size.width - hideArtistLabelViewFrame.size.width -
+                   kMVAlbumControlStartMargin;
+    finalX = self.frame.size.width -
+             (hideArtistLabelViewFrame.origin.y + kMVAlbumControlEndMarginFromY) -
              hideArtistLabelViewFrame.size.width;
-    treshholdX = (hideArtistLabelViewFrame.origin.y - 2) * 2 + hideArtistLabelViewFrame.size.width;
-    hideArtistLabelViewFrame.origin.x = beginX + (finalX - beginX) * (MIN(fabs(translate.x), treshholdX) / treshholdX);
+    treshholdX = (hideArtistLabelViewFrame.origin.y + kMVAlbumControlEndMarginFromY) * 2 +
+                 hideArtistLabelViewFrame.size.width;
+    hideArtistLabelViewFrame.origin.x = beginX + (finalX - beginX) *
+                                        (MIN(fabs(translate.x), treshholdX) / treshholdX);
     self.hideArtistLabelView.frame = hideArtistLabelViewFrame;
     self.hideArtistLabelView.hidden = translate.x > 0;
     

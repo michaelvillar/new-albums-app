@@ -25,6 +25,7 @@
 @protocol MViTunesSearchRequestDelegate
 - (void)iTunesSearchRequest:(MViTunesSearchRequest*)request
              didFindResults:(NSArray*)results;
+- (void)iTunesSearchRequestDidFail:(MViTunesSearchRequest*)request;
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

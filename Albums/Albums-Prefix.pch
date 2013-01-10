@@ -15,4 +15,5 @@
   #import <CoreData/CoreData.h>
   #import "NSManagedObjectContext+Saving.h"
   #import "MVConstants.h"
+  #import "MVCoreDataFactory.h"
 #endif

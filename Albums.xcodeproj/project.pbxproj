@@ -25,7 +25,6 @@
 		4C3906711606355500155E4E /* _MVAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39066C1606355500155E4E /* _MVAlbum.m */; };
 		4C3906721606355500155E4E /* _MVArtist.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39066E1606355500155E4E /* _MVArtist.m */; };
 		4C3906741606356F00155E4E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C3906731606356F00155E4E /* CoreData.framework */; };
-		4C390681160635C000155E4E /* MVCoreManager+CoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C390680160635C000155E4E /* MVCoreManager+CoreData.m */; };
 		4C390684160636DB00155E4E /* MVBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C390683160636DB00155E4E /* MVBaseModel.m */; };
 		4C39068A16063B6400155E4E /* MVArtistIdsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39068916063B6400155E4E /* MVArtistIdsRequest.m */; };
 		4C39068E16063D8E00155E4E /* NSManagedObjectContext+Saving.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39068D16063D8E00155E4E /* NSManagedObjectContext+Saving.m */; };
@@ -47,6 +46,9 @@
 		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
 		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
 		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
+		4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */; };
+		4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */; };
+		4CFE72DB1694B9A100DDDF61 /* MVManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72DA1694B9A100DDDF61 /* MVManagedObjectContext.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,8 +83,6 @@
 		4C39066D1606355500155E4E /* _MVArtist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MVArtist.h; sourceTree = "<group>"; };
 		4C39066E1606355500155E4E /* _MVArtist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVArtist.m; sourceTree = "<group>"; };
 		4C3906731606356F00155E4E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		4C39067F160635C000155E4E /* MVCoreManager+CoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MVCoreManager+CoreData.h"; sourceTree = "<group>"; };
-		4C390680160635C000155E4E /* MVCoreManager+CoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MVCoreManager+CoreData.m"; sourceTree = "<group>"; };
 		4C390682160636DB00155E4E /* MVBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVBaseModel.h; sourceTree = "<group>"; };
 		4C390683160636DB00155E4E /* MVBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVBaseModel.m; sourceTree = "<group>"; };
 		4C39068816063B6400155E4E /* MVArtistIdsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVArtistIdsRequest.h; sourceTree = "<group>"; };
@@ -127,6 +127,12 @@
 		4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSettingsViewController.m; sourceTree = "<group>"; };
 		4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRoundedLabelView.h; sourceTree = "<group>"; };
 		4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRoundedLabelView.m; sourceTree = "<group>"; };
+		4CFE72D31694B90A00DDDF61 /* MVCoreDataFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCoreDataFactory.h; sourceTree = "<group>"; };
+		4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCoreDataFactory.m; sourceTree = "<group>"; };
+		4CFE72D61694B93700DDDF61 /* NSObject+PerformBlockOnThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+PerformBlockOnThread.h"; sourceTree = "<group>"; };
+		4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+PerformBlockOnThread.m"; sourceTree = "<group>"; };
+		4CFE72D91694B97F00DDDF61 /* MVManagedObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVManagedObjectContext.h; sourceTree = "<group>"; };
+		4CFE72DA1694B9A100DDDF61 /* MVManagedObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVManagedObjectContext.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,8 +216,8 @@
 				4C3906641606355500155E4E /* Models */,
 				4C3906571606281400155E4E /* MVCoreManager.h */,
 				4C3906581606281400155E4E /* MVCoreManager.m */,
-				4C39067F160635C000155E4E /* MVCoreManager+CoreData.h */,
-				4C390680160635C000155E4E /* MVCoreManager+CoreData.m */,
+				4CFE72D31694B90A00DDDF61 /* MVCoreDataFactory.h */,
+				4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */,
 				4C39068B16063CBA00155E4E /* MVContextSource.h */,
 			);
 			name = Management;
@@ -283,8 +289,12 @@
 				4C51409316067C4B00279CA0 /* NSString+Digest.m */,
 				4C39068C16063D8E00155E4E /* NSManagedObjectContext+Saving.h */,
 				4C39068D16063D8E00155E4E /* NSManagedObjectContext+Saving.m */,
+				4CFE72D91694B97F00DDDF61 /* MVManagedObjectContext.h */,
+				4CFE72DA1694B9A100DDDF61 /* MVManagedObjectContext.m */,
 				4C39065C16062E4D00155E4E /* NSString+Escaping.h */,
 				4C39065D16062E4D00155E4E /* NSString+Escaping.m */,
+				4CFE72D61694B93700DDDF61 /* NSObject+PerformBlockOnThread.h */,
+				4CFE72D71694B93700DDDF61 /* NSObject+PerformBlockOnThread.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -416,7 +426,6 @@
 				4C3906701606355500155E4E /* MVArtist.m in Sources */,
 				4C3906711606355500155E4E /* _MVAlbum.m in Sources */,
 				4C3906721606355500155E4E /* _MVArtist.m in Sources */,
-				4C390681160635C000155E4E /* MVCoreManager+CoreData.m in Sources */,
 				4C390684160636DB00155E4E /* MVBaseModel.m in Sources */,
 				4C39068A16063B6400155E4E /* MVArtistIdsRequest.m in Sources */,
 				4C39068E16063D8E00155E4E /* NSManagedObjectContext+Saving.m in Sources */,
@@ -436,6 +445,9 @@
 				4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */,
 				4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */,
 				4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */,
+				4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */,
+				4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */,
+				4CFE72DB1694B9A100DDDF61 /* MVManagedObjectContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

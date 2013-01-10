@@ -128,6 +128,13 @@
 #pragma mark MViTunesSearchRequestDelegate Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)iTunesSearchRequestDidFail:(MViTunesSearchRequest *)request
+{
+  if([self.delegate respondsToSelector:@selector(albumsRequestDidFail:)])
+    [self.delegate albumsRequestDidFail:self];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)iTunesSearchRequest:(MViTunesSearchRequest *)request
              didFindResults:(NSArray *)results
 {
@@ -138,7 +145,7 @@
       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
       dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
 
-      [self.contextSource.masterMoc performBlockAndWait:^{
+      [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
         for(albumDic in results)
         {
           long long artistId = [[albumDic valueForKey:@"artistId"] longLongValue];
@@ -146,7 +153,7 @@
           long long albumId = [[albumDic valueForKey:@"collectionId"] longLongValue];
           NSNumber *albumNumberId = [NSNumber numberWithLongLong:albumId];
           MVAlbum *album = (MVAlbum*)[MVAlbum objectWithiTunesId:albumNumberId
-                                                           inMoc:self.contextSource.masterMoc];
+                                                           inMoc:moc];
           if(!album)
           {
             NSString *name = [albumDic valueForKey:@"collectionName"];
@@ -155,7 +162,7 @@
             NSString *iTunesStoreUrl = [albumDic valueForKey:@"collectionViewUrl"];
             NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
 
-            album = [MVAlbum insertInManagedObjectContext:self.contextSource.masterMoc];
+            album = [MVAlbum insertInManagedObjectContext:moc];
             album.createdAt = self.batchDate;
             album.name = name;
             album.iTunesIdValue = albumId;
@@ -164,10 +171,10 @@
             album.artworkUrl = artworkUrl;
             
             MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
-                                                                 inMoc:self.contextSource.masterMoc];
+                                                                 inMoc:moc];
             if(!artist)
             {
-              artist = [MVArtist insertInManagedObjectContext:self.contextSource.masterMoc];
+              artist = [MVArtist insertInManagedObjectContext:moc];
               artist.iTunesIdValue = artistId;
               artist.name = [albumDic valueForKey:@"artistName"];
             }

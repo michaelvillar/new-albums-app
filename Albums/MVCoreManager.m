@@ -9,7 +9,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MVCoreManager.h"
 #import "MViTunesSearchRequest.h"
-#import "MVCoreManager+CoreData.h"
 #import "MVArtist.h"
 #import "MVArtistName.h"
 #import "MVAlbum.h"
@@ -31,6 +30,7 @@
 
 - (NSSet*)getArtistNamesFromiPod;
 - (void)searchAlbums;
+- (void)syncDidFail;
 
 @end
 
@@ -44,7 +44,6 @@
             albumsRequest         = albumsRequest_,
             step                  = step_,
             stepProgression       = stepProgression_,
-            masterMoc             = masterMoc_,
             uiMoc                 = uiMoc_,
             syncing               = syncing_,
             delegate              = delegate_;
@@ -60,7 +59,6 @@
     artistIdsRequest_ = nil;
     albumsRequest_ = nil;
     step_ = kMVCoreManagerStepIdle;
-    masterMoc_ = nil;
     uiMoc_ = nil;
     syncing_ = NO;
     delegate_ = nil;
@@ -85,7 +83,7 @@
     
     NSSet *artistNames = [self getArtistNamesFromiPod];
     NSMutableSet *toFetchArtistNames = [NSMutableSet set];
-    [self.masterMoc performBlockAndWait:^{
+    [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
       NSString *artistName;
       for(artistName in artistNames)
       {
@@ -94,13 +92,13 @@
                                   artistName, artistName];
         NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVArtist entityName]];
         req.predicate = predicate;
-        NSArray *results = [self.masterMoc executeFetchRequest:req error:nil];
+        NSArray *results = [moc executeFetchRequest:req error:nil];
         if(results.count == 0)
         {
           predicate = [NSPredicate predicateWithFormat:@"name = %@", artistName];
           req = [[NSFetchRequest alloc] initWithEntityName:[MVArtistName entityName]];
           req.predicate = predicate;
-          results = [self.masterMoc executeFetchRequest:req error:nil];
+          results = [moc executeFetchRequest:req error:nil];
           if(results.count == 0)
           {
             [toFetchArtistNames addObject:artistName];
@@ -130,8 +128,8 @@
   NSMutableSet *artistIds = [NSMutableSet set];
   NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVArtist entityName]];
   req.predicate = [NSPredicate predicateWithFormat:@"fetchAlbums = YES"];
-  [self.masterMoc performBlockAndWait:^{
-    NSArray *results = [self.masterMoc executeFetchRequest:req error:nil];
+  [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+    NSArray *results = [moc executeFetchRequest:req error:nil];
     MVArtist *artist;
     for(artist in results)
     {
@@ -146,26 +144,42 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)syncDidFail
+{
+  self.syncing = NO;
+  self.step = kMVCoreManagerStepIdle;
+  self.stepProgression = 0.0;
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if([self.delegate respondsToSelector:@selector(coreManagerDidFailToSync:)])
+      [self.delegate coreManagerDidFailToSync:self];
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark MVContextSource Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSManagedObjectContext *)masterMoc
-{
-  if (masterMoc_==nil)
-    masterMoc_ = [self setupMasterMoc];
-  
-  return masterMoc_;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSManagedObjectContext *)uiMoc
 {
   if (uiMoc_==nil)
-    uiMoc_ = [self setupUIMocWithMasterMoc:self.masterMoc];
+    uiMoc_ = [[MVCoreDataFactory sharedInstance] createMOC];
   
   return uiMoc_;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSManagedObjectContext*)createDraftMoc
+{
+  return [[MVCoreDataFactory sharedInstance] createDraftMOC];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)performBlockAndWaitOnMasterMoc:(void (^)(NSManagedObjectContext* moc))block
+{
+  [[MVCoreDataFactory sharedInstance] performBlockAndWaitOnMasterMoc:block];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,11 +225,17 @@
   self.stepProgression = 1.0;
   
   NSLog(@"artistIdsRequestDidFinish");
-  [self.masterMoc performBlock:^{
-    [self.masterMoc mv_save];
+  [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+    [moc mv_save];
   }];
     
   [self searchAlbums];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)artistIdsRequestDidFail:(MVArtistIdsRequest *)request
+{
+  [self syncDidFail];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,8 +257,8 @@
   self.stepProgression = 1.0;
   
   NSLog(@"albumsRequestDidFinish");
-  [self.masterMoc performBlock:^{
-    [self.masterMoc mv_save];
+  [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+    [moc mv_save];
   }];
   
   self.syncing = NO;
@@ -249,6 +269,12 @@
     if([self.delegate respondsToSelector:@selector(coreManagerDidFinishSync:)])
       [self.delegate coreManagerDidFinishSync:self];
   });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)albumsRequestDidFail:(MVAlbumsRequest *)request
+{
+  [self syncDidFail];
 }
 
 @end

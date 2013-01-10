@@ -18,6 +18,7 @@
 - (void)albumsRequestDidFinish:(MVAlbumsRequest*)request
           didChangeProgression:(int)nbFetchedArtists;
 - (void)albumsRequestDidFinish:(MVAlbumsRequest*)request;
+- (void)albumsRequestDidFail:(MVAlbumsRequest*)request;
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

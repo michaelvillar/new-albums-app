@@ -106,11 +106,18 @@
       }
       else
       {
-        NSLog(@"Error while getting %@",url);
+        dispatch_async(dispatch_get_main_queue(), ^{
+          if ([self.delegate respondsToSelector:@selector(iTunesSearchRequestDidFail:)])
+            [self.delegate iTunesSearchRequestDidFail:self];
+        });
       }
     }
     @catch (NSException *exception)
     {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.delegate respondsToSelector:@selector(iTunesSearchRequestDidFail:)])
+          [self.delegate iTunesSearchRequestDidFail:self];
+      });
       NSLog(@"%@",exception);
       NSLog(@"%@",exception.callStackSymbols);
     }

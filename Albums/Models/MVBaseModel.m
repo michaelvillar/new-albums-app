@@ -28,12 +28,9 @@
   NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
   [request setPredicate:predicate];
   
-  __block NSArray *requestResults = nil;
-  [moc performBlockAndWait:^{
-    NSError *error;
-    requestResults = [moc executeFetchRequest:request error:&error];
-  }];
-  
+  NSArray *requestResults = nil;
+  NSError *error;
+  requestResults = [moc executeFetchRequest:request error:&error];  
   
   int nbRequests = (int)[requestResults count];
   if (nbRequests != 1)

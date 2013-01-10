@@ -18,6 +18,7 @@
 - (void)artistIdsRequest:(MVArtistIdsRequest*)request
     didChangeProgression:(int)nbFetchedArtists;
 - (void)artistIdsRequestDidFinish:(MVArtistIdsRequest*)request;
+- (void)artistIdsRequestDidFail:(MVArtistIdsRequest*)request;
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

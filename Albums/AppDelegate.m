@@ -39,10 +39,6 @@
     coreManager_.delegate = self;
     [coreManager_ addObserver:self forKeyPath:@"step" options:0 context:NULL];
     [coreManager_ addObserver:self forKeyPath:@"stepProgression" options:0 context:NULL];
-    
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(masterMocDidSave:)
-               name:NSManagedObjectContextDidSaveNotification object:nil];
   }
   return self;
 }
@@ -103,21 +99,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 - (void)applicationWillTerminate:(UIApplication *)application
 {
   // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark -
-#pragma mark Notification Methods
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)masterMocDidSave:(NSNotification*)notification
-{
-  if(notification.object != self.coreManager.masterMoc)
-    return;
-  [self.coreManager.uiMoc performBlock:^{
-    [self.coreManager.uiMoc mergeChangesFromContextDidSaveNotification:notification];
-  }];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

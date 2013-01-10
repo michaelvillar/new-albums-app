@@ -100,6 +100,13 @@
 #pragma mark MViTunesSearchRequestDelegate Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)iTunesSearchRequestDidFail:(MViTunesSearchRequest *)request
+{
+  if([self.delegate respondsToSelector:@selector(artistIdsRequestDidFail:)])
+    [self.delegate artistIdsRequestDidFail:self];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)iTunesSearchRequest:(MViTunesSearchRequest *)request
              didFindResults:(NSArray *)results
 {
@@ -111,12 +118,12 @@
       long long artistId = [[firstResult valueForKey:@"artistId"] longLongValue];
       NSNumber *artistNumberId = [NSNumber numberWithLongLong:artistId];
       
-      [self.contextSource.masterMoc performBlockAndWait:^{
+      [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
         MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
-                                                             inMoc:self.contextSource.masterMoc];
+                                                             inMoc:moc];
         if(!artist)
         {
-          artist = [MVArtist insertInManagedObjectContext:self.contextSource.masterMoc];
+          artist = [MVArtist insertInManagedObjectContext:moc];
           artist.iTunesIdValue = artistId;
           artist.name = artistName;
           artist.fetchAlbumsValue = YES;
@@ -124,8 +131,7 @@
         
         if(![artist.name isEqualToString:request.term])
         {
-          MVArtistName *artistName = [MVArtistName insertInManagedObjectContext:
-                                      self.contextSource.masterMoc];
+          MVArtistName *artistName = [MVArtistName insertInManagedObjectContext:moc];
           artistName.name = request.term;
           [artist addNamesObject:artistName];
         }
@@ -133,9 +139,8 @@
     }
     else
     {
-      [self.contextSource.masterMoc performBlockAndWait:^{
-        MVArtistName *artistName = [MVArtistName insertInManagedObjectContext:
-                                    self.contextSource.masterMoc];
+      [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+        MVArtistName *artistName = [MVArtistName insertInManagedObjectContext:moc];
         artistName.name = request.term;
       }];
     }
