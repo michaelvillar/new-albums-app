@@ -136,12 +136,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidFinishSync:(MVCoreManager *)coreManager
 {
-  int64_t delayInSeconds = 2.0;
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidFinish
-                                                        object:self.coreManager];
-  });
+  [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidFinish
+                                                      object:self.coreManager];
 }
 
 @end
