@@ -63,6 +63,8 @@
   activityIndicatorViewFrame.origin.y = round((self.frame.size.height -
                                                activityIndicatorViewFrame.size.height) / 2);
   self.activityIndicatorView.frame = activityIndicatorViewFrame;
+  self.activityIndicatorView.hidden = NO;
+  [self.activityIndicatorView startAnimating];
 }
 
 @end

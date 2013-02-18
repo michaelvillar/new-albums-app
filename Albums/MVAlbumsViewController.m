@@ -257,7 +257,7 @@
     MVLoadingCell *cell = [tableView dequeueReusableCellWithIdentifier:loadingCellIdentifier];
     if(!cell)
     {
-      cell = [[MVLoadingCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+      cell = [[MVLoadingCell alloc] initWithStyle:UITableViewCellStyleDefault
                                   reuseIdentifier:loadingCellIdentifier];
     }
     return cell;
@@ -268,7 +268,7 @@
   MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
   if(!cell)
   {
-    cell = [[MVAlbumCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+    cell = [[MVAlbumCell alloc] initWithStyle:UITableViewCellStyleDefault
                               reuseIdentifier:cellIdentifier];
     cell.tableView = tableView;
   }
