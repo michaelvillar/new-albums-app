@@ -148,6 +148,8 @@
       NSDictionary *albumDic;
       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
       dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
+      dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+      dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
 
       [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
         for(albumDic in results)
