@@ -91,9 +91,9 @@
         NSDictionary *dic = (NSDictionary*)json;
         NSArray *results = [dic valueForKey:@"results"];
         NSString *wrapperType = nil;
-        if(self.entity == kMViTunesEntityArtist)
+        if([self.entity isEqualToString:kMViTunesEntityArtist])
           wrapperType = @"artist";
-        else if(self.entity == kMViTunesEntityAlbum)
+        else if([self.entity isEqualToString:kMViTunesEntityAlbum])
           wrapperType = @"collection";
         NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:
                                         @"wrapperType = %@",
