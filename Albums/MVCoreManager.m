@@ -28,8 +28,11 @@
 @property (readwrite) int step;
 @property (readwrite) float stepProgression;
 @property (readwrite, getter = isSyncing) BOOL syncing;
+@property (strong, readwrite) NSSet *iPodArtistAlbumNames;
 
 - (NSSet*)getArtistNamesFromiPod;
+- (NSSet*)getArtistAlbumNamesFromiPod;
+- (void)markOwnedAlbumsAsHidden;
 - (void)searchAlbums;
 - (void)syncDidFail;
 
@@ -48,6 +51,7 @@
             stepProgression       = stepProgression_,
             uiMoc                 = uiMoc_,
             syncing               = syncing_,
+            iPodArtistAlbumNames  = iPodArtistAlbumNames_,
             delegate              = delegate_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +68,7 @@
     step_ = kMVCoreManagerStepIdle;
     uiMoc_ = nil;
     syncing_ = NO;
+    iPodArtistAlbumNames_ = [self getArtistAlbumNamesFromiPod];
     delegate_ = nil;
   }
   return self;
@@ -248,6 +253,70 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSSet*)getArtistAlbumNamesFromiPod
+{
+  NSMutableSet *albumNames = [NSMutableSet set];
+  MPMediaQuery *query = [MPMediaQuery albumsQuery];
+  NSArray *albums = [query collections];
+  MPMediaItemCollection *collection;
+  NSString *name;
+  for(collection in albums)
+  {
+    MPMediaItem *item = [collection representativeItem];
+    name = [NSString stringWithFormat:@"%@ - %@",
+            [item valueForProperty:MPMediaItemPropertyArtist],
+            [item valueForProperty:MPMediaItemPropertyAlbumTitle]];
+    if(![albumNames containsObject:name])
+      [albumNames addObject:name];
+  }
+  return albumNames;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)markOwnedAlbumsAsHidden
+{
+  __block MVCoreManager *weakSelf = self;
+  [self.operationQueue addOperationWithBlock:^{
+    [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+      NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
+      req.predicate = [NSPredicate predicateWithFormat:@"hidden = %d",NO];
+      NSArray *albums = [moc executeFetchRequest:req error:nil];
+      for(MVAlbum *album in albums) {
+        NSString *name = [NSString stringWithFormat:
+                          @"%@ - %@",
+                          album.artist.name, album.name];
+        if([weakSelf.iPodArtistAlbumNames containsObject:name]) {
+          album.hiddenValue = YES;
+        }
+      }
+      
+      [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+        MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
+                                                         inMoc:moc];
+        lastSyncDateOption.value = [NSString stringWithFormat:@"%f",
+                                    [[NSDate date] timeIntervalSince1970]];
+        
+        MVOption *lastSyncCountry = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
+                                                      inMoc:moc];
+        lastSyncCountry.value = weakSelf.countryCode;
+        
+        [moc mv_save];
+      }];
+      
+      weakSelf.syncing = NO;
+      weakSelf.step = kMVCoreManagerStepIdle;
+      weakSelf.stepProgression = 0.0;
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if([weakSelf.delegate respondsToSelector:@selector(coreManagerDidFinishSync:)])
+          [weakSelf.delegate coreManagerDidFinishSync:weakSelf];
+        weakSelf = nil;
+      });
+    }];
+  }];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark MVArtistIdsRequestDelegate Methods
@@ -297,32 +366,8 @@
 {
   self.stepProgression = 1.0;
   
-  NSLog(@"albumsRequestDidFinish");
-  
-  __block MVCoreManager *weakSelf = self;
-  [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
-    MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
-                                                     inMoc:moc];
-    lastSyncDateOption.value = [NSString stringWithFormat:@"%f",
-                                [[NSDate date] timeIntervalSince1970]];
-    
-    MVOption *lastSyncCountry = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
-                                                  inMoc:moc];
-    lastSyncCountry.value = weakSelf.countryCode;
-    
-    [moc mv_save];
-    
-    weakSelf = nil;
-  }];
-  
-  self.syncing = NO;
-  self.step = kMVCoreManagerStepIdle;
-  self.stepProgression = 0.0;
-  
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if([self.delegate respondsToSelector:@selector(coreManagerDidFinishSync:)])
-      [self.delegate coreManagerDidFinishSync:self];
-  });
+  NSLog(@"albumsRequestDidFinish");  
+  [self markOwnedAlbumsAsHidden];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

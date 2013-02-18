@@ -13,6 +13,7 @@
 #define kMVCoreManagerStepWaitToSync 1
 #define kMVCoreManagerStepSearchingArtistIds 2
 #define kMVCoreManagerStepSearchingNewAlbums 3
+#define kMVCoreManagerStepHidingOwnedAlbums 4
 
 @class MVCoreManager;
 
