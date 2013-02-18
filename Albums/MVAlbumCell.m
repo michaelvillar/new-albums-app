@@ -197,7 +197,7 @@ static NSCache *artworkImagesCache = nil;
         CGPoint labelPoint = CGPointMake(cell.frame.size.width - marginRight - labelSize.width, 21.5);
         marginRight += labelSize.width + 3;
         
-        if(self.isHighlighted)
+        if(cell.isHighlighted)
         {
           [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
         }
@@ -210,7 +210,7 @@ static NSCache *artworkImagesCache = nil;
       
       float availableWidth = view.bounds.size.width - marginLeft - marginRight;
 
-      if(self.isHighlighted)
+      if(cell.isHighlighted)
       {
         [[UIColor whiteColor] set];
       }
@@ -223,7 +223,7 @@ static NSCache *artworkImagesCache = nil;
                                  withFont:[UIFont boldSystemFontOfSize:18]
                             lineBreakMode:NSLineBreakByTruncatingMiddle];
       
-      if(self.isHighlighted)
+      if(cell.isHighlighted)
       {
         [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
       }
