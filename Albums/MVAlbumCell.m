@@ -156,7 +156,7 @@ static NSCache *artworkImagesCache = nil;
       
       if(cell.artworkImage)
       {
-        [cell.artworkImage drawInRect:artworkRect];
+        [cell.artworkImage drawAtPoint:artworkRect.origin];
       }
 
       if(cell.isHighlighted)
@@ -451,7 +451,7 @@ static NSCache *artworkImagesCache = nil;
     {
       image = [UIImage imageWithContentsOfFile:asset.localURL.path];
       
-      CGSize newSize = CGSizeMake(kMVAlbumArtSize * 2, kMVAlbumArtSize * 2);
+      CGSize newSize = CGSizeMake(kMVAlbumArtSize, kMVAlbumArtSize);
       UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
       [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
       UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
