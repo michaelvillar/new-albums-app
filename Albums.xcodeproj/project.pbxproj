@@ -42,6 +42,8 @@
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
+		4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56016D2CD5900089C63 /* MVOption.m */; };
+		4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56316D2CD6400089C63 /* _MVOption.m */; };
 		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
 		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
 		4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CDDE0C916C1BB6400EFA4F8 /* icon.png */; };
@@ -120,6 +122,10 @@
 		4C68CA4116260EC3005B6878 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4C89E15D1618F28B00810C91 /* MVConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
 		4C9E36761654859E00EBF020 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		4CA3D55F16D2CD5900089C63 /* MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVOption.h; sourceTree = "<group>"; };
+		4CA3D56016D2CD5900089C63 /* MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVOption.m; sourceTree = "<group>"; };
+		4CA3D56216D2CD6400089C63 /* _MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MVOption.h; sourceTree = "<group>"; };
+		4CA3D56316D2CD6400089C63 /* _MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVOption.m; sourceTree = "<group>"; };
 		4CBDAB1E1628F5CB00903D59 /* MVViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVViewController.h; sourceTree = "<group>"; };
 		4CBDAB1F1628F5CB00903D59 /* MVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVViewController.m; sourceTree = "<group>"; };
 		4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSettingsViewController.h; sourceTree = "<group>"; };
@@ -249,6 +255,8 @@
 				4C3906691606355500155E4E /* MVArtist.m */,
 				4C39069316063FD200155E4E /* MVArtistName.h */,
 				4C39069416063FD200155E4E /* MVArtistName.m */,
+				4CA3D55F16D2CD5900089C63 /* MVOption.h */,
+				4CA3D56016D2CD5900089C63 /* MVOption.m */,
 			);
 			path = Human;
 			sourceTree = "<group>";
@@ -262,6 +270,8 @@
 				4C39066E1606355500155E4E /* _MVArtist.m */,
 				4C39069616063FE400155E4E /* _MVArtistName.h */,
 				4C39069716063FE400155E4E /* _MVArtistName.m */,
+				4CA3D56216D2CD6400089C63 /* _MVOption.h */,
+				4CA3D56316D2CD6400089C63 /* _MVOption.m */,
 			);
 			path = Machine;
 			sourceTree = "<group>";
@@ -456,6 +466,8 @@
 				4CFE72DB1694B9A100DDDF61 /* MVManagedObjectContext.m in Sources */,
 				4CE87C54169E754600395FAA /* MVLoadingCell.m in Sources */,
 				4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */,
+				4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */,
+				4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

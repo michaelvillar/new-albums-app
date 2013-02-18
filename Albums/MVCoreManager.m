@@ -12,6 +12,7 @@
 #import "MVArtist.h"
 #import "MVArtistName.h"
 #import "MVAlbum.h"
+#import "MVOption.h"
 #import "MVArtistIdsRequest.h"
 #import "MVAlbumsRequest.h"
 
@@ -73,7 +74,43 @@
 {
   if(self.step != kMVCoreManagerStepIdle)
     return;
+  self.step = kMVCoreManagerStepWaitToSync;
   [self.operationQueue addOperationWithBlock:^{
+    __block NSString *lastSyncDateString;
+    __block NSString *lastSyncCountryString;
+    [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+      MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
+                                                       inMoc:moc];
+      lastSyncDateString = lastSyncDateOption.value.copy;
+      
+      MVOption *lastSyncCountryOption = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
+                                                          inMoc:moc];
+      lastSyncCountryString = lastSyncCountryOption.value.copy;
+    }];
+    if(lastSyncDateString &&
+       lastSyncCountryString &&
+       [self.countryCode isEqualToString:lastSyncCountryString])
+    {
+      double lastSyncDateDouble = lastSyncDateString.doubleValue;
+      NSDate *lastSyncDate = [NSDate dateWithTimeIntervalSince1970:lastSyncDateDouble];
+      if([[NSDate date] timeIntervalSinceDate:lastSyncDate] < 24 * 3600) {
+        self.step = kMVCoreManagerStepIdle;
+        return;
+      }
+    }
+    
+    if(![self.countryCode isEqualToString:lastSyncCountryString])
+    {
+      // delete all albums
+      [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+        NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
+        NSArray *albums = [moc executeFetchRequest:req error:nil];
+        for(MVAlbum *album in albums) {
+          [moc deleteObject:album];
+        }
+      }];
+    }
+    
     self.syncing = YES;
     self.step = kMVCoreManagerStepSearchingArtistIds;
     self.stepProgression = 0.0;
@@ -261,8 +298,21 @@
   self.stepProgression = 1.0;
   
   NSLog(@"albumsRequestDidFinish");
+  
+  __block MVCoreManager *weakSelf = self;
   [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+    MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
+                                                     inMoc:moc];
+    lastSyncDateOption.value = [NSString stringWithFormat:@"%f",
+                                [[NSDate date] timeIntervalSince1970]];
+    
+    MVOption *lastSyncCountry = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
+                                                  inMoc:moc];
+    lastSyncCountry.value = weakSelf.countryCode;
+    
     [moc mv_save];
+    
+    weakSelf = nil;
   }];
   
   self.syncing = NO;

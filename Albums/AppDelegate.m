@@ -64,8 +64,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     [defaults synchronize];
   }
   
-  [self.coreManager sync];
-
   self.window = [[MVWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   
   self.rootViewController = [[MVRootViewController alloc] initWithContextSource:self.coreManager
@@ -83,6 +81,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *appStoreCountry = [defaults stringForKey:kMVPreferencesAppStoreCountry];
   self.coreManager.countryCode = appStoreCountry;
+  [self.coreManager sync];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

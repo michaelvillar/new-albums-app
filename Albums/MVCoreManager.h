@@ -10,8 +10,9 @@
 #import "MVContextSource.h"
 
 #define kMVCoreManagerStepIdle 0
-#define kMVCoreManagerStepSearchingArtistIds 1
-#define kMVCoreManagerStepSearchingNewAlbums 2
+#define kMVCoreManagerStepWaitToSync 1
+#define kMVCoreManagerStepSearchingArtistIds 2
+#define kMVCoreManagerStepSearchingNewAlbums 3
 
 @class MVCoreManager;
 
