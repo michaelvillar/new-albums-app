@@ -143,11 +143,11 @@ static NSCache *artworkImagesCache = nil;
         NSURL *url = [NSURL URLWithString:cell.album.artworkUrl];
         cell.artworkAsset = [[MVAssetsManager sharedAssetsManager] assetForRemoteURL:url];
         [cell.artworkAsset addObserver:cell forKeyPath:@"existing" options:0 context:NULL];
-        if(cell.artworkAsset.isExisting)
+        
+        cell.artworkImage = [artworkImagesCache objectForKey:cell.artworkAsset.localURL.path];
+        if(!cell.artworkImage && cell.artworkAsset.isExisting)
         {
-          cell.artworkImage = [artworkImagesCache objectForKey:cell.artworkAsset.localURL.path];
-          if(!cell.artworkImage)
-            [cell generateArtworkImage];
+          [cell generateArtworkImage];
         }
       }
 
