@@ -75,7 +75,11 @@
                                            ascending:NO];
     req.sortDescriptors = [NSArray arrayWithObjects:sortCreatedAt, sortReleaseDate, nil];
     req.fetchBatchSize = 20;
-    req.predicate = [NSPredicate predicateWithFormat:@"hidden == %d AND artist.hidden == %d",NO,NO];
+    req.predicate = [NSPredicate predicateWithFormat:
+                     @"hidden == %d AND \
+                     artist.hidden == %d AND \
+                     releaseDate >= %@",
+                     NO, NO, [NSDate dateWithTimeIntervalSinceNow:- 2 * 30 * 24 * 3600]];
 
     fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
                                                         managedObjectContext:contextSource.uiMoc

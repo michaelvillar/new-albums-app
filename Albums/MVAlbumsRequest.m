@@ -169,7 +169,10 @@
             NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
 
             album = [MVAlbum insertInManagedObjectContext:moc];
-            album.createdAt = self.batchDate;
+            if([releaseDate compare:self.batchDate] == NSOrderedAscending)
+              album.createdAt = releaseDate;
+            else
+              album.createdAt = self.batchDate;
             album.name = name;
             album.iTunesIdValue = albumId;
             album.releaseDate = releaseDate;
