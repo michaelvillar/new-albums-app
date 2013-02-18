@@ -21,6 +21,7 @@
 @interface MVAlbumsRequest () <MViTunesSearchRequestDelegate>
 
 @property (strong, readwrite) NSSet *artistIds;
+@property (strong, readwrite) NSString *countryCode;
 @property (strong, readwrite) NSDate *batchDate;
 @property (readwrite) int batchesLeft;
 @property (readwrite) BOOL completed;
@@ -39,6 +40,7 @@
 @implementation MVAlbumsRequest
 
 @synthesize artistIds       = artistIds_,
+            countryCode     = countryCode_,
             batchDate       = batchDate_,
             batchesLeft     = batchesLeft_,
             completed       = completed_,
@@ -48,6 +50,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithArtistIds:(NSSet*)artistIds
+            countryCode:(NSString*)countryCode
          operationQueue:(NSOperationQueue*)operationQueue
           contextSource:(NSObject<MVContextSource>*)contextSource
 {
@@ -55,6 +58,7 @@
   if(self)
   {
     artistIds_ = artistIds;
+    countryCode_ = countryCode;
     batchDate_ = [NSDate date];
     batchesLeft_ = 0;
     completed_ = NO;
@@ -81,7 +85,7 @@
       range.length = artistIds.count - range.location;
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:range];
     request = [[MViTunesSearchRequest alloc] init];
-    request.country = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    request.country = self.countryCode;
     request.method = kMViTunesMethodLookup;
     request.ids = [[artistIds objectsAtIndexes:indexSet] componentsJoinedByString:@","];
     request.entity = kMViTunesEntityAlbum;

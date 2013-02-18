@@ -18,6 +18,7 @@
 @interface MVArtistIdsRequest () <MViTunesSearchRequestDelegate>
 
 @property (strong, readwrite) NSSet *artistNames;
+@property (strong, readwrite) NSString *countryCode;
 @property (readwrite) int artistsFetchedCount;
 @property (readwrite) BOOL completed;
 @property (strong, readwrite) NSOperationQueue *operationQueue;
@@ -33,6 +34,7 @@
 @implementation MVArtistIdsRequest
 
 @synthesize artistNames     = artistNames_,
+            countryCode     = countryCode_,
             artistsFetchedCount = artistsFetchedCount_,
             completed       = completed_,
             operationQueue  = operationQueue_,
@@ -41,6 +43,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithArtistNames:(NSSet*)artistNames
+              countryCode:(NSString*)countryCode
            operationQueue:(NSOperationQueue*)operationQueue
             contextSource:(NSObject<MVContextSource>*)contextSource
 {
@@ -48,6 +51,7 @@
   if(self)
   {
     artistNames_ = artistNames;
+    countryCode_ = countryCode;
     artistsFetchedCount_ = 0;
     completed_ = NO;
     operationQueue_ = operationQueue;
@@ -67,7 +71,7 @@
   for(artistName in self.artistNames)
   {
     request = [[MViTunesSearchRequest alloc] init];
-    request.country = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    request.country = self.countryCode;
     request.term = artistName;
     request.entity = kMViTunesEntityArtist;
     request.limit = 1;

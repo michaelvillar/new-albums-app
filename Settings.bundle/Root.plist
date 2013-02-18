@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Titles</key>
+			<array>
+				<string>Anguilla</string>
+				<string>Antigua &amp; Barbuda</string>
+				<string>Argentina</string>
+				<string>Armenia</string>
+				<string>Australia</string>
+				<string>Austria</string>
+				<string>Azerbaijan</string>
+				<string>Bahamas</string>
+				<string>Bahrain</string>
+				<string>Barbados</string>
+				<string>Belarus</string>
+				<string>Belgium</string>
+				<string>Belize</string>
+				<string>Bermuda</string>
+				<string>Bolivia</string>
+				<string>Botswana</string>
+				<string>Brazil</string>
+				<string>British Virgin Islands</string>
+				<string>Brunei</string>
+				<string>Bulgaria</string>
+				<string>Burkina-Faso</string>
+				<string>Cambodia</string>
+				<string>Canada</string>
+				<string>Cape Verde</string>
+				<string>Cayman Islands</string>
+				<string>Chad</string>
+				<string>Chile</string>
+				<string>Colombia</string>
+				<string>Costa Rica</string>
+				<string>Cyprus</string>
+				<string>Czech Republic</string>
+				<string>Denmark</string>
+				<string>Dominica</string>
+				<string>Dominican Republic</string>
+				<string>Ecuador</string>
+				<string>Egypt</string>
+				<string>El Salvador</string>
+				<string>Estonia</string>
+				<string>Fiji</string>
+				<string>Finland</string>
+				<string>France</string>
+				<string>Gambia</string>
+				<string>Germany</string>
+				<string>Greece</string>
+				<string>Grenada</string>
+				<string>Guatemala</string>
+				<string>Guinea Bissau</string>
+				<string>Honduras</string>
+				<string>Hong Kong</string>
+				<string>Hungary</string>
+				<string>India</string>
+				<string>Indonesia</string>
+				<string>Ireland</string>
+				<string>Israel</string>
+				<string>Italy</string>
+				<string>Japan</string>
+				<string>Jordan</string>
+				<string>Kazakhstan</string>
+				<string>Kenya</string>
+				<string>Krygyzstan</string>
+				<string>Laos</string>
+				<string>Latvia</string>
+				<string>Lebanon</string>
+				<string>Lithuania</string>
+				<string>Luxembourg</string>
+				<string>Macau</string>
+				<string>Malaysia</string>
+				<string>Malta, Republic of</string>
+				<string>Mauritius</string>
+				<string>Mexico</string>
+				<string>Micronesian, Federated States of</string>
+				<string>Mongolia</string>
+				<string>Moldova</string>
+				<string>Mozambique</string>
+				<string>Namibia</string>
+				<string>Nepal</string>
+				<string>Netherlands</string>
+				<string>New Zealand</string>
+				<string>Nicaragua</string>
+				<string>Niger</string>
+				<string>Nigeria</string>
+				<string>Norway</string>
+				<string>Oman</string>
+				<string>Panama</string>
+				<string>Papua New Guinea</string>
+				<string>Paraguay</string>
+				<string>Peru</string>
+				<string>Philippines</string>
+				<string>Poland</string>
+				<string>Portugal</string>
+				<string>Qatar</string>
+				<string>Romania</string>
+				<string>Russia</string>
+				<string>St. Kitts &amp; Nevis</string>
+				<string>Saudi Arabia</string>
+				<string>Singapore</string>
+				<string>Slovakia</string>
+				<string>Slovenia</string>
+				<string>South Africa</string>
+				<string>South Korea</string>
+				<string>Spain</string>
+				<string>Sri Lanka</string>
+				<string>Swaziland</string>
+				<string>Sweden</string>
+				<string>Switzerland</string>
+				<string>Taiwan</string>
+				<string>Tajikistan</string>
+				<string>Thailand</string>
+				<string>Trinidad &amp; Tobago</string>
+				<string>Turkey</string>
+				<string>Turkmenistan</string>
+				<string>Uganda</string>
+				<string>Ukraine</string>
+				<string>United Arab Emirates</string>
+				<string>United Kingdom</string>
+				<string>United States</string>
+				<string>Uruguay</string>
+				<string>Uzbekistan</string>
+				<string>Venezuela</string>
+				<string>Vietnam</string>
+				<string>Zimbabwe</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>AI</string>
+				<string>AG</string>
+				<string>AR</string>
+				<string>AM</string>
+				<string>AU</string>
+				<string>AT</string>
+				<string>AZ</string>
+				<string>BS</string>
+				<string>BH</string>
+				<string>BB</string>
+				<string>BY</string>
+				<string>BE</string>
+				<string>BZ</string>
+				<string>BM</string>
+				<string>BO</string>
+				<string>BW</string>
+				<string>BR</string>
+				<string>VG</string>
+				<string>BN</string>
+				<string>BG</string>
+				<string>BF</string>
+				<string>KH</string>
+				<string>CA</string>
+				<string>CV</string>
+				<string>KY</string>
+				<string>TD</string>
+				<string>CL</string>
+				<string>CO</string>
+				<string>CR</string>
+				<string>CY</string>
+				<string>CZ</string>
+				<string>DK</string>
+				<string>DM</string>
+				<string>DO</string>
+				<string>EC</string>
+				<string>EG</string>
+				<string>SV</string>
+				<string>EE</string>
+				<string>FJ</string>
+				<string>FI</string>
+				<string>FR</string>
+				<string>GM</string>
+				<string>DE</string>
+				<string>GR</string>
+				<string>GD</string>
+				<string>GT</string>
+				<string>GW</string>
+				<string>HN</string>
+				<string>HK</string>
+				<string>HU</string>
+				<string>IN</string>
+				<string>ID</string>
+				<string>IE</string>
+				<string>IL</string>
+				<string>IT</string>
+				<string>JP</string>
+				<string>JO</string>
+				<string>KZ</string>
+				<string>KE</string>
+				<string>KG</string>
+				<string>LA</string>
+				<string>LV</string>
+				<string>LB</string>
+				<string>LT</string>
+				<string>LU</string>
+				<string>MO</string>
+				<string>MY</string>
+				<string>MT</string>
+				<string>MU</string>
+				<string>MX</string>
+				<string>FM</string>
+				<string>MN</string>
+				<string>MD</string>
+				<string>MZ</string>
+				<string>NA</string>
+				<string>NP</string>
+				<string>NL</string>
+				<string>NZ</string>
+				<string>NI</string>
+				<string>NE</string>
+				<string>NG</string>
+				<string>NO</string>
+				<string>OM</string>
+				<string>PA</string>
+				<string>PG</string>
+				<string>PY</string>
+				<string>PE</string>
+				<string>PH</string>
+				<string>PL</string>
+				<string>PT</string>
+				<string>QA</string>
+				<string>RO</string>
+				<string>RU</string>
+				<string>KN</string>
+				<string>SA</string>
+				<string>SG</string>
+				<string>SK</string>
+				<string>SI</string>
+				<string>ZA</string>
+				<string>KR</string>
+				<string>ES</string>
+				<string>LK</string>
+				<string>SZ</string>
+				<string>SE</string>
+				<string>CH</string>
+				<string>TW</string>
+				<string>TJ</string>
+				<string>TH</string>
+				<string>TT</string>
+				<string>TR</string>
+				<string>TM</string>
+				<string>UG</string>
+				<string>UA</string>
+				<string>AE</string>
+				<string>GB</string>
+				<string>US</string>
+				<string>UY</string>
+				<string>UZ</string>
+				<string>VE</string>
+				<string>VN</string>
+				<string>ZW</string>
+			</array>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>App Store Country</string>
+			<key>Key</key>
+			<string>app_store_country</string>
+			<key>DefaultValue</key>
+			<string></string>
+		</dict>
+	</array>
+	<key>StringsTable</key>
+	<string>Root</string>
+</dict>
+</plist>

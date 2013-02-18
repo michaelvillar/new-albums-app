@@ -27,9 +27,11 @@
 @interface MVArtistIdsRequest : NSObject
 
 @property (strong, readonly) NSSet *artistNames;
+@property (strong, readonly) NSString *countryCode;
 @property (weak, readwrite) NSObject <MVArtistIdsRequestDelegate> *delegate;
 
 - (id)initWithArtistNames:(NSSet*)artistNames
+              countryCode:(NSString*)countryCode
            operationQueue:(NSOperationQueue*)operationQueue
             contextSource:(NSObject<MVContextSource>*)contextSource;
 - (void)fetch;

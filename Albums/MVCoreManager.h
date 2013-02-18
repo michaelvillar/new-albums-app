@@ -29,6 +29,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVCoreManager : NSObject <MVContextSource>
 
+@property (strong, readwrite) NSString *countryCode;
 @property (readonly, getter = isSyncing) BOOL syncing;
 @property (readonly) int step;
 @property (readonly) float stepProgression;

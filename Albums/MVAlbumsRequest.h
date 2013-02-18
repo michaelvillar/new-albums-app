@@ -27,9 +27,11 @@
 @interface MVAlbumsRequest : NSObject
 
 @property (strong, readonly) NSSet *artistIds;
+@property (strong, readonly) NSString *countryCode;
 @property (weak, readwrite) NSObject <MVAlbumsRequestDelegate> *delegate;
 
 - (id)initWithArtistIds:(NSSet*)artistIds
+            countryCode:(NSString*)countryCode
          operationQueue:(NSOperationQueue*)operationQueue
           contextSource:(NSObject<MVContextSource>*)contextSource;
 - (void)fetch;

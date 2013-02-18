@@ -39,7 +39,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVCoreManager
 
-@synthesize operationQueue        = operationQueue_,
+@synthesize countryCode           = countryCode_,
+            operationQueue        = operationQueue_,
             artistIdsRequest      = artistIdsRequest_,
             albumsRequest         = albumsRequest_,
             step                  = step_,
@@ -54,6 +55,7 @@
   self = [super init];
   if(self)
   {
+    countryCode_ = nil;
     operationQueue_ = [[NSOperationQueue alloc] init];
     operationQueue_.maxConcurrentOperationCount = 20;
     artistIdsRequest_ = nil;
@@ -107,6 +109,7 @@
       }
     }];
     self.artistIdsRequest = [[MVArtistIdsRequest alloc] initWithArtistNames:toFetchArtistNames
+                                                                countryCode:self.countryCode
                                                              operationQueue:self.operationQueue
                                                               contextSource:self];
     self.artistIdsRequest.delegate = self;
@@ -137,6 +140,7 @@
     }
   }];
   self.albumsRequest = [[MVAlbumsRequest alloc] initWithArtistIds:artistIds
+                                                      countryCode:self.countryCode
                                                    operationQueue:self.operationQueue
                                                     contextSource:self];
   self.albumsRequest.delegate = self;
@@ -190,7 +194,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSSet*)getArtistNamesFromiPod
 {
-  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",@"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",@"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",@"Death Cab For Cutie", nil];
+//  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",@"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",@"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",@"Death Cab For Cutie", nil];
   NSMutableSet *artistNames = [NSMutableSet set];
   MPMediaQuery *query = [MPMediaQuery artistsQuery];
   NSArray *artists = [query collections];

@@ -32,6 +32,7 @@
 		4C39069816063FE400155E4E /* _MVArtistName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069716063FE400155E4E /* _MVArtistName.m */; };
 		4C39069B160644DC00155E4E /* MVAlbumsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39069A160644DB00155E4E /* MVAlbumsRequest.m */; };
 		4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4465C71618BA3700F8D4E3 /* MVView.m */; };
+		4C4FD4D316BD544D005DC397 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4C4FD4D216BD544D005DC397 /* Settings.bundle */; };
 		4C5140841606786100279CA0 /* MVAlbumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5140831606786100279CA0 /* MVAlbumCell.m */; };
 		4C51408F16067C3400279CA0 /* MVAssetsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408816067C3400279CA0 /* MVAssetsManager.m */; };
 		4C51409016067C3400279CA0 /* MVAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408B16067C3400279CA0 /* MVAsset.m */; };
@@ -43,6 +44,7 @@
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
 		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
+		4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CDDE0C916C1BB6400EFA4F8 /* icon.png */; };
 		4CE87C54169E754600395FAA /* MVLoadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C53169E754600395FAA /* MVLoadingCell.m */; };
 		4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C57169E7A0E00395FAA /* MVCell.m */; };
 		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
@@ -98,6 +100,7 @@
 		4C39069A160644DB00155E4E /* MVAlbumsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumsRequest.m; sourceTree = "<group>"; };
 		4C4465C61618BA3700F8D4E3 /* MVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVView.h; sourceTree = "<group>"; };
 		4C4465C71618BA3700F8D4E3 /* MVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVView.m; sourceTree = "<group>"; };
+		4C4FD4D216BD544D005DC397 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		4C5140821606786100279CA0 /* MVAlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumCell.h; sourceTree = "<group>"; };
 		4C5140831606786100279CA0 /* MVAlbumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumCell.m; sourceTree = "<group>"; };
 		4C51408716067C3400279CA0 /* MVAssetsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAssetsManager.h; sourceTree = "<group>"; };
@@ -116,11 +119,12 @@
 		4C68CA3716260173005B6878 /* MVWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVWindow.m; sourceTree = "<group>"; };
 		4C68CA4116260EC3005B6878 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4C89E15D1618F28B00810C91 /* MVConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
-		4C9E36761654859E00EBF020 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		4C9E36761654859E00EBF020 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		4CBDAB1E1628F5CB00903D59 /* MVViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVViewController.h; sourceTree = "<group>"; };
 		4CBDAB1F1628F5CB00903D59 /* MVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVViewController.m; sourceTree = "<group>"; };
 		4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSettingsViewController.h; sourceTree = "<group>"; };
 		4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSettingsViewController.m; sourceTree = "<group>"; };
+		4CDDE0C916C1BB6400EFA4F8 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		4CE87C52169E754600395FAA /* MVLoadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVLoadingCell.h; sourceTree = "<group>"; };
 		4CE87C53169E754600395FAA /* MVLoadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVLoadingCell.m; sourceTree = "<group>"; };
 		4CE87C56169E7A0E00395FAA /* MVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCell.h; sourceTree = "<group>"; };
@@ -155,7 +159,6 @@
 		4C3906211606212F00155E4E = {
 			isa = PBXGroup;
 			children = (
-				4C9E36761654859E00EBF020 /* Default-568h@2x.png */,
 				4C3906361606212F00155E4E /* Albums */,
 				4C39062F1606212F00155E4E /* Frameworks */,
 				4C39062D1606212F00155E4E /* Products */,
@@ -200,10 +203,13 @@
 		4C3906371606212F00155E4E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4CDDE0C916C1BB6400EFA4F8 /* icon.png */,
+				4C4FD4D216BD544D005DC397 /* Settings.bundle */,
 				4C3906381606212F00155E4E /* Albums-Info.plist */,
 				4C3906391606212F00155E4E /* InfoPlist.strings */,
 				4C39063C1606212F00155E4E /* main.m */,
 				4C39063E1606212F00155E4E /* Albums-Prefix.pch */,
+				4C9E36761654859E00EBF020 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -404,6 +410,8 @@
 			files = (
 				4C39063B1606212F00155E4E /* InfoPlist.strings in Resources */,
 				4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */,
+				4C4FD4D316BD544D005DC397 /* Settings.bundle in Resources */,
+				4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

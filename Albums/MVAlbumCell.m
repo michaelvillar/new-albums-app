@@ -159,7 +159,7 @@ static NSCache *artworkImagesCache = nil;
         [cell.artworkImage drawInRect:artworkRect];
       }
 
-      if(self.isHighlighted)
+      if(cell.isHighlighted)
       {
         [[UIColor colorWithWhite:0 alpha:0.5] set];
         [[UIBezierPath bezierPathWithRect:view.bounds] fill];
