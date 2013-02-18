@@ -35,7 +35,8 @@ static MVAssetsManager *sharedAssetsManager_ = nil;
 
 @synthesize operationQueue        = operationQueue_,
             fileDownloads         = fileDownloads_,
-            localURLsCache        = localURLsCache_;
+            localURLsCache        = localURLsCache_,
+            cachePath             = cachePath_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (MVAssetsManager*)sharedAssetsManager
@@ -56,6 +57,7 @@ static MVAssetsManager *sharedAssetsManager_ = nil;
     operationQueue_ = [[NSOperationQueue alloc] init];
     fileDownloads_ = [NSMutableArray array];
     localURLsCache_ = [NSMutableDictionary dictionary];
+    cachePath_ = nil;
   }
   return self;
 }
@@ -128,18 +130,22 @@ static MVAssetsManager *sharedAssetsManager_ = nil;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSString*)cachePath
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-  NSString *filePath = [paths objectAtIndex:0];
-  filePath = [filePath stringByAppendingPathComponent:kKOUAssetsCachePath];
-  
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  if ([fileManager fileExistsAtPath:filePath]) return filePath;
-  
-  [fileManager createDirectoryAtPath:filePath 
-         withIntermediateDirectories:YES 
-                          attributes:nil 
-                               error:nil];
-  return filePath;
+  if(!cachePath_)
+  {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *filePath = [paths objectAtIndex:0];
+    cachePath_ = [filePath stringByAppendingPathComponent:kKOUAssetsCachePath];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:cachePath_])
+    {
+      [fileManager createDirectoryAtPath:cachePath_
+             withIntermediateDirectories:YES
+                              attributes:nil
+                                   error:nil];
+    }
+  }
+  return cachePath_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
