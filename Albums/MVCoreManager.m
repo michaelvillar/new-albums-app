@@ -29,6 +29,7 @@
 @property (readwrite) float stepProgression;
 @property (readwrite, getter = isSyncing) BOOL syncing;
 @property (strong, readwrite) NSSet *iPodArtistAlbumNames;
+@property (strong, readwrite) NSSet *iPodArtistNames;
 
 - (NSSet*)getArtistNamesFromiPod;
 - (NSSet*)getArtistAlbumNamesFromiPod;
@@ -52,6 +53,7 @@
             uiMoc                 = uiMoc_,
             syncing               = syncing_,
             iPodArtistAlbumNames  = iPodArtistAlbumNames_,
+            iPodArtistNames       = iPodArtistNames_,
             delegate              = delegate_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +70,8 @@
     step_ = kMVCoreManagerStepIdle;
     uiMoc_ = nil;
     syncing_ = NO;
-    iPodArtistAlbumNames_ = [self getArtistAlbumNamesFromiPod];
+    iPodArtistAlbumNames_ = nil;
+    iPodArtistNames_ = nil;
     delegate_ = nil;
   }
   return self;
@@ -125,7 +128,9 @@
         [self.delegate coreManagerDidStartSync:self];
     });
     
-    NSSet *artistNames = [self getArtistNamesFromiPod];
+    if(!self.iPodArtistNames)
+      self.iPodArtistNames = [self getArtistNamesFromiPod];
+    NSSet *artistNames = self.iPodArtistNames;
     NSMutableSet *toFetchArtistNames = [NSMutableSet set];
     [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
       NSString *artistName;
@@ -236,18 +241,41 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSSet*)getArtistNamesFromiPod
 {
-//  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",@"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",@"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",@"Death Cab For Cutie", nil];
+//  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",
+//          @"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",
+//          @"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",
+//          @"Death Cab For Cutie", nil];
   NSMutableSet *artistNames = [NSMutableSet set];
-  MPMediaQuery *query = [MPMediaQuery artistsQuery];
-  NSArray *artists = [query collections];
-  MPMediaItemCollection *collection;
-  NSString *name;
-  for(collection in artists)
+  NSArray *albumCollections = [[MPMediaQuery albumsQuery] collections];
+  MPMediaItemCollection *albumCollection;
+  for(albumCollection in albumCollections)
   {
-    MPMediaItem *item = [collection representativeItem];
-    name = [item valueForProperty:MPMediaItemPropertyArtist];
-    if(![artistNames containsObject:name])
-      [artistNames addObject:name];
+    NSArray *albumSongs = [albumCollection items];
+    NSUInteger albumSongsCount = albumSongs.count;
+    NSMutableDictionary *artistCountInAlbum = [NSMutableDictionary dictionary];
+    for(MPMediaItem *albumSong in albumSongs)
+    {
+      NSString *artistName = [albumSong valueForProperty:MPMediaItemPropertyArtist];
+      NSMutableArray *countArr = [artistCountInAlbum valueForKey:artistName];
+      if(countArr)
+        [countArr addObject:@""];
+      else {
+        countArr = [NSMutableArray array];
+        [artistCountInAlbum setValue:countArr
+                              forKey:artistName];
+      }
+    }
+    for(NSString *artistName in artistCountInAlbum.allKeys)
+    {
+      NSArray *countArr = [artistCountInAlbum valueForKey:artistName];
+      NSUInteger count = countArr.count;
+      if(count &&
+         ((((float)(count)) / albumSongsCount) >= 0.5 || albumSongsCount == 1) &&
+         ![artistName isEqualToString:@"Various Artists"])
+      {
+        [artistNames addObject:artistName];
+      }
+    }
   }
   return artistNames;
 }
@@ -262,7 +290,7 @@
   NSString *name;
   for(collection in albums)
   {
-    MPMediaItem *item = [collection representativeItem];
+    MPMediaItem *item = collection.representativeItem;
     name = [NSString stringWithFormat:@"%@ - %@",
             [item valueForProperty:MPMediaItemPropertyArtist],
             [item valueForProperty:MPMediaItemPropertyAlbumTitle]];
@@ -277,6 +305,9 @@
 {
   __block MVCoreManager *weakSelf = self;
   [self.operationQueue addOperationWithBlock:^{
+    if(!weakSelf.iPodArtistAlbumNames)
+      weakSelf.iPodArtistAlbumNames = [self getArtistAlbumNamesFromiPod];
+    
     [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
       NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
       req.predicate = [NSPredicate predicateWithFormat:@"hidden = %d",NO];

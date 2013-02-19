@@ -123,7 +123,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (int)nbArtistsPerBatch
 {
-  return floor(kMVAlbumsRequestLimit / (kMVAlbumsRequestNbAlbumsPerArtist + 1.0));
+  return MAX(1, floor(kMVAlbumsRequestLimit / (kMVAlbumsRequestNbAlbumsPerArtist + 1.0)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,6 +145,7 @@
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     if(results.count > 0)
     {
+      NSArray *artistIds = [request.ids componentsSeparatedByString:@","];
       NSDictionary *albumDic;
       NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
       dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
@@ -156,38 +157,41 @@
         {
           long long artistId = [[albumDic valueForKey:@"artistId"] longLongValue];
           NSNumber *artistNumberId = [NSNumber numberWithLongLong:artistId];
-          long long albumId = [[albumDic valueForKey:@"collectionId"] longLongValue];
-          NSNumber *albumNumberId = [NSNumber numberWithLongLong:albumId];
-          MVAlbum *album = (MVAlbum*)[MVAlbum objectWithiTunesId:albumNumberId
-                                                           inMoc:moc];
-          if(!album)
+          if([artistIds containsObject:artistNumberId.stringValue])
           {
-            NSString *name = [albumDic valueForKey:@"collectionName"];
-            NSString *releaseDateString = [albumDic valueForKey:@"releaseDate"];
-            NSDate *releaseDate = [dateFormatter dateFromString:releaseDateString];
-            NSString *iTunesStoreUrl = [albumDic valueForKey:@"collectionViewUrl"];
-            NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
-
-            album = [MVAlbum insertInManagedObjectContext:moc];
-            if([releaseDate compare:self.batchDate] == NSOrderedAscending)
-              album.createdAt = releaseDate;
-            else
-              album.createdAt = self.batchDate;
-            album.name = name;
-            album.iTunesIdValue = albumId;
-            album.releaseDate = releaseDate;
-            album.iTunesStoreUrl = iTunesStoreUrl;
-            album.artworkUrl = artworkUrl;
-            
-            MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
-                                                                 inMoc:moc];
-            if(!artist)
+            long long albumId = [[albumDic valueForKey:@"collectionId"] longLongValue];
+            NSNumber *albumNumberId = [NSNumber numberWithLongLong:albumId];
+            MVAlbum *album = (MVAlbum*)[MVAlbum objectWithiTunesId:albumNumberId
+                                                             inMoc:moc];
+            if(!album)
             {
-              artist = [MVArtist insertInManagedObjectContext:moc];
-              artist.iTunesIdValue = artistId;
-              artist.name = [albumDic valueForKey:@"artistName"];
+              NSString *name = [albumDic valueForKey:@"collectionName"];
+              NSString *releaseDateString = [albumDic valueForKey:@"releaseDate"];
+              NSDate *releaseDate = [dateFormatter dateFromString:releaseDateString];
+              NSString *iTunesStoreUrl = [albumDic valueForKey:@"collectionViewUrl"];
+              NSString *artworkUrl = [albumDic valueForKey:@"artworkUrl100"];
+              
+              album = [MVAlbum insertInManagedObjectContext:moc];
+              if([releaseDate compare:self.batchDate] == NSOrderedAscending)
+                album.createdAt = releaseDate;
+              else
+                album.createdAt = self.batchDate;
+              album.name = name;
+              album.iTunesIdValue = albumId;
+              album.releaseDate = releaseDate;
+              album.iTunesStoreUrl = iTunesStoreUrl;
+              album.artworkUrl = artworkUrl;
+              
+              MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
+                                                                   inMoc:moc];
+              if(!artist)
+              {
+                artist = [MVArtist insertInManagedObjectContext:moc];
+                artist.iTunesIdValue = artistId;
+                artist.name = [albumDic valueForKey:@"artistName"];
+              }
+              album.artist = artist;
             }
-            album.artist = artist;
           }
         }
       }];

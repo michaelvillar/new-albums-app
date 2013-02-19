@@ -55,6 +55,7 @@ static MVAssetsManager *sharedAssetsManager_ = nil;
   if(self)
   {
     operationQueue_ = [[NSOperationQueue alloc] init];
+    operationQueue_.maxConcurrentOperationCount = 2;
     fileDownloads_ = [NSMutableArray array];
     localURLsCache_ = [NSMutableDictionary dictionary];
     cachePath_ = nil;
