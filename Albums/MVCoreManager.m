@@ -7,6 +7,7 @@
 //
 
 #import <MediaPlayer/MediaPlayer.h>
+#import <TargetConditionals.h>
 #import "MVCoreManager.h"
 #import "MViTunesSearchRequest.h"
 #import "MVArtist.h"
@@ -272,10 +273,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSSet*)getArtistNamesFromiPod
 {
-//  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",
-//          @"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",
-//          @"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",
-//          @"Death Cab For Cutie", nil];
+  #if TARGET_IPHONE_SIMULATOR
+  return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",
+          @"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",
+          @"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",
+          @"Death Cab For Cutie", nil];
+  #endif
   NSMutableSet *artistNames = [NSMutableSet set];
   NSArray *albumCollections = [[MPMediaQuery albumsQuery] collections];
   MPMediaItemCollection *albumCollection;
