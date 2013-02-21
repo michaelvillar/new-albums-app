@@ -42,6 +42,7 @@
 		4C585EE016D6B0A5008A9C23 /* flat_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */; };
 		4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */; };
 		4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */; };
+		4C585EE616D6BF3A008A9C23 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE516D6BF3A008A9C23 /* Default@2x.png */; };
 		4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA331625FC57005B6878 /* MVRootViewController.m */; };
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
@@ -122,6 +123,7 @@
 		4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flat_icon@2x.png"; sourceTree = "<group>"; };
 		4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_progress@2x.png"; sourceTree = "<group>"; };
 		4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_track@2x.png"; sourceTree = "<group>"; };
+		4C585EE516D6BF3A008A9C23 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Default@2x.png"; sourceTree = "<group>"; };
 		4C68CA321625FC57005B6878 /* MVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRootViewController.h; sourceTree = "<group>"; };
 		4C68CA331625FC57005B6878 /* MVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRootViewController.m; sourceTree = "<group>"; };
 		4C68CA3616260173005B6878 /* MVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVWindow.h; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				4C3906391606212F00155E4E /* InfoPlist.strings */,
 				4C39063C1606212F00155E4E /* main.m */,
 				4C39063E1606212F00155E4E /* Albums-Prefix.pch */,
+				4C585EE516D6BF3A008A9C23 /* Default@2x.png */,
 				4C9E36761654859E00EBF020 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
@@ -437,6 +440,7 @@
 				4C585EE016D6B0A5008A9C23 /* flat_icon@2x.png in Resources */,
 				4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */,
 				4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */,
+				4C585EE616D6BF3A008A9C23 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
