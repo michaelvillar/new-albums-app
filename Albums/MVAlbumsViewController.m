@@ -29,7 +29,6 @@
 @property (strong, readwrite) MVView *roundedTopCorners;
 @property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVCoreManager *coreManager;
-@property (readwrite) int type;
 @property (readwrite) BOOL showsLoadingCell;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
@@ -42,27 +41,25 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVAlbumsViewController
 
+// -- Private
 @synthesize tableView                 = tableView_,
             fetchedResultsController  = fetchedResultsController_,
             sectionDateFormatter      = sectionDateFormatter_,
             roundedTopCorners         = roundedTopCorners_,
             roundedBottomCorners      = roundedBottomCorners_,
             coreManager               = coreManager_,
-            type                      = type_,
             showsLoadingCell          = showsLoadingCell_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
                 coreManager:(MVCoreManager*)coreManager
-                       type:(int)type
 {
   self = [super init];
   if (self)
   {
     tableView_ = nil;
     contextSource_ = contextSource;
-    type_ = type;
     showsLoadingCell_ = NO;
     coreManager_ = coreManager;
 
@@ -127,8 +124,6 @@
   self.tableView.dataSource = self;
   self.tableView.canCancelContentTouches = NO;
   [self.view addSubview:self.tableView];
-  if(self.type == 2)
-    [self.tableView setScrollsToTop:NO];
   
   if(!self.roundedTopCorners)
   {

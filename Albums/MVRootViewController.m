@@ -45,10 +45,8 @@
   {
     contextSource_ = contextSource;
     coreManager_ = coreManager;
-    albumsViewController_ = [[MVAlbumsViewController alloc]
-                             initWithContextSource:contextSource
-                             coreManager:coreManager
-                             type:kMVAlbumsViewControllerTypeReleased];
+    albumsViewController_ = [[MVAlbumsViewController alloc] initWithContextSource:contextSource
+                                                                      coreManager:coreManager];
     mainView_ = nil;
   }
   return self;

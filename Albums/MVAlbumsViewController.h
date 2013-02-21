@@ -8,9 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define kMVAlbumsViewControllerTypeReleased 1
-#define kMVAlbumsViewControllerTypeUpcoming 2
-
 @protocol MVContextSource;
 @class MVCoreManager;
 
@@ -20,7 +17,6 @@
 @interface MVAlbumsViewController : UIViewController
 
 - (id)initWithContextSource:(NSObject<MVContextSource>*)contextSource
-                coreManager:(MVCoreManager*)coreManager
-                       type:(int)type;
+                coreManager:(MVCoreManager*)coreManager;
 
 @end
