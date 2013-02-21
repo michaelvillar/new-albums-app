@@ -44,8 +44,6 @@
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56016D2CD5900089C63 /* MVOption.m */; };
 		4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56316D2CD6400089C63 /* _MVOption.m */; };
-		4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB1F1628F5CB00903D59 /* MVViewController.m */; };
-		4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */; };
 		4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CDDE0C916C1BB6400EFA4F8 /* icon.png */; };
 		4CE87C54169E754600395FAA /* MVLoadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C53169E754600395FAA /* MVLoadingCell.m */; };
 		4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C57169E7A0E00395FAA /* MVCell.m */; };
@@ -126,10 +124,6 @@
 		4CA3D56016D2CD5900089C63 /* MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVOption.m; sourceTree = "<group>"; };
 		4CA3D56216D2CD6400089C63 /* _MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MVOption.h; sourceTree = "<group>"; };
 		4CA3D56316D2CD6400089C63 /* _MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVOption.m; sourceTree = "<group>"; };
-		4CBDAB1E1628F5CB00903D59 /* MVViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVViewController.h; sourceTree = "<group>"; };
-		4CBDAB1F1628F5CB00903D59 /* MVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVViewController.m; sourceTree = "<group>"; };
-		4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSettingsViewController.h; sourceTree = "<group>"; };
-		4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSettingsViewController.m; sourceTree = "<group>"; };
 		4CDDE0C916C1BB6400EFA4F8 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		4CE87C52169E754600395FAA /* MVLoadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVLoadingCell.h; sourceTree = "<group>"; };
 		4CE87C53169E754600395FAA /* MVLoadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVLoadingCell.m; sourceTree = "<group>"; };
@@ -323,12 +317,8 @@
 				4C3906401606212F00155E4E /* AppDelegate.m */,
 				4C68CA321625FC57005B6878 /* MVRootViewController.h */,
 				4C68CA331625FC57005B6878 /* MVRootViewController.m */,
-				4CBDAB1E1628F5CB00903D59 /* MVViewController.h */,
-				4CBDAB1F1628F5CB00903D59 /* MVViewController.m */,
 				4C39064D1606229300155E4E /* MVAlbumsViewController.h */,
 				4C39064E1606229300155E4E /* MVAlbumsViewController.m */,
-				4CBDAB221628FD5D00903D59 /* MVSettingsViewController.h */,
-				4CBDAB231628FD5D00903D59 /* MVSettingsViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -458,8 +448,6 @@
 				4C4465C81618BA3700F8D4E3 /* MVView.m in Sources */,
 				4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */,
 				4C68CA3816260173005B6878 /* MVWindow.m in Sources */,
-				4CBDAB201628F5CB00903D59 /* MVViewController.m in Sources */,
-				4CBDAB241628FD5D00903D59 /* MVSettingsViewController.m in Sources */,
 				4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */,
 				4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */,
 				4CFE72D81694B93700DDDF61 /* NSObject+PerformBlockOnThread.m in Sources */,

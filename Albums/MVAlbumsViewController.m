@@ -188,8 +188,6 @@
     };
   }
   [self.view addSubview:self.roundedBottomCorners];
-
-  [super loadView];
   
   [self.fetchedResultsController performFetch:nil];
 }

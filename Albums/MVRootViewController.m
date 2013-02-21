@@ -10,8 +10,6 @@
 #import "MVContextSource.h"
 #import "MVCoreManager.h"
 #import "MVAlbumsViewController.h"
-#import "MVSettingsViewController.h"
-#import "MVViewController.h"
 
 #define kMVRatio 800
 #define kMVDuration 0.2
@@ -65,18 +63,6 @@
                                                              self.view.frame.size.width,
                                                              self.view.frame.size.height)];
     [self.view addSubview:self.mainView];
-//
-//    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
-//                                          initWithTarget:self
-//                                          action:@selector(dragContentView:)];
-//    panGesture.delegate = self;
-//    panGesture.maximumNumberOfTouches = 1;
-//    panGesture.minimumNumberOfTouches = 1;
-//    [self.view addGestureRecognizer:panGesture];
-    
-    CATransform3D transform = CATransform3DIdentity;
-    transform.m34 = 2.5 / -2000;
-    self.mainView.layer.sublayerTransform = transform;
   }
   
   self.albumsViewController.view.frame = self.mainView.bounds;
