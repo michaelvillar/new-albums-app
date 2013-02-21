@@ -38,6 +38,10 @@
 		4C51409016067C3400279CA0 /* MVAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408B16067C3400279CA0 /* MVAsset.m */; };
 		4C51409116067C3400279CA0 /* MVFileDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51408E16067C3400279CA0 /* MVFileDownload.m */; };
 		4C51409416067C4B00279CA0 /* NSString+Digest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C51409316067C4B00279CA0 /* NSString+Digest.m */; };
+		4C585EDB16D6ACDB008A9C23 /* MVFirstSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C585EDA16D6ACDB008A9C23 /* MVFirstSyncViewController.m */; };
+		4C585EE016D6B0A5008A9C23 /* flat_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */; };
+		4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */; };
+		4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */; };
 		4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA331625FC57005B6878 /* MVRootViewController.m */; };
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
@@ -113,6 +117,11 @@
 		4C51408E16067C3400279CA0 /* MVFileDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVFileDownload.m; sourceTree = "<group>"; };
 		4C51409216067C4B00279CA0 /* NSString+Digest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Digest.h"; sourceTree = "<group>"; };
 		4C51409316067C4B00279CA0 /* NSString+Digest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Digest.m"; sourceTree = "<group>"; };
+		4C585ED916D6ACDB008A9C23 /* MVFirstSyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVFirstSyncViewController.h; sourceTree = "<group>"; };
+		4C585EDA16D6ACDB008A9C23 /* MVFirstSyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVFirstSyncViewController.m; sourceTree = "<group>"; };
+		4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flat_icon@2x.png"; sourceTree = "<group>"; };
+		4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_progress@2x.png"; sourceTree = "<group>"; };
+		4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress_bar_track@2x.png"; sourceTree = "<group>"; };
 		4C68CA321625FC57005B6878 /* MVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRootViewController.h; sourceTree = "<group>"; };
 		4C68CA331625FC57005B6878 /* MVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVRootViewController.m; sourceTree = "<group>"; };
 		4C68CA3616260173005B6878 /* MVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVWindow.h; sourceTree = "<group>"; };
@@ -194,6 +203,7 @@
 				4C4465C51618BA2900F8D4E3 /* UI */,
 				4C39069116063F2800155E4E /* Categories */,
 				4C3906501606241400155E4E /* Management */,
+				4C585EDC16D6B078008A9C23 /* Images */,
 				4C3906371606212F00155E4E /* Supporting Files */,
 				4C39065F1606341300155E4E /* Model.xcdatamodeld */,
 			);
@@ -203,7 +213,6 @@
 		4C3906371606212F00155E4E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4CDDE0C916C1BB6400EFA4F8 /* icon.png */,
 				4C4FD4D216BD544D005DC397 /* Settings.bundle */,
 				4C3906381606212F00155E4E /* Albums-Info.plist */,
 				4C3906391606212F00155E4E /* InfoPlist.strings */,
@@ -317,6 +326,8 @@
 				4C3906401606212F00155E4E /* AppDelegate.m */,
 				4C68CA321625FC57005B6878 /* MVRootViewController.h */,
 				4C68CA331625FC57005B6878 /* MVRootViewController.m */,
+				4C585ED916D6ACDB008A9C23 /* MVFirstSyncViewController.h */,
+				4C585EDA16D6ACDB008A9C23 /* MVFirstSyncViewController.m */,
 				4C39064D1606229300155E4E /* MVAlbumsViewController.h */,
 				4C39064E1606229300155E4E /* MVAlbumsViewController.m */,
 			);
@@ -355,6 +366,17 @@
 				4C51408E16067C3400279CA0 /* MVFileDownload.m */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		4C585EDC16D6B078008A9C23 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */,
+				4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */,
+				4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */,
+				4CDDE0C916C1BB6400EFA4F8 /* icon.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -412,6 +434,9 @@
 				4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */,
 				4C4FD4D316BD544D005DC397 /* Settings.bundle in Resources */,
 				4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */,
+				4C585EE016D6B0A5008A9C23 /* flat_icon@2x.png in Resources */,
+				4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */,
+				4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +481,7 @@
 				4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */,
 				4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */,
 				4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */,
+				4C585EDB16D6ACDB008A9C23 /* MVFirstSyncViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,7 @@
 #import "MVContextSource.h"
 #import "MVCoreManager.h"
 #import "MVAlbumsViewController.h"
+#import "MVFirstSyncViewController.h"
 
 #define kMVRatio 800
 #define kMVDuration 0.2
@@ -22,6 +23,7 @@
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 @property (strong, readwrite) MVAlbumsViewController *albumsViewController;
+@property (strong, readwrite, nonatomic) MVFirstSyncViewController *firstSyncViewController;
 @property (strong, readwrite) UIView *mainView;
 
 @end
@@ -34,6 +36,7 @@
 @synthesize coreManager               = coreManager_,
             contextSource             = contextSource_,
             albumsViewController      = albumsViewController_,
+            firstSyncViewController   = firstSyncViewController_,
             mainView                  = mainView_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,9 +50,18 @@
     coreManager_ = coreManager;
     albumsViewController_ = [[MVAlbumsViewController alloc] initWithContextSource:contextSource
                                                                       coreManager:coreManager];
+    firstSyncViewController_ = nil;
     mainView_ = nil;
+    
+    [coreManager_ addObserver:self forKeyPath:@"syncedAtLeastOnce" options:0 context:NULL];
   }
   return self;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)dealloc
+{
+  [coreManager_ removeObserver:self forKeyPath:@"syncedAtLeastOnce"];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,14 +75,69 @@
     [self.view addSubview:self.mainView];
   }
   
-  self.albumsViewController.view.frame = self.mainView.bounds;
-  [self.mainView addSubview:self.albumsViewController.view];
+  if(self.coreManager.hasSyncedAtLeastOnce)
+  {
+    self.albumsViewController.view.frame = self.mainView.bounds;
+    [self.mainView addSubview:self.albumsViewController.view];
+  }
+  else
+  {
+    self.firstSyncViewController.view.frame = self.mainView.bounds;
+    [self.mainView addSubview:self.firstSyncViewController.view];
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidUnload
 {
   [self.albumsViewController.view removeFromSuperview];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Private Properties
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (MVFirstSyncViewController*)firstSyncViewController
+{
+  if(!firstSyncViewController_)
+  {
+    firstSyncViewController_ = [[MVFirstSyncViewController alloc]
+                                initWithContextSource:self.contextSource
+                                coreManager:self.coreManager];
+  }
+  return firstSyncViewController_;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark KVO
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+  if(object == self.coreManager)
+  {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if(self.coreManager.hasSyncedAtLeastOnce) {
+        self.albumsViewController.view.frame = self.mainView.bounds;
+        [self.mainView insertSubview:self.albumsViewController.view
+                        belowSubview:self.firstSyncViewController.view];
+        
+        [UIView animateWithDuration:0.25 animations:^{
+          self.firstSyncViewController.view.alpha = 0.0;
+        } completion:^(BOOL finished) {
+          [self.firstSyncViewController.view removeFromSuperview];
+          self.firstSyncViewController = nil;
+        }];
+      }
+    });
+  }
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context]; 
 }
 
 @end

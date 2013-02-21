@@ -167,6 +167,37 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
+#pragma mark Public Properties
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)hasSyncedAtLeastOnce
+{
+  __block BOOL syncedAtLeastOnce = NO;
+  [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+    MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
+                                                     inMoc:moc];
+    syncedAtLeastOnce = lastSyncDateOption.value != nil;
+  }];
+  return syncedAtLeastOnce;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (float)progression
+{
+  if(self.step == kMVCoreManagerStepIdle)
+    return 1.0;
+  else if(self.step == kMVCoreManagerStepSearchingArtistIds)
+    return self.stepProgression * 0.5;
+  else if(self.step == kMVCoreManagerStepSearchingNewAlbums)
+    return 0.5 + self.stepProgression * 0.4;
+  else if(self.step == kMVCoreManagerStepHidingOwnedAlbums)
+    return 0.9 + self.stepProgression * 0.1;
+  return 0.0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
 #pragma mark Sync Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,6 +334,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)markOwnedAlbumsAsHidden
 {
+  self.step = kMVCoreManagerStepHidingOwnedAlbums;
+  self.stepProgression = 0.0;
+  
   __block MVCoreManager *weakSelf = self;
   [self.operationQueue addOperationWithBlock:^{
     if(!weakSelf.iPodArtistAlbumNames)
@@ -321,6 +355,12 @@
         }
       }
       
+      weakSelf.stepProgression = 0.5;
+      
+      BOOL wasSyncedAtLeastOnce = self.hasSyncedAtLeastOnce;
+      if(!wasSyncedAtLeastOnce)
+        [self willChangeValueForKey:@"syncedAtLeastOnce"];
+      
       [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
         MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
                                                          inMoc:moc];
@@ -333,6 +373,9 @@
         
         [moc mv_save];
       }];
+      
+      if(!wasSyncedAtLeastOnce)
+        [self didChangeValueForKey:@"syncedAtLeastOnce"];
       
       weakSelf.syncing = NO;
       weakSelf.step = kMVCoreManagerStepIdle;
@@ -397,7 +440,7 @@
 {
   self.stepProgression = 1.0;
   
-  NSLog(@"albumsRequestDidFinish");  
+  NSLog(@"albumsRequestDidFinish");
   [self markOwnedAlbumsAsHidden];
 }
 

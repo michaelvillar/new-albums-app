@@ -31,10 +31,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVCoreManager : NSObject <MVContextSource>
 
+@property (readonly, nonatomic, getter = hasSyncedAtLeastOnce) BOOL syncedAtLeastOnce;
 @property (strong, readwrite) NSString *countryCode;
 @property (readonly, getter = isSyncing) BOOL syncing;
 @property (readonly) int step;
 @property (readonly) float stepProgression;
+@property (readonly, nonatomic) float progression;
 @property (weak, readwrite) NSObject<MVCoreManagerDelegate> *delegate;
 
 - (void)sync;
