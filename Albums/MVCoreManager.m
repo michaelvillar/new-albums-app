@@ -102,7 +102,18 @@
     {
       double lastSyncDateDouble = lastSyncDateString.doubleValue;
       NSDate *lastSyncDate = [NSDate dateWithTimeIntervalSince1970:lastSyncDateDouble];
-      if([[NSDate date] timeIntervalSinceDate:lastSyncDate] < 24 * 3600) {
+      
+      NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+      gregorian.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+      NSDateComponents *components = [gregorian components:NSYearCalendarUnit |
+                                      NSMonthCalendarUnit |  NSDayCalendarUnit
+                                                  fromDate:[NSDate date]];
+      [components setHour:10];
+      NSDate *todayAt10AMGMT = [gregorian dateFromComponents:components];
+      NSDate *newAlbumsReleasedDate = ([[NSDate date] timeIntervalSinceDate:todayAt10AMGMT] > 0 ?
+                                       todayAt10AMGMT :
+                                       [todayAt10AMGMT dateByAddingTimeInterval:- 24 * 3600]);
+      if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
         self.step = kMVCoreManagerStepIdle;
         return;
       }
