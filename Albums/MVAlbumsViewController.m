@@ -21,7 +21,8 @@
 @interface MVAlbumsViewController () <UITableViewDataSource,
                                       UITableViewDelegate,
                                       NSFetchedResultsControllerDelegate,
-                                      MVAlbumCellDelegate>
+                                      MVAlbumCellDelegate,
+                                      UIActionSheetDelegate>
 
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
@@ -30,6 +31,7 @@
 @property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (readwrite) BOOL showsLoadingCell;
+@property (strong, readwrite) MVArtist *actionSheetArtistToHide;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
@@ -49,6 +51,7 @@
             roundedBottomCorners      = roundedBottomCorners_,
             coreManager               = coreManager_,
             showsLoadingCell          = showsLoadingCell_,
+            actionSheetArtistToHide   = actionSheetArtistToHide_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +65,7 @@
     contextSource_ = contextSource;
     showsLoadingCell_ = NO;
     coreManager_ = coreManager;
+    actionSheetArtistToHide_ = nil;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
@@ -320,11 +324,17 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumCellDidTriggerHideArtist:(MVAlbumCell *)albumCell
 {
-  [self reloadTableViewAfterBlock:^{
-    MVAlbum *album = albumCell.album;
-    album.artist.hiddenValue = YES;
-    [self.contextSource.uiMoc mv_save];
-  }];
+  NSString *hideTitle = [NSString stringWithFormat:
+                         NSLocalizedString(@"Hide %@", @"Hide Artist in Action Sheet"),
+                         albumCell.album.artist.name];
+  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"Cancel",
+                                                                                      @"Cancel")
+                                             destructiveButtonTitle:hideTitle
+                                                  otherButtonTitles:nil];
+  self.actionSheetArtistToHide = albumCell.album.artist;
+  [actionSheet showInView:self.view];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,6 +439,25 @@
     // (because if the row after it was removed, corners have changed
     else if (indexPath.row == newObjects.count - 1)
       [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark UIActionSheetDelegate
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+  if(buttonIndex == 0)
+  {
+    __block MVAlbumsViewController *weakSelf = self;
+    [self reloadTableViewAfterBlock:^{
+      weakSelf.actionSheetArtistToHide.hiddenValue = YES;
+      [weakSelf.contextSource.uiMoc mv_save];
+      weakSelf.actionSheetArtistToHide = nil;
+    }];
   }
 }
 
