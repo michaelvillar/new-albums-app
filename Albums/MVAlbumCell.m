@@ -33,10 +33,11 @@ static NSCache *artworkImagesCache = nil;
 @property (strong, readwrite) MVAsset *artworkAsset;
 @property (strong, readwrite) UIImage *artworkImage;
 @property (strong, readwrite) MVView *albumView;
+@property (strong, readwrite) MVView *artworkView;
 @property (strong, readwrite) MVRoundedLabelView *hideAlbumLabelView;
 @property (strong, readwrite) MVRoundedLabelView *hideArtistLabelView;
 
-- (void)generateArtworkImage;
+- (void)generateArtworkImageAndDisplay:(BOOL)animated;
 
 @end
 
@@ -49,6 +50,7 @@ static NSCache *artworkImagesCache = nil;
             artworkAsset  = artworkAsset_,
             artworkImage  = artworkImage_,
             albumView     = albumView_,
+            artworkView   = artworkView_,
             hideAlbumLabelView = hideAlbumLabelView_,
             hideArtistLabelView = hideArtistLabelView_,
             delegate      = delegate_;
@@ -136,28 +138,9 @@ static NSCache *artworkImagesCache = nil;
       float marginLeft = kMVAlbumArtSize + 11;
       float marginTop = 0;
       float marginRight = 10;
-      CGRect artworkRect = CGRectMake(0, 0, kMVAlbumArtSize, kMVAlbumArtSize);
-
-      if(!cell.artworkAsset)
-      {
-        NSURL *url = [NSURL URLWithString:cell.album.artworkUrl];
-        cell.artworkAsset = [[MVAssetsManager sharedAssetsManager] assetForRemoteURL:url];
-        [cell.artworkAsset addObserver:cell forKeyPath:@"existing" options:0 context:NULL];
-        
-        cell.artworkImage = [artworkImagesCache objectForKey:cell.artworkAsset.localURL.path];
-        if(!cell.artworkImage && cell.artworkAsset.isExisting)
-        {
-          [cell generateArtworkImage];
-        }
-      }
 
       [kMVCellBgColor set];
       [[UIBezierPath bezierPathWithRect:view.bounds] fill];
-      
-      if(cell.artworkImage)
-      {
-        [cell.artworkImage drawAtPoint:artworkRect.origin];
-      }
 
       if(cell.isHighlighted)
       {
@@ -241,6 +224,40 @@ static NSCache *artworkImagesCache = nil;
     albumView_.layer.shadowOffset = CGSizeMake(0, 0);
     albumView_.layer.shadowOpacity = 0.0;
     [self.contentView addSubview:albumView_];
+    
+    artworkView_ = [[MVView alloc] initWithFrame:CGRectMake(0, 0,
+                                                            kMVAlbumArtSize,
+                                                            kMVAlbumArtSize)];
+    artworkView_.opaque = NO;
+    artworkView_.backgroundColor = [UIColor clearColor];
+    artworkView_.drawBlock = ^(UIView *view, CGContextRef ctx)
+    {
+      if(!cell.album)
+        return;
+      
+      CGRect artworkRect = CGRectMake(0, 0, kMVAlbumArtSize, kMVAlbumArtSize);
+      
+      if(!cell.artworkAsset)
+      {
+        NSURL *url = [NSURL URLWithString:cell.album.artworkUrl];
+        cell.artworkAsset = [[MVAssetsManager sharedAssetsManager] assetForRemoteURL:url];
+        [cell.artworkAsset addObserver:cell forKeyPath:@"existing" options:0 context:NULL];
+      }
+      if(!cell.artworkImage)
+      {
+        cell.artworkImage = [artworkImagesCache objectForKey:cell.artworkAsset.localURL.path];
+        if(!cell.artworkImage && cell.artworkAsset.isExisting)
+        {
+          [cell generateArtworkImageAndDisplay:NO];
+        }
+      }
+        
+      if(cell.artworkImage)
+      {
+        [cell.artworkImage drawAtPoint:artworkRect.origin];
+      }
+    };
+    [albumView_ addSubview:artworkView_];
         
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
                                           initWithTarget:self
@@ -282,7 +299,7 @@ static NSCache *artworkImagesCache = nil;
      object == self.artworkAsset &&
      self.artworkAsset.isExisting)
   {
-    [self generateArtworkImage];
+    [self generateArtworkImageAndDisplay:YES];
   }
 }
 
@@ -295,6 +312,7 @@ static NSCache *artworkImagesCache = nil;
 - (void)setNeedsDisplay
 {
   [self.albumView setNeedsDisplay];
+  [self.artworkView setNeedsDisplay];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -441,7 +459,7 @@ static NSCache *artworkImagesCache = nil;
 #pragma mark Private Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)generateArtworkImage
+- (void)generateArtworkImageAndDisplay:(BOOL)animated
 {
   __strong __block MVAlbumCell *cell = self;
   __strong __block MVAsset *asset = self.artworkAsset;
@@ -467,12 +485,13 @@ static NSCache *artworkImagesCache = nil;
     if(asset == cell.artworkAsset)
     {
       dispatch_async(dispatch_get_main_queue(), ^{
-        NSIndexPath *indexPath = [cell.tableView indexPathForCell:cell];
-        if(indexPath)
-        {
-          [cell.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                withRowAnimation:UITableViewRowAnimationNone];
-        }
+        if(animated)
+          cell.artworkView.alpha = 0.0;
+        [cell.artworkView setNeedsDisplay];
+        if(animated)
+          [UIView animateWithDuration:0.2 animations:^{
+            cell.artworkView.alpha = 1.0;
+          }];
       });
     }
   });
