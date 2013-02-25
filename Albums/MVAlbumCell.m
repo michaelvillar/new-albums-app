@@ -158,8 +158,11 @@ static NSCache *artworkImagesCache = nil;
         CGRect labelRect = CGRectMake(cell.frame.size.width - marginRight - labelWidth, 20.5,
                                       labelWidth, 18);
         marginRight += labelRect.size.width + 3;
-        
-        [[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
+      
+        if(cell.isHighlighted)
+          [[UIColor colorWithWhite:0 alpha:0.6] set];
+        else
+          [[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
         [[UIBezierPath bezierPathWithRoundedRect:labelRect
                                     cornerRadius:9] fill];
         
@@ -228,8 +231,7 @@ static NSCache *artworkImagesCache = nil;
     artworkView_ = [[MVView alloc] initWithFrame:CGRectMake(0, 0,
                                                             kMVAlbumArtSize,
                                                             kMVAlbumArtSize)];
-    artworkView_.opaque = NO;
-    artworkView_.backgroundColor = [UIColor clearColor];
+    artworkView_.backgroundColor = kMVCellBgColor;
     artworkView_.drawBlock = ^(UIView *view, CGContextRef ctx)
     {
       if(!cell.album)
@@ -255,6 +257,12 @@ static NSCache *artworkImagesCache = nil;
       if(cell.artworkImage)
       {
         [cell.artworkImage drawAtPoint:artworkRect.origin];
+      }
+      
+      if(cell.isHighlighted)
+      {
+        [[UIColor colorWithWhite:0 alpha:0.5] set];
+        [[UIBezierPath bezierPathWithRect:view.bounds] fill];
       }
     };
     [albumView_ addSubview:artworkView_];
