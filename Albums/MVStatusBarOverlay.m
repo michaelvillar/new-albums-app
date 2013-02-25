@@ -42,6 +42,7 @@
   {
     self.windowLevel = UIWindowLevelStatusBar+1.f;
     self.backgroundColor = [UIColor clearColor];
+    self.userInteractionEnabled = NO;
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(applicationDidBecomeActive:)
