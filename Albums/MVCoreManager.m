@@ -113,10 +113,10 @@
       NSDate *newAlbumsReleasedDate = ([[NSDate date] timeIntervalSinceDate:todayAt10AMGMT] > 0 ?
                                        todayAt10AMGMT :
                                        [todayAt10AMGMT dateByAddingTimeInterval:- 24 * 3600]);
-      if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
-        self.step = kMVCoreManagerStepIdle;
-        return;
-      }
+//      if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
+//        self.step = kMVCoreManagerStepIdle;
+//        return;
+//      }
     }
     
     if(![self.countryCode isEqualToString:lastSyncCountryString])

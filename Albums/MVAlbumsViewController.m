@@ -12,7 +12,6 @@
 #import "MVArtist.h"
 #import "MVAlbumCell.h"
 #import "MVView.h"
-#import "MVLoadingCell.h"
 #import "MVCoreManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +29,6 @@
 @property (strong, readwrite) MVView *roundedTopCorners;
 @property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVCoreManager *coreManager;
-@property (readwrite) BOOL showsLoadingCell;
 @property (strong, readwrite) MVArtist *actionSheetArtistToHide;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
@@ -50,7 +48,6 @@
             roundedTopCorners         = roundedTopCorners_,
             roundedBottomCorners      = roundedBottomCorners_,
             coreManager               = coreManager_,
-            showsLoadingCell          = showsLoadingCell_,
             actionSheetArtistToHide   = actionSheetArtistToHide_,
             contextSource             = contextSource_;
 
@@ -63,7 +60,6 @@
   {
     tableView_ = nil;
     contextSource_ = contextSource;
-    showsLoadingCell_ = NO;
     coreManager_ = coreManager;
     actionSheetArtistToHide_ = nil;
 
@@ -233,8 +229,6 @@
 {
   NSInteger rows =  [[[self.fetchedResultsController sections] objectAtIndex:section]
                      numberOfObjects];
-  if(self.showsLoadingCell)
-    rows += 1;
   return rows;
 }
 
@@ -248,18 +242,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if(self.showsLoadingCell && indexPath.row == 0)
-  {
-    NSString *loadingCellIdentifier = @"loadingCellIdentifier";
-    MVLoadingCell *cell = [tableView dequeueReusableCellWithIdentifier:loadingCellIdentifier];
-    if(!cell)
-    {
-      cell = [[MVLoadingCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                  reuseIdentifier:loadingCellIdentifier];
-    }
-    return cell;
-  }
-  
   NSString *cellIdentifier = @"cellIdentifier";
   
   MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -271,12 +253,6 @@
   }
   cell.delegate = self;
 
-  if(self.showsLoadingCell ||
-     indexPath.row > self.fetchedResultsController.fetchedObjects.count - 1)
-  {
-    indexPath = [NSIndexPath indexPathForRow:indexPath.row - 1
-                                   inSection:indexPath.section];
-  }
   MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
   cell.album = album;
   [cell setNeedsDisplay];
@@ -344,31 +320,11 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)syncDidStart:(NSNotification*)notification
-{
-  if(!self.showsLoadingCell && self.coreManager.isSyncing)
-  {
-    self.showsLoadingCell = self.coreManager.isSyncing;
-    [self.tableView beginUpdates];
-    [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:
-                                            [NSIndexPath indexPathForRow:0 inSection:0]]
-                          withRowAnimation:UITableViewRowAnimationBottom];
-    [self.tableView endUpdates];
-  }
-}
+{}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)syncDidFinish:(NSNotification*)notification
-{
-  if(self.showsLoadingCell && !self.coreManager.isSyncing)
-  {
-    self.showsLoadingCell = self.coreManager.isSyncing;
-    [self.tableView beginUpdates];
-    [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:
-                                            [NSIndexPath indexPathForRow:0 inSection:0]]
-                          withRowAnimation:UITableViewRowAnimationBottom];
-    [self.tableView endUpdates];
-  }
-}
+{}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)syncProgress:(NSNotification*)notification

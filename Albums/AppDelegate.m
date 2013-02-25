@@ -11,6 +11,7 @@
 #import "MVRootViewController.h"
 #import "MVCoreManager.h"
 #import "MVWindow.h"
+#import "MVStatusBarOverlay.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +20,7 @@
 
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (strong, nonatomic) MVRootViewController *rootViewController;
+@property (strong, readwrite) MVStatusBarOverlay *statusBarView;
 
 @end
 
@@ -27,7 +29,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation AppDelegate
 
-@synthesize coreManager       = coreManager_;
+@synthesize coreManager       = coreManager_,
+            statusBarView     = statusBarView_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init
@@ -72,6 +75,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   
   [self.window makeKeyAndVisible];
   
+  self.statusBarView = [[MVStatusBarOverlay alloc] init];
+  
   return YES;
 }
 
@@ -97,6 +102,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   if(object == self.coreManager)
   {
+    self.statusBarView.text = [NSString stringWithFormat:
+                               NSLocalizedString(@"Synchronizing (%i%%)…",
+                                                 @"Sync progress status bar label"),
+                               (int)(round(self.coreManager.progression * 100))];
     [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidProgress
                                                         object:self.coreManager];
   }
@@ -112,6 +121,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidStartSync:(MVCoreManager *)coreManager
 {
+  self.statusBarView.text = NSLocalizedString(@"Synchronizing…", @"Sync status bar label");
+  [self.statusBarView setOverlayHidden:NO animated:YES];
   [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidStart
                                                       object:self.coreManager];
 }
@@ -119,8 +130,25 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)coreManagerDidFinishSync:(MVCoreManager *)coreManager
 {
+  self.statusBarView.text = NSLocalizedString(@"Done", @"Finished sync status bar label");
+  double delayInSeconds = 1.0;
+  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    [self.statusBarView setOverlayHidden:YES animated:YES];
+  });
   [[NSNotificationCenter defaultCenter] postNotificationName:kMVNotificationSyncDidFinish
                                                       object:self.coreManager];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)coreManagerDidFailToSync:(MVCoreManager *)coreManager
+{
+  self.statusBarView.text = NSLocalizedString(@"Failed to sync", @"Failed sync status bar label");
+  double delayInSeconds = 1.0;
+  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    [self.statusBarView setOverlayHidden:YES animated:YES];
+  });
 }
 
 @end

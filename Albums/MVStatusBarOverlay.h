@@ -1,19 +1,21 @@
 //
-//  MVLoadingCell.h
+//  MVStatusBarView.h
 //  Albums
 //
-//  Created by Michaël Villar on 1/9/13.
+//  Created by Michaël Villar on 2/25/13.
 //  Copyright (c) 2013 Michael Villar. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "MVCell.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-@interface MVLoadingCell : MVCell
+@interface MVStatusBarOverlay : UIWindow
 
-+ (CGFloat)rowHeight;
+@property (strong, readwrite, nonatomic) NSString *text;
+
+- (void)setOverlayHidden:(BOOL)hidden
+                animated:(BOOL)animated;
 
 @end
