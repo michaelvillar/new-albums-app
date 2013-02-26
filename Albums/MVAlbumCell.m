@@ -295,6 +295,10 @@ static NSCache *artworkImagesCache = nil;
   album_ = album;
   self.artworkAsset = nil;
   self.artworkImage = nil;
+  
+  CGRect frame = self.albumView.frame;
+  frame.origin.x = 0;
+  self.albumView.frame = frame;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,10 +372,6 @@ static NSCache *artworkImagesCache = nil;
   {
     frame.origin.x = 0;
     
-    [UIView animateWithDuration:0.15 animations:^{
-      self.albumView.frame = frame;
-    }];
-    
     if(self.albumView.layer.shadowOpacity != 0.0)
     {
       CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
@@ -386,12 +386,17 @@ static NSCache *artworkImagesCache = nil;
     {
       if([self.delegate respondsToSelector:@selector(albumCellDidTriggerHideAlbum:)])
         [self.delegate albumCellDidTriggerHideAlbum:self];
+      frame.origin.x = frame.size.width + 10;
     }
     if(self.hideArtistLabelView.isEnabled)
     {
       if([self.delegate respondsToSelector:@selector(albumCellDidTriggerHideArtist:)])
         [self.delegate albumCellDidTriggerHideArtist:self];
     }
+    
+    [UIView animateWithDuration:0.15 animations:^{
+      self.albumView.frame = frame;
+    }];
     
     self.layer.zPosition = 0;
   }
