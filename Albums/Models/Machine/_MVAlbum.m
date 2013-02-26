@@ -6,6 +6,7 @@
 const struct MVAlbumAttributes MVAlbumAttributes = {
 	.artworkUrl = @"artworkUrl",
 	.createdAt = @"createdAt",
+	.displayedAsReleased = @"displayedAsReleased",
 	.hidden = @"hidden",
 	.iTunesId = @"iTunesId",
 	.iTunesStoreUrl = @"iTunesStoreUrl",
@@ -47,6 +48,11 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"displayedAsReleasedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"displayedAsReleased"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"hiddenValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"hidden"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -73,6 +79,32 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 
 @dynamic createdAt;
 
+
+
+
+
+
+@dynamic displayedAsReleased;
+
+
+
+- (BOOL)displayedAsReleasedValue {
+	NSNumber *result = [self displayedAsReleased];
+	return [result boolValue];
+}
+
+- (void)setDisplayedAsReleasedValue:(BOOL)value_ {
+	[self setDisplayedAsReleased:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveDisplayedAsReleasedValue {
+	NSNumber *result = [self primitiveDisplayedAsReleased];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveDisplayedAsReleasedValue:(BOOL)value_ {
+	[self setPrimitiveDisplayedAsReleased:[NSNumber numberWithBool:value_]];
+}
 
 
 

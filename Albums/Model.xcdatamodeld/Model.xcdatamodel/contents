@@ -3,6 +3,7 @@
     <entity name="Album" representedClassName="MVAlbum" syncable="YES">
         <attribute name="artworkUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="displayedAsReleased" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="hidden" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="iTunesId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="iTunesStoreUrl" optional="YES" attributeType="String" syncable="YES"/>
@@ -28,7 +29,7 @@
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Album" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="Album" positionX="160" positionY="192" width="128" height="195"/>
         <element name="Artist" positionX="160" positionY="192" width="128" height="135"/>
         <element name="ArtistName" positionX="160" positionY="192" width="128" height="75"/>
         <element name="Option" positionX="160" positionY="192" width="128" height="75"/>
