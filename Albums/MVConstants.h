@@ -6,3 +6,4 @@
 
 #define kMVOptionKeyLastSyncDate @"last_sync_date"
 #define kMVOptionKeyLastSyncCountry @"last_sync_country"
+#define kMVOptionKeyLastSyncArtistsHash @"last_sync_artists_hash"

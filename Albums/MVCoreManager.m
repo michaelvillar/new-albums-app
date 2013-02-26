@@ -87,35 +87,56 @@
   [self.operationQueue addOperationWithBlock:^{
     __block NSString *lastSyncDateString;
     __block NSString *lastSyncCountryString;
-    [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
-      MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
-                                                       inMoc:moc];
-      lastSyncDateString = lastSyncDateOption.value.copy;
-      
-      MVOption *lastSyncCountryOption = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
-                                                          inMoc:moc];
-      lastSyncCountryString = lastSyncCountryOption.value.copy;
-    }];
-    if(lastSyncDateString &&
-       lastSyncCountryString &&
-       [self.countryCode isEqualToString:lastSyncCountryString])
+    __block NSString *lastSyncArtistsHash;
+    
+    BOOL forceSync = NO;
+    if(!self.iPodArtistNames)
+      self.iPodArtistNames = [self getArtistNamesFromiPod];
+    NSString *artistsHash = [NSString stringWithFormat:@"%lu",
+                             (unsigned long)self.iPodArtistNames.description.hash];
+    
+    if(!forceSync)
     {
-      double lastSyncDateDouble = lastSyncDateString.doubleValue;
-      NSDate *lastSyncDate = [NSDate dateWithTimeIntervalSince1970:lastSyncDateDouble];
+      [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+        MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
+                                                         inMoc:moc];
+        lastSyncDateString = lastSyncDateOption.value.copy;
+        
+        MVOption *lastSyncCountryOption = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
+                                                            inMoc:moc];
+        lastSyncCountryString = lastSyncCountryOption.value.copy;
+        
+        MVOption *lastSyncArtistsHashOption = [MVOption optionWithKey:kMVOptionKeyLastSyncArtistsHash
+                                                                inMoc:moc];
+        lastSyncArtistsHash = lastSyncArtistsHashOption.value.copy;
+      }];
       
-      NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-      gregorian.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-      NSDateComponents *components = [gregorian components:NSYearCalendarUnit |
-                                      NSMonthCalendarUnit |  NSDayCalendarUnit
-                                                  fromDate:[NSDate date]];
-      [components setHour:10];
-      NSDate *todayAt10AMGMT = [gregorian dateFromComponents:components];
-      NSDate *newAlbumsReleasedDate = ([[NSDate date] timeIntervalSinceDate:todayAt10AMGMT] > 0 ?
-                                       todayAt10AMGMT :
-                                       [todayAt10AMGMT dateByAddingTimeInterval:- 24 * 3600]);
-      if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
-        self.step = kMVCoreManagerStepIdle;
-        return;
+      if(!lastSyncArtistsHash ||
+         ![lastSyncArtistsHash isEqualToString:artistsHash])
+      {
+        // sync no matter what because artists have changed
+      }
+      else if(lastSyncDateString &&
+              lastSyncCountryString &&
+              [self.countryCode isEqualToString:lastSyncCountryString])
+      {
+        double lastSyncDateDouble = lastSyncDateString.doubleValue;
+        NSDate *lastSyncDate = [NSDate dateWithTimeIntervalSince1970:lastSyncDateDouble];
+        
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        gregorian.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        NSDateComponents *components = [gregorian components:NSYearCalendarUnit |
+                                        NSMonthCalendarUnit |  NSDayCalendarUnit
+                                                    fromDate:[NSDate date]];
+        [components setHour:10];
+        NSDate *todayAt10AMGMT = [gregorian dateFromComponents:components];
+        NSDate *newAlbumsReleasedDate = ([[NSDate date] timeIntervalSinceDate:todayAt10AMGMT] > 0 ?
+                                         todayAt10AMGMT :
+                                         [todayAt10AMGMT dateByAddingTimeInterval:- 24 * 3600]);
+        if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
+          self.step = kMVCoreManagerStepIdle;
+          return;
+        }
       }
     }
     
@@ -140,8 +161,6 @@
         [self.delegate coreManagerDidStartSync:self];
     });
     
-    if(!self.iPodArtistNames)
-      self.iPodArtistNames = [self getArtistNamesFromiPod];
     NSSet *artistNames = self.iPodArtistNames;
     NSMutableSet *toFetchArtistNames = [NSMutableSet set];
     [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
@@ -384,6 +403,11 @@
         MVOption *lastSyncCountry = [MVOption optionWithKey:kMVOptionKeyLastSyncCountry
                                                       inMoc:moc];
         lastSyncCountry.value = weakSelf.countryCode;
+        
+        MVOption *lastSyncArtistsHash = [MVOption optionWithKey:kMVOptionKeyLastSyncArtistsHash
+                                                          inMoc:moc];
+        lastSyncArtistsHash.value = [NSString stringWithFormat:@"%lu",
+                                     (unsigned long)weakSelf.iPodArtistNames.description.hash];
         
         [moc mv_save];
       }];
