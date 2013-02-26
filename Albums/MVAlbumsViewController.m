@@ -13,6 +13,7 @@
 #import "MVAlbumCell.h"
 #import "MVView.h"
 #import "MVCoreManager.h"
+#import "MVPlaceholderView.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,9 +31,12 @@
 @property (strong, readwrite) MVView *roundedBottomCorners;
 @property (strong, readwrite) MVCoreManager *coreManager;
 @property (strong, readwrite) MVArtist *actionSheetArtistToHide;
+@property (strong, readwrite, nonatomic) MVPlaceholderView *placeholderView;
+@property (readwrite, getter = isPlaceholderVisible) BOOL placeholderVisible;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
+- (void)updatePlaceholder:(BOOL)animated;
 
 @end
 
@@ -49,6 +53,8 @@
             roundedBottomCorners      = roundedBottomCorners_,
             coreManager               = coreManager_,
             actionSheetArtistToHide   = actionSheetArtistToHide_,
+            placeholderView           = placeholderView_,
+            placeholderVisible        = placeholderVisible_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +68,8 @@
     contextSource_ = contextSource;
     coreManager_ = coreManager;
     actionSheetArtistToHide_ = nil;
+    placeholderView_ = nil;
+    placeholderVisible_ = NO;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
@@ -185,6 +193,7 @@
   [self.view addSubview:self.roundedBottomCorners];
   
   [self.fetchedResultsController performFetch:nil];
+  [self updatePlaceholder:NO];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,13 +282,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
   [self.tableView reloadData];
+  [self updatePlaceholder:YES];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -396,6 +405,53 @@
     else if (indexPath.row == newObjects.count - 1)
       [[self.tableView cellForRowAtIndexPath:indexPath] setNeedsLayout];
   }
+  
+  [self updatePlaceholder:YES];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)updatePlaceholder:(BOOL)animated
+{
+  if(self.fetchedResultsController.fetchedObjects.count == 0)
+  {
+    if(!self.placeholderVisible)
+    {
+      self.placeholderVisible = YES;
+      self.placeholderView.alpha = 0.0;
+      [self.view addSubview:self.placeholderView];
+      [UIView animateWithDuration:0.2 animations:^{
+        [UIView setAnimationsEnabled:animated];
+        self.placeholderView.alpha = 1.0;
+        [UIView setAnimationsEnabled:YES];
+      }];
+    }
+  }
+  else if(self.placeholderVisible)
+  {
+    self.placeholderVisible = NO;
+    [UIView animateWithDuration:0.2 animations:^{
+      [UIView setAnimationsEnabled:animated];
+      self.placeholderView.alpha = 0.0;
+      [UIView setAnimationsEnabled:YES];
+    } completion:^(BOOL finished) {
+      [self.placeholderView removeFromSuperview];
+    }];
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Private Properties
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (MVPlaceholderView*)placeholderView
+{
+  if(!placeholderView_)
+  {
+    placeholderView_ = [[MVPlaceholderView alloc] initWithFrame:self.view.bounds];
+  }
+  return placeholderView_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

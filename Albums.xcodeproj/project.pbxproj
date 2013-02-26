@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C08E0E816DD43C3000BF49E /* MVPlaceholderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C08E0E716DD43C3000BF49E /* MVPlaceholderView.m */; };
+		4C08E0EA16DD4F6D000BF49E /* white_flat_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C08E0E916DD4F6D000BF49E /* white_flat_icon@2x.png */; };
 		4C3906311606212F00155E4E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C3906301606212F00155E4E /* UIKit.framework */; };
 		4C3906331606212F00155E4E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C3906321606212F00155E4E /* Foundation.framework */; };
 		4C3906351606212F00155E4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C3906341606212F00155E4E /* CoreGraphics.framework */; };
@@ -59,6 +61,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C08E0E616DD43C3000BF49E /* MVPlaceholderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVPlaceholderView.h; sourceTree = "<group>"; };
+		4C08E0E716DD43C3000BF49E /* MVPlaceholderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVPlaceholderView.m; sourceTree = "<group>"; };
+		4C08E0E916DD4F6D000BF49E /* white_flat_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white_flat_icon@2x.png"; sourceTree = "<group>"; };
 		4C39062C1606212F00155E4E /* Albums.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Albums.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C3906301606212F00155E4E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4C3906321606212F00155E4E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -352,6 +357,8 @@
 				4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */,
 				4C5FCC7D16DBD8CF0054817B /* MVStatusBarOverlay.h */,
 				4C5FCC7E16DBD8CF0054817B /* MVStatusBarOverlay.m */,
+				4C08E0E616DD43C3000BF49E /* MVPlaceholderView.h */,
+				4C08E0E716DD43C3000BF49E /* MVPlaceholderView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -376,6 +383,7 @@
 			children = (
 				4C585EE116D6B4A7008A9C23 /* progress_bar_progress@2x.png */,
 				4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */,
+				4C08E0E916DD4F6D000BF49E /* white_flat_icon@2x.png */,
 				4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */,
 				4CDDE0C916C1BB6400EFA4F8 /* icon.png */,
 			);
@@ -441,6 +449,7 @@
 				4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */,
 				4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */,
 				4C585EE616D6BF3A008A9C23 /* Default@2x.png in Resources */,
+				4C08E0EA16DD4F6D000BF49E /* white_flat_icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,6 +495,7 @@
 				4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */,
 				4C585EDB16D6ACDB008A9C23 /* MVFirstSyncViewController.m in Sources */,
 				4C5FCC7F16DBD8CF0054817B /* MVStatusBarOverlay.m in Sources */,
+				4C08E0E816DD43C3000BF49E /* MVPlaceholderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
