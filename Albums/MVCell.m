@@ -34,7 +34,7 @@
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if (self)
   {
-    __block MVCell *cell = self;
+    __block __weak MVCell *cell = self;
     
     tableView_ = nil;
 

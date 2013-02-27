@@ -370,7 +370,7 @@
   self.step = kMVCoreManagerStepHidingOwnedAlbums;
   self.stepProgression = 0.0;
   
-  __block MVCoreManager *weakSelf = self;
+  __block __weak MVCoreManager *weakSelf = self;
   [self.operationQueue addOperationWithBlock:^{
     if(!weakSelf.iPodArtistAlbumNames)
       weakSelf.iPodArtistAlbumNames = [self getArtistAlbumNamesFromiPod];
@@ -400,7 +400,7 @@
   self.step = kMVCoreManagerStepMarkReleasedAlbums;
   self.stepProgression = 0.0;
   
-  __block MVCoreManager *weakSelf = self;
+  __block __weak MVCoreManager *weakSelf = self;
   [self.operationQueue addOperationWithBlock:^{
     [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
       NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
@@ -421,7 +421,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)endSync
 {
-  __block MVCoreManager *weakSelf = self;
+  __block __weak MVCoreManager *weakSelf = self;
   [self.operationQueue addOperationWithBlock:^{
     BOOL wasSyncedAtLeastOnce = self.hasSyncedAtLeastOnce;
     if(!wasSyncedAtLeastOnce)

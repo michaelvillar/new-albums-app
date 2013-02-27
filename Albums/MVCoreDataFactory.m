@@ -260,10 +260,14 @@ static MVCoreDataFactory *coreDataFactory;
   
   NSManagedObjectContext *moc;
   for(moc in mocs) {
+    __block NSManagedObjectContext *blockMoc = moc;
+    __block NSNotification *blockNotification = notification;
+    __block NSArray *blockObjectIDs = objectIDs;
     NSThread *threadOfMoc = [self.threadsForMOCs objectForKey:[NSString stringWithFormat:@"%p",moc]];
     [self mv_performBlock:^{
-      [moc mv_mergeChangesFromContextDidSaveNotification:notification
-                                   withUpdatedObjectsIDs:objectIDs];
+      [blockMoc mv_mergeChangesFromContextDidSaveNotification:blockNotification
+                                        withUpdatedObjectsIDs:blockObjectIDs];
+      blockMoc = nil;
     } onThread:threadOfMoc];
   }
   

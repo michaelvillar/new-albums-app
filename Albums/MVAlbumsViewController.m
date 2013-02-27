@@ -464,7 +464,7 @@
 {
   if(buttonIndex == 0)
   {
-    __block MVAlbumsViewController *weakSelf = self;
+    __block __weak MVAlbumsViewController *weakSelf = self;
     [self reloadTableViewAfterBlock:^{
       weakSelf.actionSheetArtistToHide.hiddenValue = YES;
       [weakSelf.contextSource.uiMoc mv_save];

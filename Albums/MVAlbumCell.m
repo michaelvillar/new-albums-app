@@ -79,7 +79,7 @@ static NSCache *artworkImagesCache = nil;
     artworkImage_ = nil;
     delegate_ = nil;
     
-    __block MVAlbumCell *cell = self;
+    __block __weak MVAlbumCell *cell = self;
     
     MVView *contentView = [[MVView alloc] initWithFrame:self.contentView.bounds];
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth |
@@ -515,7 +515,13 @@ static NSCache *artworkImagesCache = nil;
           [UIView animateWithDuration:0.2 animations:^{
             cell.artworkView.alpha = 1.0;
           }];
+        cell = nil;
+        asset = nil;
       });
+    }
+    else {
+      cell = nil;
+      asset = nil;
     }
   });
 }
