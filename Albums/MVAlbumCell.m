@@ -269,7 +269,7 @@ static NSCache *artworkImagesCache = nil;
         
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
                                           initWithTarget:self
-                                          action:@selector(panGestureRecognizer:)];
+                                          action:@selector(mvPanGestureRecognizer:)];
     panGesture.delegate = self;
     panGesture.maximumNumberOfTouches = 1;
     panGesture.minimumNumberOfTouches = 1;
@@ -359,11 +359,11 @@ static NSCache *artworkImagesCache = nil;
     BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
     return possible;
   }
-  return NO;
+  return [super gestureRecognizerShouldBegin:gestureRecognizer];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGesture
+- (void)mvPanGestureRecognizer:(UIPanGestureRecognizer *)panGesture
 {
   CGPoint translate = [panGesture translationInView:self.contentView];
   CGRect frame = self.albumView.frame;
