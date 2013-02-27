@@ -13,8 +13,7 @@
 #define kMVRoundedLabelFont [UIFont boldSystemFontOfSize:16]
 #define kMVRoundedLabelColor [UIColor colorWithWhite:0.8 alpha:1]
 #define kMVRoundedLabelEnabledColor [UIColor colorWithWhite:0.14 alpha:1]
-#define kMVRoundedLabelEnabledBorderColor [UIColor colorWithWhite:0.65 alpha:1]
-#define kMVRoundedLabelEnabledFontColor [UIColor colorWithWhite:0.9 alpha:1]
+#define kMVRoundedLabelEnabledFontColor [UIColor colorWithWhite:0.95 alpha:1]
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +63,7 @@
   {
     [kMVRoundedLabelEnabledColor set];
     [path fill];
-    [kMVRoundedLabelEnabledBorderColor setStroke];
+    [kMVRoundedLabelEnabledColor setStroke];
     path.lineWidth = 2;
     [path stroke];
   }
