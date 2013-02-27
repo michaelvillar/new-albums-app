@@ -394,9 +394,19 @@ static NSCache *artworkImagesCache = nil;
         [self.delegate albumCellDidTriggerHideArtist:self];
     }
     
-    [UIView animateWithDuration:0.15 animations:^{
-      self.albumView.frame = frame;
-    }];
+    CAMediaTimingFunction *timingFunction = [CAMediaTimingFunction
+                                             functionWithControlPoints:0.61 :1.5 :0.78 :1];
+    
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
+    animation.fromValue = [NSNumber numberWithFloat:self.albumView.frame.origin.x +
+                                                    frame.size.width / 2];
+    animation.toValue = [NSNumber numberWithFloat:frame.origin.x + frame.size.width / 2];
+    animation.timingFunction = timingFunction;
+    animation.duration = 0.3;
+    [self.albumView.layer addAnimation:animation
+                                forKey:nil];
+
+    self.albumView.frame = frame;
     
     self.layer.zPosition = 0;
   }
