@@ -49,10 +49,11 @@
 		4C68CA341625FC58005B6878 /* MVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA331625FC57005B6878 /* MVRootViewController.m */; };
 		4C68CA3816260173005B6878 /* MVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C68CA3716260173005B6878 /* MVWindow.m */; };
 		4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C68CA4116260EC3005B6878 /* QuartzCore.framework */; };
+		4C8C883316DEF3F20098FC4A /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8C883216DEF3F20098FC4A /* icon.png */; };
+		4C8C883516DEF6DA0098FC4A /* icon_58x58@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8C883416DEF6DA0098FC4A /* icon_58x58@2x.png */; };
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56016D2CD5900089C63 /* MVOption.m */; };
 		4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56316D2CD6400089C63 /* _MVOption.m */; };
-		4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CDDE0C916C1BB6400EFA4F8 /* icon.png */; };
 		4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C57169E7A0E00395FAA /* MVCell.m */; };
 		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
 		4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */; };
@@ -137,12 +138,13 @@
 		4C68CA3716260173005B6878 /* MVWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVWindow.m; sourceTree = "<group>"; };
 		4C68CA4116260EC3005B6878 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4C89E15D1618F28B00810C91 /* MVConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
+		4C8C883216DEF3F20098FC4A /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		4C8C883416DEF6DA0098FC4A /* icon_58x58@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_58x58@2x.png"; sourceTree = "<group>"; };
 		4C9E36761654859E00EBF020 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		4CA3D55F16D2CD5900089C63 /* MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVOption.h; sourceTree = "<group>"; };
 		4CA3D56016D2CD5900089C63 /* MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVOption.m; sourceTree = "<group>"; };
 		4CA3D56216D2CD6400089C63 /* _MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MVOption.h; sourceTree = "<group>"; };
 		4CA3D56316D2CD6400089C63 /* _MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVOption.m; sourceTree = "<group>"; };
-		4CDDE0C916C1BB6400EFA4F8 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
 		4CE87C56169E7A0E00395FAA /* MVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCell.h; sourceTree = "<group>"; };
 		4CE87C57169E7A0E00395FAA /* MVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCell.m; sourceTree = "<group>"; };
 		4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRoundedLabelView.h; sourceTree = "<group>"; };
@@ -385,7 +387,8 @@
 				4C585EE216D6B4A7008A9C23 /* progress_bar_track@2x.png */,
 				4C08E0E916DD4F6D000BF49E /* white_flat_icon@2x.png */,
 				4C585EDF16D6B0A5008A9C23 /* flat_icon@2x.png */,
-				4CDDE0C916C1BB6400EFA4F8 /* icon.png */,
+				4C8C883216DEF3F20098FC4A /* icon.png */,
+				4C8C883416DEF6DA0098FC4A /* icon_58x58@2x.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -444,12 +447,13 @@
 				4C39063B1606212F00155E4E /* InfoPlist.strings in Resources */,
 				4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */,
 				4C4FD4D316BD544D005DC397 /* Settings.bundle in Resources */,
-				4CDDE0CA16C1BB6400EFA4F8 /* icon.png in Resources */,
 				4C585EE016D6B0A5008A9C23 /* flat_icon@2x.png in Resources */,
 				4C585EE316D6B4A7008A9C23 /* progress_bar_progress@2x.png in Resources */,
 				4C585EE416D6B4A7008A9C23 /* progress_bar_track@2x.png in Resources */,
 				4C585EE616D6BF3A008A9C23 /* Default@2x.png in Resources */,
 				4C08E0EA16DD4F6D000BF49E /* white_flat_icon@2x.png in Resources */,
+				4C8C883316DEF3F20098FC4A /* icon.png in Resources */,
+				4C8C883516DEF6DA0098FC4A /* icon_58x58@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
