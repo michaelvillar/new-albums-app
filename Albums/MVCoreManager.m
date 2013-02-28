@@ -483,7 +483,6 @@
 {
   self.stepProgression = 1.0;
   
-  NSLog(@"artistIdsRequestDidFinish");
   [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
     [moc mv_save];
   }];
@@ -515,7 +514,6 @@
 {
   self.stepProgression = 1.0;
   
-  NSLog(@"albumsRequestDidFinish");
   [self markOwnedAlbumsAsHidden];
 }
 
