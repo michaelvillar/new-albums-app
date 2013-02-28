@@ -91,11 +91,6 @@
     __block NSString *lastSyncCountryString;
     __block NSString *lastSyncArtistsHash;
     
-    if(!self.iPodArtistNames)
-      self.iPodArtistNames = [self getArtistNamesFromiPod];
-    NSString *artistsHash = [NSString stringWithFormat:@"%lu",
-                             (unsigned long)self.iPodArtistNames.description.hash];
-    
     [self performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
       MVOption *lastSyncDateOption = [MVOption optionWithKey:kMVOptionKeyLastSyncDate
                                                        inMoc:moc];
@@ -110,14 +105,11 @@
       lastSyncArtistsHash = lastSyncArtistsHashOption.value.copy;
     }];
     
-    if(!lastSyncArtistsHash ||
-       ![lastSyncArtistsHash isEqualToString:artistsHash])
-    {
-      // sync no matter what because artists have changed
-    }
-    else if(lastSyncDateString &&
-            lastSyncCountryString &&
-            [self.countryCode isEqualToString:lastSyncCountryString])
+    NSSet *ipodArtistNames = nil;
+    
+    if(lastSyncDateString &&
+       lastSyncCountryString &&
+       [self.countryCode isEqualToString:lastSyncCountryString])
     {
       double lastSyncDateDouble = lastSyncDateString.doubleValue;
       NSDate *lastSyncDate = [NSDate dateWithTimeIntervalSince1970:lastSyncDateDouble];
@@ -133,11 +125,33 @@
                                        todayAt10AMGMT :
                                        [todayAt10AMGMT dateByAddingTimeInterval:- 24 * 3600]);
       if([newAlbumsReleasedDate timeIntervalSinceDate:lastSyncDate] < 0) {
-        self.step = kMVCoreManagerStepIdle;
-        return;
+        ipodArtistNames = [self getArtistNamesFromiPod];
+        NSString *artistsHash = [NSString stringWithFormat:@"%lu",
+                                 (unsigned long)ipodArtistNames.description.hash];
+        
+        if(lastSyncArtistsHash &&
+           [lastSyncArtistsHash isEqualToString:artistsHash])
+        {
+          // artists didn't changed so we abort the sync
+          self.step = kMVCoreManagerStepIdle;
+          return;
+        }
       }
     }
-   
+    
+    self.syncing = YES;
+    self.step = kMVCoreManagerStepSearchingArtistIds;
+    self.stepProgression = 0.0;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if([self.delegate respondsToSelector:@selector(coreManagerDidStartSync:)])
+        [self.delegate coreManagerDidStartSync:self];
+    });
+
+    if(!ipodArtistNames)
+      ipodArtistNames = [self getArtistNamesFromiPod];
+    self.iPodArtistNames = ipodArtistNames;
+       
     if(![self.countryCode isEqualToString:lastSyncCountryString])
     {
       // delete all albums
@@ -149,15 +163,6 @@
         }
       }];
     }
-    
-    self.syncing = YES;
-    self.step = kMVCoreManagerStepSearchingArtistIds;
-    self.stepProgression = 0.0;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if([self.delegate respondsToSelector:@selector(coreManagerDidStartSync:)])
-        [self.delegate coreManagerDidStartSync:self];
-    });
     
     NSSet *artistNames = self.iPodArtistNames;
     NSMutableSet *toFetchArtistNames = [NSMutableSet set];
