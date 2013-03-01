@@ -329,7 +329,7 @@
       if(countArr)
         [countArr addObject:@""];
       else {
-        countArr = [NSMutableArray array];
+        countArr = [NSMutableArray arrayWithObject:@""];
         [artistCountInAlbum setValue:countArr
                               forKey:artistName];
       }
