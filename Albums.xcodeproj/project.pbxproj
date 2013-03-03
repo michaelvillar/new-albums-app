@@ -396,9 +396,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4C39062B1606212F00155E4E /* Albums */ = {
+		4C39062B1606212F00155E4E /* NewAlbums */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "Albums" */;
+			buildConfigurationList = 4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "NewAlbums" */;
 			buildPhases = (
 				4C3906281606212F00155E4E /* Sources */,
 				4C3906291606212F00155E4E /* Frameworks */,
@@ -408,7 +408,7 @@
 			);
 			dependencies = (
 			);
-			name = Albums;
+			name = NewAlbums;
 			productName = Albums;
 			productReference = 4C39062C1606212F00155E4E /* Albums.app */;
 			productType = "com.apple.product-type.application";
@@ -434,7 +434,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4C39062B1606212F00155E4E /* Albums */,
+				4C39062B1606212F00155E4E /* NewAlbums */,
 			);
 		};
 /* End PBXProject section */
@@ -610,7 +610,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "Albums" */ = {
+		4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "NewAlbums" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4C39064B1606212F00155E4E /* Debug */,
