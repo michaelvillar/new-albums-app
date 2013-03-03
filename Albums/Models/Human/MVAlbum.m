@@ -84,8 +84,12 @@
 {
   if(!monthDayDateFormatter_)
   {
+    NSString *template = @"ddMM";
+    NSLocale *locale = [NSLocale currentLocale];
     monthDayDateFormatter_ = [[NSDateFormatter alloc] init];
-    monthDayDateFormatter_.dateFormat = @"MM/dd";
+    monthDayDateFormatter_.dateFormat = [NSDateFormatter dateFormatFromTemplate:template
+                                                                        options:0
+                                                                         locale:locale];
   }
   return monthDayDateFormatter_;
 }
