@@ -11,6 +11,7 @@
 #import "MVArtist.h"
 #import "MVArtistName.h"
 #import "MVContextSource.h"
+#import "NSString+Levenshtein.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,15 +123,33 @@
       long long artistId = [[firstResult valueForKey:@"artistId"] longLongValue];
       NSNumber *artistNumberId = [NSNumber numberWithLongLong:artistId];
       
+      NSCharacterSet *letterSet = [[NSCharacterSet letterCharacterSet] invertedSet];
+      
+      NSData *data = [request.term dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+      NSString *string1 = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+      string1 = [[[string1 componentsSeparatedByCharactersInSet:letterSet]
+                 componentsJoinedByString:@""] lowercaseString];
+
+      data = [artistName dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+      NSString *string2 = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+      string2 = [[[string2 componentsSeparatedByCharactersInSet:letterSet]
+                 componentsJoinedByString:@""] lowercaseString];
+      
+      int matchGain = 10;
+      int cost = 1;
+      NSUInteger score = [string1 compareWithWord:string2 matchGain:matchGain missingCost:cost] +
+                         (MIN(string1.length, string2.length) * matchGain) -
+                          abs(string1.length - string2.length) * cost;
+      
       [self.contextSource performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
         MVArtist *artist = (MVArtist*)[MVArtist objectWithiTunesId:artistNumberId
                                                              inMoc:moc];
         if(!artist)
         {
           artist = [MVArtist insertInManagedObjectContext:moc];
-          artist.iTunesIdValue = artistId;
+          artist.iTunesIdValue = (score == 0 ? artistId : -1);
           artist.name = artistName;
-          artist.fetchAlbumsValue = YES;
+          artist.fetchAlbumsValue = (score == 0);
         }
         
         if(![artist.name isEqualToString:request.term])
