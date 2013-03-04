@@ -110,6 +110,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults synchronize];
   NSString *appStoreCountry = [defaults stringForKey:kMVPreferencesAppStoreCountry];
   self.coreManager.countryCode = appStoreCountry;
   [self.coreManager sync];
