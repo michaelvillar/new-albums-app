@@ -59,14 +59,40 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
   
+  NSArray *availableCountries = [NSArray arrayWithObjects:@"AL",@"DZ",@"AO",@"AI",@"AG",@"AR",
+                                 @"AM",@"AU",@"AT",@"AZ",@"BS",@"BH",@"BB",@"BY",@"BE",@"BZ",
+                                 @"BJ",@"BM",@"BT",@"BO",@"BW",@"BR",@"VG",@"BN",@"BG",@"BF",
+                                 @"KH",@"CA",@"CV",@"KY",@"TD",@"CL",@"CN",@"CO",@"CG",@"CR",
+                                 @"HR",@"CY",@"CZ",@"DK",@"DM",@"DO",@"EC",@"EG",@"SV",@"EE",
+                                 @"FJ",@"FI",@"FR",@"GM",@"DE",@"GH",@"GR",@"GD",@"GT",@"GW",
+                                 @"GY",@"HN",@"HK",@"HU",@"IS",@"IN",@"ID",@"IE",@"IL",@"IT",
+                                 @"JM",@"JP",@"JO",@"KZ",@"KE",@"KW",@"KG",@"LA",@"LV",@"LB",
+                                 @"LR",@"LT",@"LU",@"MO",@"MK",@"MG",@"MW",@"MY",@"ML",@"MT",
+                                 @"MR",@"MU",@"MX",@"FM",@"MN",@"MS",@"MD",@"MZ",@"NA",@"NP",
+                                 @"NL",@"NZ",@"NI",@"NE",@"NG",@"NO",@"OM",@"PK",@"PW",@"PA",
+                                 @"PG",@"PY",@"PE",@"PH",@"PL",@"PT",@"QA",@"RO",@"RU",@"KN",
+                                 @"LC",@"VC",@"ST",@"SA",@"SN",@"SC",@"SL",@"SG",@"SK",@"SI",
+                                 @"SB",@"ZA",@"KR",@"ES",@"LK",@"SR",@"SZ",@"SE",@"CH",@"TW",
+                                 @"TJ",@"TZ",@"TH",@"TT",@"TN",@"TR",@"TM",@"TC",@"UG",@"UA",
+                                 @"AE",@"GB",@"US",@"UY",@"UZ",@"VE",@"VN",@"YE",@"ZW",nil];
+  
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *appStoreCountry = [defaults stringForKey:kMVPreferencesAppStoreCountry];
   if(!appStoreCountry) {
-    appStoreCountry = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
+    NSArray *localeIdentifierArr = [localeIdentifier componentsSeparatedByString:@"_"];
+    if(localeIdentifierArr.count > 1) {
+      appStoreCountry = [[localeIdentifierArr objectAtIndex:1] uppercaseString];
+      if(![availableCountries containsObject:appStoreCountry])
+        appStoreCountry = nil;
+    }
+
+    if(!appStoreCountry)
+      appStoreCountry = @"US";
     [defaults setValue:appStoreCountry forKey:kMVPreferencesAppStoreCountry];
     [defaults synchronize];
   }
-  
+
   self.window = [[MVWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   
   self.rootViewController = [[MVRootViewController alloc] initWithContextSource:self.coreManager
