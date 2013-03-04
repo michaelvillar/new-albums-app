@@ -334,10 +334,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)albumCellDidTriggerHideArtist:(MVAlbumCell *)albumCell
 {
-  NSString *hideTitle = [NSString stringWithFormat:
-                         NSLocalizedString(@"Hide %@", @"Hide Artist in Action Sheet"),
-                         albumCell.album.artist.name];
-  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@""
+  NSString *hideTitle = NSLocalizedString(@"Hide Albums", @"Hide Artist in Action Sheet");
+  NSString *title = [NSString stringWithFormat:
+                     NSLocalizedString(@"Hide every albums from %@",
+                                       @"Hide every albums localized string"),
+                     albumCell.album.artist.name];
+  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
                                                            delegate:self
                                                   cancelButtonTitle:NSLocalizedString(@"Cancel",
                                                                                       @"Cancel")
