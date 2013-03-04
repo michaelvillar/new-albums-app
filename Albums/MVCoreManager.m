@@ -312,7 +312,12 @@
   return [NSArray arrayWithObjects:@"Air",@"Angus & Julia Stone",@"Archive",
           @"Bang gang",@"Black Eyed Peas",@"Blink 182",@"Calvin Harris",
           @"Coldplay",@"Cut Copy",@"Daft Punk",@"Darwin Deez",@"David Guetta",
-          @"Death Cab For Cutie", nil];
+          @"Death Cab For Cutie", @"Jose Gonzalez", @"Joshua", @"Justice", @"Justice vs. Simian",
+          @"Justin Timberlake", @"Kakkmaddafakka", @"Kanye West", @"Kate Nash", @"Katy Perry",
+          @"Kavinsky", @"Keane", @"Kid Cudi", @"Kidstreet", @"Kings Of Convenience",
+          @"LMFAO", @"Lady GaGa", @"Lamb", @"Lana Del Ray", @"Lars and the Hands of Light",
+          @"Laura Marling", @"Laurent Wolf", @"Lily Allen", @"Linkin Park", @"Linkin Park & Jay-Z",
+          @"Liquido", @"Lykke Li", @"M", @"M83", @"MIKA", @"Madonna", nil];
   #endif
   NSMutableSet *artistNames = [NSMutableSet set];
   NSArray *albumCollections = [[MPMediaQuery albumsQuery] collections];
