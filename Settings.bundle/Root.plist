@@ -256,7 +256,7 @@
 			<key>Type</key>
 			<string>PSMultiValueSpecifier</string>
 			<key>Title</key>
-			<string>App Store Country</string>
+			<string>iTunes Store Country</string>
 			<key>Key</key>
 			<string>app_store_country</string>
 			<key>DefaultValue</key>
