@@ -219,6 +219,14 @@
 #pragma mark UITableViewDelegate Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if(self.openingiTunesStore)
+    return nil;
+  return indexPath;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -233,7 +241,7 @@
       SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
       storeController.delegate = self;
       NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
-                                                                    forKey:SKStoreProductParameterITunesItemIdentifier];
+                                              forKey:SKStoreProductParameterITunesItemIdentifier];
       
       [storeController loadProductWithParameters:productParameters
                                  completionBlock:^(BOOL result, NSError *error)
@@ -255,13 +263,13 @@
                                       delegate:nil
                              cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
                              otherButtonTitles:nil] show];
+           self.openingiTunesStore = NO;
          }
-         self.openingiTunesStore = NO;
        }];
     }
     else
     {
-      [tableView deselectRowAtIndexPath:indexPath animated:NO];  
+      [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
   }
   else
@@ -558,7 +566,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
-  [self dismissModalViewControllerAnimated:YES];
+  [self dismissViewControllerAnimated:YES completion:^{
+    self.openingiTunesStore = NO;
+  }];
 }
 
 @end
