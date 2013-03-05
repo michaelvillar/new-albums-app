@@ -55,6 +55,7 @@
 		4C9E36771654859E00EBF020 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9E36761654859E00EBF020 /* Default-568h@2x.png */; };
 		4CA3D56116D2CD5900089C63 /* MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56016D2CD5900089C63 /* MVOption.m */; };
 		4CA3D56416D2CD6400089C63 /* _MVOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA3D56316D2CD6400089C63 /* _MVOption.m */; };
+		4CC214AA16E63A2700E68A62 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC214A916E63A2700E68A62 /* StoreKit.framework */; };
 		4CE87C58169E7A0E00395FAA /* MVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE87C57169E7A0E00395FAA /* MVCell.m */; };
 		4CFE72C816934BAA00DDDF61 /* MVRoundedLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72C716934BAA00DDDF61 /* MVRoundedLabelView.m */; };
 		4CFE72D51694B90A00DDDF61 /* MVCoreDataFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE72D41694B90A00DDDF61 /* MVCoreDataFactory.m */; };
@@ -66,7 +67,7 @@
 		4C08E0E616DD43C3000BF49E /* MVPlaceholderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVPlaceholderView.h; sourceTree = "<group>"; };
 		4C08E0E716DD43C3000BF49E /* MVPlaceholderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVPlaceholderView.m; sourceTree = "<group>"; };
 		4C08E0E916DD4F6D000BF49E /* white_flat_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white_flat_icon@2x.png"; sourceTree = "<group>"; };
-		4C39062C1606212F00155E4E /* NewAlbums.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewAlbums.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C39062C1606212F00155E4E /* New Albums.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "New Albums.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C3906301606212F00155E4E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4C3906321606212F00155E4E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4C3906341606212F00155E4E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -148,6 +149,7 @@
 		4CA3D56016D2CD5900089C63 /* MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVOption.m; sourceTree = "<group>"; };
 		4CA3D56216D2CD6400089C63 /* _MVOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MVOption.h; sourceTree = "<group>"; };
 		4CA3D56316D2CD6400089C63 /* _MVOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MVOption.m; sourceTree = "<group>"; };
+		4CC214A916E63A2700E68A62 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4CE87C56169E7A0E00395FAA /* MVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCell.h; sourceTree = "<group>"; };
 		4CE87C57169E7A0E00395FAA /* MVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCell.m; sourceTree = "<group>"; };
 		4CFE72C616934BAA00DDDF61 /* MVRoundedLabelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVRoundedLabelView.h; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CC214AA16E63A2700E68A62 /* StoreKit.framework in Frameworks */,
 				4C68CA4216260EC3005B6878 /* QuartzCore.framework in Frameworks */,
 				4C3906741606356F00155E4E /* CoreData.framework in Frameworks */,
 				4C39065B16062B1C00155E4E /* MediaPlayer.framework in Frameworks */,
@@ -189,7 +192,7 @@
 		4C39062D1606212F00155E4E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4C39062C1606212F00155E4E /* NewAlbums.app */,
+				4C39062C1606212F00155E4E /* New Albums.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 		4C39062F1606212F00155E4E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4CC214A916E63A2700E68A62 /* StoreKit.framework */,
 				4C68CA4116260EC3005B6878 /* QuartzCore.framework */,
 				4C3906731606356F00155E4E /* CoreData.framework */,
 				4C39065A16062B1C00155E4E /* MediaPlayer.framework */,
@@ -415,7 +419,7 @@
 			);
 			name = "New Albums";
 			productName = Albums;
-			productReference = 4C39062C1606212F00155E4E /* NewAlbums.app */;
+			productReference = 4C39062C1606212F00155E4E /* New Albums.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -599,7 +603,7 @@
 				GCC_PREFIX_HEADER = "Albums/Albums-Prefix.pch";
 				INFOPLIST_FILE = "Albums/Albums-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5AD1789B-CC7C-40F5-BD21-C7514771E831";
+				PROVISIONING_PROFILE = "CFECE93D-4B63-44BF-BCB3-DB83FB2ED374";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

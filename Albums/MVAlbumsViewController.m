@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Michael Villar. All rights reserved.
 //
 
+#import <StoreKit/StoreKit.h>
 #import "MVAlbumsViewController.h"
 #import "MVContextSource.h"
 #import "MVAlbum.h"
@@ -22,7 +23,8 @@
                                       UITableViewDelegate,
                                       NSFetchedResultsControllerDelegate,
                                       MVAlbumCellDelegate,
-                                      UIActionSheetDelegate>
+                                      UIActionSheetDelegate,
+                                      SKStoreProductViewControllerDelegate>
 
 @property (strong, readwrite) UITableView *tableView;
 @property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
@@ -217,7 +219,29 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
-  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+  
+  if(NSClassFromString(@"SKStoreProductViewController"))
+  {
+    SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
+    storeController.delegate = self;
+    NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId
+                                                                  forKey:SKStoreProductParameterITunesItemIdentifier];
+    
+    [storeController loadProductWithParameters:productParameters
+                               completionBlock:^(BOOL result, NSError *error)
+     {
+       if (result) {
+         [self presentViewController:storeController animated:YES completion:nil];
+       } else {
+         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+       }
+     }];
+  }
+  else
+  {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+  }
+
   [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
@@ -498,6 +522,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
       weakSelf.actionSheetArtistToHide = nil;
     }];
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark SKStoreProductViewControllerDelegate
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+  [self dismissModalViewControllerAnimated:YES];
 }
 
 @end
