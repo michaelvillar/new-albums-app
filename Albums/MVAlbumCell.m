@@ -378,7 +378,6 @@ static NSCache *artworkImagesCache = nil;
       anim.fromValue = [NSNumber numberWithFloat:self.albumView.layer.shadowOpacity];
       anim.toValue = [NSNumber numberWithFloat:0.0];
       anim.duration = 0.15;
-      anim.delegate = self;
       [self.albumView.layer addAnimation:anim forKey:@"shadowOpacity"];
       self.albumView.layer.shadowOpacity = 0.0;
     }
@@ -388,6 +387,7 @@ static NSCache *artworkImagesCache = nil;
       if([self.delegate respondsToSelector:@selector(albumCellDidTriggerHideAlbum:)])
         [self.delegate albumCellDidTriggerHideAlbum:self];
       frame.origin.x = frame.size.width + 10;
+      self.layer.zPosition = 0;
     }
     if(self.hideArtistLabelView.isEnabled)
     {
@@ -404,6 +404,7 @@ static NSCache *artworkImagesCache = nil;
     animation.toValue = [NSNumber numberWithFloat:frame.origin.x + frame.size.width / 2];
     animation.timingFunction = timingFunction;
     animation.duration = 0.3;
+    animation.delegate = self;
     [self.albumView.layer addAnimation:animation
                                 forKey:nil];
 
@@ -533,7 +534,7 @@ static NSCache *artworkImagesCache = nil;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-  // for now it's only the animation that changes the shadow opacity from 1 to 0
+  // for now it's only the animation that goes back on place
   self.layer.zPosition = 0;
 }
 
