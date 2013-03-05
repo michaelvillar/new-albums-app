@@ -378,6 +378,7 @@ static NSCache *artworkImagesCache = nil;
       anim.fromValue = [NSNumber numberWithFloat:self.albumView.layer.shadowOpacity];
       anim.toValue = [NSNumber numberWithFloat:0.0];
       anim.duration = 0.15;
+      anim.delegate = self;
       [self.albumView.layer addAnimation:anim forKey:@"shadowOpacity"];
       self.albumView.layer.shadowOpacity = 0.0;
     }
@@ -407,8 +408,6 @@ static NSCache *artworkImagesCache = nil;
                                 forKey:nil];
 
     self.albumView.frame = frame;
-    
-    self.layer.zPosition = 0;
   }
   else
   {
@@ -524,6 +523,18 @@ static NSCache *artworkImagesCache = nil;
       asset = nil;
     }
   });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark CAAnimationDelegate
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+  // for now it's only the animation that changes the shadow opacity from 1 to 0
+  self.layer.zPosition = 0;
 }
 
 @end
