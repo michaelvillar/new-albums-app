@@ -120,7 +120,7 @@ static NSCache *artworkImagesCache = nil;
     [self.contentView addSubview:contentView];
     
     hideAlbumLabelView_ = [[MVRoundedLabelView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    hideAlbumLabelView_.text = NSLocalizedString(@"Hide Album", @"Hide Album Label");
+    hideAlbumLabelView_.text = @"";
     [hideAlbumLabelView_ sizeToFit];
     [self.contentView addSubview:hideAlbumLabelView_];
     
@@ -322,6 +322,20 @@ static NSCache *artworkImagesCache = nil;
   album_ = album;
   self.artworkAsset = nil;
   self.artworkImage = nil;
+  
+  NSString *text;
+  if(!self.album.albumType)
+    text = NSLocalizedString(@"Hide Album", @"Hide Album Label");
+  else
+    text = [NSString stringWithFormat:
+            NSLocalizedString(@"Hide %@", @"Hide %@ Label"),
+            self.album.albumType];
+  if(![self.hideAlbumLabelView.text isEqualToString:text])
+  {
+    self.hideAlbumLabelView.text = text;
+    [self.hideAlbumLabelView sizeToFit];
+    [self.hideAlbumLabelView setNeedsDisplay];
+  }
   
   CGRect frame = self.albumView.frame;
   frame.origin.x = 0;
