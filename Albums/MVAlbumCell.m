@@ -36,6 +36,7 @@ static NSCache *artworkImagesCache = nil;
 @property (strong, readwrite) MVView *artworkView;
 @property (strong, readwrite) MVRoundedLabelView *hideAlbumLabelView;
 @property (strong, readwrite) MVRoundedLabelView *hideArtistLabelView;
+@property (strong, readwrite) UIActivityIndicatorView *spinnerView;
 
 - (void)generateArtworkImageAndDisplay:(BOOL)animated;
 
@@ -47,12 +48,14 @@ static NSCache *artworkImagesCache = nil;
 @implementation MVAlbumCell
 
 @synthesize album         = album_,
+            loading       = loading_,
             artworkAsset  = artworkAsset_,
             artworkImage  = artworkImage_,
             albumView     = albumView_,
             artworkView   = artworkView_,
             hideAlbumLabelView = hideAlbumLabelView_,
             hideArtistLabelView = hideArtistLabelView_,
+            spinnerView   = spinnerView_,
             delegate      = delegate_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +78,10 @@ static NSCache *artworkImagesCache = nil;
   if(self)
   {
     album_ = nil;
+    loading_ = NO;
     artworkAsset_ = nil;
     artworkImage_ = nil;
+    spinnerView_ = nil;
     delegate_ = nil;
     
     __block __weak MVAlbumCell *cell = self;
@@ -142,7 +147,7 @@ static NSCache *artworkImagesCache = nil;
       [kMVCellBgColor set];
       [[UIBezierPath bezierPathWithRect:view.bounds] fill];
 
-      if(cell.isHighlighted)
+      if(cell.isHighlighted || cell.isSelected)
       {
         [[UIColor colorWithWhite:0 alpha:0.5] set];
         [[UIBezierPath bezierPathWithRect:view.bounds] fill];
@@ -159,7 +164,7 @@ static NSCache *artworkImagesCache = nil;
                                       labelWidth, 18);
         marginRight += labelRect.size.width + 3;
       
-        if(cell.isHighlighted)
+        if(cell.isHighlighted || cell.isSelected)
           [[UIColor colorWithWhite:0 alpha:0.6] set];
         else
           [[UIColor colorWithRed:0.9765 green:0.6471 blue:0.1882 alpha:1.0000] set];
@@ -183,7 +188,7 @@ static NSCache *artworkImagesCache = nil;
         CGPoint labelPoint = CGPointMake(cell.frame.size.width - marginRight - labelSize.width, 21.5);
         marginRight += labelSize.width + 3;
         
-        if(cell.isHighlighted)
+        if(cell.isHighlighted || cell.isSelected)
         {
           [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
         }
@@ -196,7 +201,7 @@ static NSCache *artworkImagesCache = nil;
       
       float availableWidth = view.bounds.size.width - marginLeft - marginRight;
 
-      if(cell.isHighlighted)
+      if(cell.isHighlighted || cell.isSelected)
       {
         [[UIColor whiteColor] set];
       }
@@ -209,7 +214,7 @@ static NSCache *artworkImagesCache = nil;
                                  withFont:[UIFont boldSystemFontOfSize:18]
                             lineBreakMode:NSLineBreakByTruncatingMiddle];
       
-      if(cell.isHighlighted)
+      if(cell.isHighlighted || cell.isSelected)
       {
         [[UIColor colorWithRed:0.8624 green:0.8624 blue:0.8624 alpha:1.0000] set];
       }
@@ -259,14 +264,18 @@ static NSCache *artworkImagesCache = nil;
         [cell.artworkImage drawAtPoint:artworkRect.origin];
       }
       
-      if(cell.isHighlighted)
+      if(cell.isHighlighted || cell.isSelected)
       {
         [[UIColor colorWithWhite:0 alpha:0.5] set];
         [[UIBezierPath bezierPathWithRect:view.bounds] fill];
       }
     };
     [albumView_ addSubview:artworkView_];
-        
+    
+    spinnerView_ = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
+                    UIActivityIndicatorViewStyleWhite];
+    spinnerView_.frame = artworkView_.bounds;
+    
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
                                           initWithTarget:self
                                           action:@selector(mvPanGestureRecognizer:)];
@@ -283,6 +292,24 @@ static NSCache *artworkImagesCache = nil;
 {
   if(self.artworkAsset)
     [self.artworkAsset removeObserver:self forKeyPath:@"existing"];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setLoading:(BOOL)loading
+{
+  if(loading == loading_)
+    return;
+  loading_ = loading;
+  if(loading)
+  {
+    [self.spinnerView startAnimating];
+    [self.artworkView addSubview:self.spinnerView];
+  }
+  else
+  {
+    [self.spinnerView stopAnimating];
+    [self.spinnerView removeFromSuperview];
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

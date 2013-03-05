@@ -27,6 +27,7 @@
 @interface MVAlbumCell : MVCell
 
 @property (strong, readwrite, nonatomic) MVAlbum *album;
+@property (readwrite, nonatomic, getter = isLoading) BOOL loading;
 @property (weak, readwrite) NSObject <MVAlbumCellDelegate> *delegate;
 
 + (CGFloat)rowHeight;

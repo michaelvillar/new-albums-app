@@ -35,6 +35,7 @@
 @property (strong, readwrite) MVArtist *actionSheetArtistToHide;
 @property (strong, readwrite, nonatomic) MVPlaceholderView *placeholderView;
 @property (readwrite, getter = isPlaceholderVisible) BOOL placeholderVisible;
+@property (readwrite, getter = isOpeningiTunesStore) BOOL openingiTunesStore;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
@@ -57,6 +58,7 @@
             actionSheetArtistToHide   = actionSheetArtistToHide_,
             placeholderView           = placeholderView_,
             placeholderVisible        = placeholderVisible_,
+            openingiTunesStore        = openingiTunesStore_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +74,7 @@
     actionSheetArtistToHide_ = nil;
     placeholderView_ = nil;
     placeholderVisible_ = NO;
+    openingiTunesStore_ = NO;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
@@ -222,27 +225,50 @@
   
   if(NSClassFromString(@"SKStoreProductViewController"))
   {
-    SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
-    storeController.delegate = self;
-    NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId
-                                                                  forKey:SKStoreProductParameterITunesItemIdentifier];
-    
-    [storeController loadProductWithParameters:productParameters
-                               completionBlock:^(BOOL result, NSError *error)
-     {
-       if (result) {
-         [self presentViewController:storeController animated:YES completion:nil];
-       } else {
-         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
-       }
-     }];
+    if(!self.openingiTunesStore)
+    {
+      self.openingiTunesStore = YES;
+      MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
+      cell.loading = YES;
+      SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
+      storeController.delegate = self;
+      NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
+                                                                    forKey:SKStoreProductParameterITunesItemIdentifier];
+      
+      [storeController loadProductWithParameters:productParameters
+                                 completionBlock:^(BOOL result, NSError *error)
+       {
+         if (result) {
+           [self presentViewController:storeController animated:YES completion:^{
+             cell.loading = NO;
+             [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
+                                      animated:NO];
+           }];
+         } else {
+           cell.loading = NO;
+           [tableView deselectRowAtIndexPath:indexPath animated:YES];
+           NSString *title = NSLocalizedString(@"Error",
+                                               @"iTunes Error");
+           NSString *message = error.localizedDescription;
+           [[[UIAlertView alloc] initWithTitle:title
+                                       message:message
+                                      delegate:nil
+                             cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
+                             otherButtonTitles:nil] show];
+         }
+         self.openingiTunesStore = NO;
+       }];
+    }
+    else
+    {
+      [tableView deselectRowAtIndexPath:indexPath animated:NO];  
+    }
   }
   else
   {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:album.iTunesStoreUrl]];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
   }
-
-  [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
