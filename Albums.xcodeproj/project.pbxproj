@@ -401,9 +401,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4C39062B1606212F00155E4E /* NewAlbums */ = {
+		4C39062B1606212F00155E4E /* New Albums */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "NewAlbums" */;
+			buildConfigurationList = 4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "New Albums" */;
 			buildPhases = (
 				4C3906281606212F00155E4E /* Sources */,
 				4C3906291606212F00155E4E /* Frameworks */,
@@ -413,7 +413,7 @@
 			);
 			dependencies = (
 			);
-			name = NewAlbums;
+			name = "New Albums";
 			productName = Albums;
 			productReference = 4C39062C1606212F00155E4E /* NewAlbums.app */;
 			productType = "com.apple.product-type.application";
@@ -439,7 +439,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4C39062B1606212F00155E4E /* NewAlbums */,
+				4C39062B1606212F00155E4E /* New Albums */,
 			);
 		};
 /* End PBXProject section */
@@ -594,12 +594,12 @@
 		4C39064C1606212F00155E4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Michaël Villar (JAT68FWQX5)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Michaël Villar";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Albums/Albums-Prefix.pch";
 				INFOPLIST_FILE = "Albums/Albums-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "94C18D39-91AD-4217-9EE4-D7F442B86EE9";
+				PROVISIONING_PROFILE = "5AD1789B-CC7C-40F5-BD21-C7514771E831";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -616,7 +616,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "NewAlbums" */ = {
+		4C39064A1606212F00155E4E /* Build configuration list for PBXNativeTarget "New Albums" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4C39064B1606212F00155E4E /* Debug */,
