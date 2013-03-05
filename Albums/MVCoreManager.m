@@ -330,6 +330,8 @@
     for(MPMediaItem *albumSong in albumSongs)
     {
       NSString *artistName = [albumSong valueForProperty:MPMediaItemPropertyArtist];
+      if(!artistName)
+        continue;
       NSMutableArray *countArr = [artistCountInAlbum valueForKey:artistName];
       if(countArr)
         [countArr addObject:@""];
