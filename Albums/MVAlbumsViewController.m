@@ -35,11 +35,13 @@
 @property (strong, readwrite) MVArtist *actionSheetArtistToHide;
 @property (strong, readwrite, nonatomic) MVPlaceholderView *placeholderView;
 @property (readwrite, getter = isPlaceholderVisible) BOOL placeholderVisible;
-@property (readwrite, getter = isOpeningiTunesStore) BOOL openingiTunesStore;
+@property (readwrite) NSUInteger iTunesStoreIncrementCall;
+@property (strong, readwrite) NSTimer *iTunesStoreTimer;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
 - (void)updatePlaceholder:(BOOL)animated;
+- (void)displayiTunesError:(NSString*)message;
 
 @end
 
@@ -58,7 +60,8 @@
             actionSheetArtistToHide   = actionSheetArtistToHide_,
             placeholderView           = placeholderView_,
             placeholderVisible        = placeholderVisible_,
-            openingiTunesStore        = openingiTunesStore_,
+            iTunesStoreIncrementCall  = iTunesStoreIncrementCall_,
+            iTunesStoreTimer          = iTunesStoreTimer_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +77,8 @@
     actionSheetArtistToHide_ = nil;
     placeholderView_ = nil;
     placeholderVisible_ = NO;
-    openingiTunesStore_ = NO;
+    iTunesStoreIncrementCall_ = 0;
+    iTunesStoreTimer_ = nil;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
@@ -221,8 +225,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if(self.openingiTunesStore)
-    return nil;
+  NSIndexPath *currentIndexPath = self.tableView.indexPathForSelectedRow;
+  if([self.tableView.indexPathsForVisibleRows containsObject:currentIndexPath]) {
+    MVAlbumCell *cell = (MVAlbumCell*)[self.tableView cellForRowAtIndexPath:currentIndexPath];
+    cell.loading = NO;
+  }
+  
   return indexPath;
 }
 
@@ -233,44 +241,45 @@
   
   if(NSClassFromString(@"SKStoreProductViewController"))
   {
-    if(!self.openingiTunesStore)
-    {
-      self.openingiTunesStore = YES;
-      MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
-      cell.loading = YES;
-      SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
-      storeController.delegate = self;
-      NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
+    MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
+    cell.loading = YES;
+    SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
+    storeController.delegate = self;
+    NSDictionary *productParameters = [NSDictionary dictionaryWithObject:album.iTunesId.copy
                                               forKey:SKStoreProductParameterITunesItemIdentifier];
-      
-      [storeController loadProductWithParameters:productParameters
-                                 completionBlock:^(BOOL result, NSError *error)
-       {
-         if (result) {
-           [self presentViewController:storeController animated:YES completion:^{
-             cell.loading = NO;
-             [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
-                                      animated:NO];
-           }];
-         } else {
+    
+    if(self.iTunesStoreTimer)
+      [self.iTunesStoreTimer invalidate];
+    self.iTunesStoreTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self
+                                                        selector:@selector(iTunesStoreTimerAction:)
+                                                           userInfo:nil repeats:NO];
+    
+    self.iTunesStoreIncrementCall++;
+    NSUInteger currentiTunesStoreIncrementCall = self.iTunesStoreIncrementCall;
+    
+    [storeController loadProductWithParameters:productParameters
+                               completionBlock:^(BOOL result, NSError *error)
+     {
+       if (currentiTunesStoreIncrementCall != self.iTunesStoreIncrementCall)
+         return;
+       
+       if(self.iTunesStoreTimer) {
+         [self.iTunesStoreTimer invalidate];
+         self.iTunesStoreTimer = nil;
+       }
+       
+       if (result) {
+         [self presentViewController:storeController animated:YES completion:^{
            cell.loading = NO;
-           [tableView deselectRowAtIndexPath:indexPath animated:YES];
-           NSString *title = NSLocalizedString(@"Error",
-                                               @"iTunes Error");
-           NSString *message = error.localizedDescription;
-           [[[UIAlertView alloc] initWithTitle:title
-                                       message:message
-                                      delegate:nil
-                             cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
-                             otherButtonTitles:nil] show];
-           self.openingiTunesStore = NO;
-         }
-       }];
-    }
-    else
-    {
-      [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
+           [tableView deselectRowAtIndexPath:tableView.indexPathForSelectedRow
+                                    animated:NO];
+         }];
+       } else {
+         cell.loading = NO;
+         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+         [self displayiTunesError:error.localizedDescription];
+       }
+     }];
   }
   else
   {
@@ -427,6 +436,27 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
+#pragma mark Timer Action Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)iTunesStoreTimerAction:(NSTimer*)timer
+{
+  if(timer == self.iTunesStoreTimer)
+    self.iTunesStoreTimer = nil;
+  self.iTunesStoreIncrementCall++;
+  NSIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+  [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+  if([self.tableView.indexPathsForVisibleRows containsObject:indexPath]) {
+    MVAlbumCell *cell = (MVAlbumCell*)[self.tableView cellForRowAtIndexPath:indexPath];
+    cell.loading = NO;
+  }
+  [self displayiTunesError:NSLocalizedString(@"There was an error while opening the iTunes Store",
+                                             @"Unknown iTunes Error")];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
 #pragma mark Private Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,6 +555,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)displayiTunesError:(NSString*)message
+{
+  NSString *title = NSLocalizedString(@"Error",
+                                      @"iTunes Error");
+  [[[UIAlertView alloc] initWithTitle:title
+                              message:message
+                             delegate:nil
+                    cancelButtonTitle:NSLocalizedString(@"OK", @"iTunes Error OK Button")
+                    otherButtonTitles:nil] show];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark Private Properties
@@ -567,7 +609,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
   [self dismissViewControllerAnimated:YES completion:^{
-    self.openingiTunesStore = NO;
   }];
 }
 
