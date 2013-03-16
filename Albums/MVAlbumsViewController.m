@@ -37,6 +37,7 @@
 @property (readwrite, getter = isPlaceholderVisible) BOOL placeholderVisible;
 @property (readwrite) NSUInteger iTunesStoreIncrementCall;
 @property (strong, readwrite) NSTimer *iTunesStoreTimer;
+@property (strong, readwrite) MVAlbum *iTunesStoreLoadingAlbum;
 @property (strong, readwrite) NSObject<MVContextSource> *contextSource;
 
 - (void)reloadTableViewAfterBlock:(void(^)(void))block;
@@ -62,6 +63,7 @@
             placeholderVisible        = placeholderVisible_,
             iTunesStoreIncrementCall  = iTunesStoreIncrementCall_,
             iTunesStoreTimer          = iTunesStoreTimer_,
+            iTunesStoreLoadingAlbum   = iTunesStoreLoadingAlbum_,
             contextSource             = contextSource_;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +81,7 @@
     placeholderVisible_ = NO;
     iTunesStoreIncrementCall_ = 0;
     iTunesStoreTimer_ = nil;
+    iTunesStoreLoadingAlbum_ = nil;
 
     NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
     NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
@@ -241,6 +244,8 @@
   
   if(NSClassFromString(@"SKStoreProductViewController"))
   {
+    self.iTunesStoreLoadingAlbum = album;
+
     MVAlbumCell *cell = (MVAlbumCell*)[tableView cellForRowAtIndexPath:indexPath];
     cell.loading = YES;
     SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
@@ -262,6 +267,8 @@
      {
        if (currentiTunesStoreIncrementCall != self.iTunesStoreIncrementCall)
          return;
+       
+       self.iTunesStoreLoadingAlbum = nil;
        
        if(self.iTunesStoreTimer) {
          [self.iTunesStoreTimer invalidate];
@@ -343,6 +350,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
   NSString *cellIdentifier = @"cellIdentifier";
   
   MVAlbumCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -352,9 +360,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
                               reuseIdentifier:cellIdentifier];
     cell.tableView = tableView;
   }
+  cell.loading = (self.iTunesStoreLoadingAlbum &&
+                  [self.iTunesStoreLoadingAlbum.objectID isEqual:album.objectID]);
   cell.delegate = self;
-
-  MVAlbum *album = [self.fetchedResultsController objectAtIndexPath:indexPath];
   cell.album = album;
   [cell setNeedsDisplay];
   return cell;
@@ -450,6 +458,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
     MVAlbumCell *cell = (MVAlbumCell*)[self.tableView cellForRowAtIndexPath:indexPath];
     cell.loading = NO;
   }
+  self.iTunesStoreLoadingAlbum = nil;
   [self displayiTunesError:NSLocalizedString(@"There was an error while opening the iTunes Store",
                                              @"Unknown iTunes Error")];
 }
