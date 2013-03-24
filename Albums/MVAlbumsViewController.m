@@ -27,7 +27,7 @@
                                       SKStoreProductViewControllerDelegate>
 
 @property (strong, readwrite) UITableView *tableView;
-@property (strong, readwrite) NSFetchedResultsController *fetchedResultsController;
+@property (strong, readwrite, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, readwrite) NSDateFormatter *sectionDateFormatter;
 @property (strong, readwrite) MVView *roundedTopCorners;
 @property (strong, readwrite) MVView *roundedBottomCorners;
@@ -83,42 +83,25 @@
     iTunesStoreTimer_ = nil;
     iTunesStoreLoadingAlbum_ = nil;
 
-    NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
-    NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
-                                          initWithKey:@"createdAt"
-                                            ascending:NO];
-    NSSortDescriptor *sortReleaseDate = [[NSSortDescriptor alloc]
-                                         initWithKey:@"releaseDate"
-                                           ascending:NO];
-    req.sortDescriptors = [NSArray arrayWithObjects:sortCreatedAt, sortReleaseDate, nil];
-    req.fetchBatchSize = 20;
-    req.predicate = [NSPredicate predicateWithFormat:
-                     @"hidden == %d AND \
-                     artist.hidden == %d AND \
-                     releaseDate >= %@",
-                     NO, NO, [NSDate dateWithTimeIntervalSinceNow:- 2 * 30 * 24 * 3600]];
-
-    fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
-                                                        managedObjectContext:contextSource.uiMoc
-                                                                      sectionNameKeyPath:nil
-                                                                               cacheName:nil];
-    fetchedResultsController_.delegate = self;
-   
     sectionDateFormatter_ = [[NSDateFormatter alloc] init];
     sectionDateFormatter_.dateFormat = @"MM/dd";
     
     roundedTopCorners_ = nil;
     roundedBottomCorners_ = nil;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncDidStart:)
-                                                 name:kMVNotificationSyncDidStart
-                                               object:self.coreManager];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncProgress:)
-                                                 name:kMVNotificationSyncDidProgress
-                                               object:self.coreManager];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncDidFinish:)
-                                                 name:kMVNotificationSyncDidFinish
-                                               object:self.coreManager];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(syncDidStart:)
+               name:kMVNotificationSyncDidStart
+             object:self.coreManager];
+    [nc addObserver:self selector:@selector(syncProgress:)
+               name:kMVNotificationSyncDidProgress
+             object:self.coreManager];
+    [nc addObserver:self selector:@selector(syncDidFinish:)
+               name:kMVNotificationSyncDidFinish
+             object:self.coreManager];
+    [nc addObserver:self selector:@selector(applicationDidBecomeActive:)
+               name:UIApplicationDidBecomeActiveNotification
+             object:[UIApplication sharedApplication]];
   }
   return self;
 }
@@ -218,6 +201,18 @@
 - (void)viewDidUnload
 {
   [super viewDidUnload];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark UIApplicationDelegate Methods
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+  self.fetchedResultsController = nil;
+  [self.fetchedResultsController performFetch:nil];
+  [self.tableView reloadData];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -579,6 +574,60 @@ forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark Private Properties
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSFetchedResultsController*)fetchedResultsController
+{
+  if(fetchedResultsController_)
+    return fetchedResultsController_;
+  
+  NSFetchRequest *req = [[NSFetchRequest alloc] initWithEntityName:[MVAlbum entityName]];
+  NSSortDescriptor *sortCreatedAt = [[NSSortDescriptor alloc]
+                                     initWithKey:@"createdAt"
+                                     ascending:NO];
+  NSSortDescriptor *sortReleaseDate = [[NSSortDescriptor alloc]
+                                       initWithKey:@"releaseDate"
+                                       ascending:NO];
+  req.sortDescriptors = [NSArray arrayWithObjects:sortCreatedAt, sortReleaseDate, nil];
+  req.fetchBatchSize = 20;
+  
+  NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                            @"hidden == %d AND \
+                            artist.hidden == %d AND \
+                            releaseDate >= %@",
+                            NO, NO, [NSDate dateWithTimeIntervalSinceNow:- 2 * 30 * 24 * 3600]];
+  
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  if(![defaults boolForKey:kMVPreferencesShowSingles])
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                 [NSArray arrayWithObjects:
+                  [NSPredicate predicateWithFormat:@"type != %i", kMVAlbumTypeSingle],
+                  predicate, nil]];
+  if(![defaults boolForKey:kMVPreferencesShowEPs])
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                 [NSArray arrayWithObjects:
+                  [NSPredicate predicateWithFormat:@"type != %i", kMVAlbumTypeEP],
+                  predicate, nil]];
+  if(![defaults boolForKey:kMVPreferencesShowLives])
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                 [NSArray arrayWithObjects:
+                  [NSPredicate predicateWithFormat:@"type != %i", kMVAlbumTypeLive],
+                  predicate, nil]];
+  if(![defaults boolForKey:kMVPreferencesShowDeluxes])
+    predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                 [NSArray arrayWithObjects:
+                  [NSPredicate predicateWithFormat:@"type != %i", kMVAlbumTypeDeluxe],
+                  predicate, nil]];
+  
+  req.predicate = predicate;
+  
+  fetchedResultsController_ = [[NSFetchedResultsController alloc] initWithFetchRequest:req
+                                                      managedObjectContext:self.contextSource.uiMoc
+                                                                    sectionNameKeyPath:nil
+                                                                             cacheName:nil];
+  fetchedResultsController_.delegate = self;
+  return fetchedResultsController_;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (MVPlaceholderView*)placeholderView

@@ -41,5 +41,6 @@
 @property (weak, readwrite) NSObject<MVCoreManagerDelegate> *delegate;
 
 - (void)sync;
+- (void)migrate:(void (^)(void))block;
 
 @end

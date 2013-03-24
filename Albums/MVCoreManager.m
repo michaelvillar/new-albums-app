@@ -199,6 +199,40 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)migrate:(void (^)(void))block
+{
+  __block __weak MVCoreManager *weakSelf = self;
+  [self.operationQueue addOperationWithBlock:^{
+    [weakSelf performBlockAndWaitOnMasterMoc:^(NSManagedObjectContext *moc) {
+      MVOption *option = [MVOption optionWithKey:kMVOptionKeyCurrentVersion inMoc:moc];
+      NSString *optionValue = option.value;
+      if(!optionValue)
+        optionValue = @"1.0";
+      NSString *newOptionValue = optionValue;
+      
+      if([newOptionValue isEqualToString:@"1.0"]) {
+        NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName:[MVAlbum entityName]];
+        NSArray *albums = [moc executeFetchRequest:req error:nil];
+        for(MVAlbum *album in albums) {
+          [album processShortNameAndType];
+        }
+        
+        newOptionValue = @"1.1";
+      }
+      
+      if(![newOptionValue isEqualToString:optionValue]) {
+        option.value = newOptionValue;
+        [moc mv_save];
+      }
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        block();
+      });
+    }];
+  }];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark Public Properties
@@ -332,13 +366,13 @@
       NSString *artistName = [albumSong valueForProperty:MPMediaItemPropertyArtist];
       if(!artistName)
         continue;
-      NSMutableArray *countArr = [artistCountInAlbum valueForKey:artistName];
+      NSMutableArray *countArr = [artistCountInAlbum objectForKey:artistName];
       if(countArr)
         [countArr addObject:@""];
       else {
         countArr = [NSMutableArray arrayWithObject:@""];
-        [artistCountInAlbum setValue:countArr
-                              forKey:artistName];
+        [artistCountInAlbum setObject:countArr
+                               forKey:artistName];
       }
     }
     for(NSString *artistName in artistCountInAlbum.allKeys)

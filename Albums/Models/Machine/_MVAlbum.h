@@ -14,6 +14,8 @@ extern const struct MVAlbumAttributes {
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *releaseDate;
 	__unsafe_unretained NSString *sectionHeader;
+	__unsafe_unretained NSString *shortName;
+	__unsafe_unretained NSString *type;
 } MVAlbumAttributes;
 
 extern const struct MVAlbumRelationships {
@@ -24,6 +26,8 @@ extern const struct MVAlbumFetchedProperties {
 } MVAlbumFetchedProperties;
 
 @class MVArtist;
+
+
 
 
 
@@ -150,6 +154,30 @@ extern const struct MVAlbumFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* shortName;
+
+
+
+//- (BOOL)validateShortName:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* type;
+
+
+
+@property int16_t typeValue;
+- (int16_t)typeValue;
+- (void)setTypeValue:(int16_t)value_;
+
+//- (BOOL)validateType:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) MVArtist *artist;
 
 //- (BOOL)validateArtist:(id*)value_ error:(NSError**)error_;
@@ -226,6 +254,21 @@ extern const struct MVAlbumFetchedProperties {
 
 - (NSString*)primitiveSectionHeader;
 - (void)setPrimitiveSectionHeader:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveShortName;
+- (void)setPrimitiveShortName:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveType;
+- (void)setPrimitiveType:(NSNumber*)value;
+
+- (int16_t)primitiveTypeValue;
+- (void)setPrimitiveTypeValue:(int16_t)value_;
 
 
 

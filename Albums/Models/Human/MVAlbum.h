@@ -1,12 +1,20 @@
 #import "_MVAlbum.h"
 
+#define kMVAlbumTypeAlbum 0
+#define kMVAlbumTypeSingle 1
+#define kMVAlbumTypeEP 2
+#define kMVAlbumTypeLive 3
+#define kMVAlbumTypeRemixes 4
+#define kMVAlbumTypeDeluxe 5
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @interface MVAlbum : _MVAlbum {}
 
-@property (readonly, nonatomic) NSString *shortName;
 @property (readonly, nonatomic) NSString *albumType;
 @property (readonly, nonatomic) NSString *monthDayReleaseDate;
+
+- (void)processShortNameAndType;
 
 @end

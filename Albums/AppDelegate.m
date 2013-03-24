@@ -77,6 +77,14 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
                                  @"AE",@"GB",@"US",@"UY",@"UZ",@"VE",@"VN",@"YE",@"ZW",nil];
   
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults registerDefaults:
+   [NSDictionary dictionaryWithObjectsAndKeys:
+    @"YES", kMVPreferencesShowSingles,
+    @"YES", kMVPreferencesShowEPs,
+    @"YES", kMVPreferencesShowLives,
+    @"YES", kMVPreferencesShowDeluxes,
+    nil]];
+  
   NSString *appStoreCountry = [defaults stringForKey:kMVPreferencesAppStoreCountry];
   if(!appStoreCountry) {
     NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
@@ -113,7 +121,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   [defaults synchronize];
   NSString *appStoreCountry = [defaults stringForKey:kMVPreferencesAppStoreCountry];
   self.coreManager.countryCode = appStoreCountry;
-  [self.coreManager sync];
+  
+  [self.coreManager migrate:^{
+    [self.coreManager sync];
+  }];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

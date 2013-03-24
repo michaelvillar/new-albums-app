@@ -13,6 +13,8 @@ const struct MVAlbumAttributes MVAlbumAttributes = {
 	.name = @"name",
 	.releaseDate = @"releaseDate",
 	.sectionHeader = @"sectionHeader",
+	.shortName = @"shortName",
+	.type = @"type",
 };
 
 const struct MVAlbumRelationships MVAlbumRelationships = {
@@ -60,6 +62,11 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 	}
 	if ([key isEqualToString:@"iTunesIdValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"iTunesId"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"typeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"type"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -185,6 +192,39 @@ const struct MVAlbumFetchedProperties MVAlbumFetchedProperties = {
 
 @dynamic sectionHeader;
 
+
+
+
+
+
+@dynamic shortName;
+
+
+
+
+
+
+@dynamic type;
+
+
+
+- (int16_t)typeValue {
+	NSNumber *result = [self type];
+	return [result shortValue];
+}
+
+- (void)setTypeValue:(int16_t)value_ {
+	[self setType:[NSNumber numberWithShort:value_]];
+}
+
+- (int16_t)primitiveTypeValue {
+	NSNumber *result = [self primitiveType];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveTypeValue:(int16_t)value_ {
+	[self setPrimitiveType:[NSNumber numberWithShort:value_]];
+}
 
 
 

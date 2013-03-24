@@ -8,8 +8,6 @@
 @property (readwrite, nonatomic) NSString *albumType;
 @property (readonly, strong, nonatomic) NSDateFormatter *monthDayDateFormatter;
 
-- (void)processShortName;
-
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,8 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation MVAlbum
 
-@synthesize shortName             = shortName_,
-            albumType             = albumType_,
+@synthesize albumType             = albumType_,
             monthDayDateFormatter = monthDayDateFormatter_,
             monthDayReleaseDate   = monthDayReleaseDate_;
 
@@ -31,6 +28,9 @@
 - (void)willSave
 {
   [super willSave];
+  
+  if(!self.shortName)
+    [self processShortNameAndType];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,21 +47,19 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSString*)shortName
-{
-  if(!shortName_)
-  {
-    [self processShortName];
-  }
-  return shortName_;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSString*)albumType
 {
-  if(!shortName_)
-    [self processShortName];
-  return albumType_;
+  if(!self.shortName)
+    [self processShortNameAndType];
+  if(self.typeValue == kMVAlbumTypeSingle)
+    return @"Single";
+  else if(self.typeValue == kMVAlbumTypeEP)
+    return @"EP";
+  else if(self.typeValue == kMVAlbumTypeLive)
+    return @"Live";
+  else if(self.typeValue == kMVAlbumTypeDeluxe)
+    return @"Deluxe";
+  return nil;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,30 +95,63 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
-#pragma mark Private Methods
+#pragma mark Public Methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)processShortName
+- (void)processShortNameAndType
 {
+  NSRegularExpression *regex;
+  NSString *pattern;
   NSMutableString *mName = [NSMutableString stringWithString:self.name];
+  
+  // By default it's an Album
+  self.typeValue = kMVAlbumTypeAlbum;
+  
+  // Single Detection
   if(mName.length > 9 &&
      [[mName substringFromIndex:mName.length - 9] isEqualToString:@" - Single"])
   {
-    self.albumType = @"Single";
+    self.typeValue = kMVAlbumTypeSingle;
     [mName deleteCharactersInRange:NSMakeRange(mName.length - 9, 9)];
   }
-  if(mName.length > 5 &&
-     [[mName substringFromIndex:mName.length - 5] isEqualToString:@" - EP"])
+  
+  // EP Detection
+  else if(mName.length > 5 &&
+          [[mName substringFromIndex:mName.length - 5] isEqualToString:@" - EP"])
   {
-    self.albumType = @"EP";
+    self.typeValue = kMVAlbumTypeEP;
     [mName deleteCharactersInRange:NSMakeRange(mName.length - 5, 5)];
   }
   
-  NSString *pattern = @"\\[feat\\. .[^\\]]*\\]";
-  NSRegularExpression *regex = [NSRegularExpression
-                                regularExpressionWithPattern:pattern
-                                options:NSRegularExpressionCaseInsensitive
-                                error:nil];
+  // Deluxe Detection
+  pattern = @"\\([^\\)]*Deluxe[^\\)]*\\)";
+  regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                    options:NSRegularExpressionCaseInsensitive
+                                                      error:nil];
+  if([regex numberOfMatchesInString:mName options:0 range:NSMakeRange(0, mName.length)] > 0)
+  {
+    self.typeValue = kMVAlbumTypeDeluxe;
+    [regex replaceMatchesInString:mName options:0
+                            range:NSMakeRange(0, mName.length) withTemplate:@""];
+  }
+  
+  // Live Detection
+  pattern = @"\\([^\\)]*Live[^\\)]*\\)";
+  regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                    options:NSRegularExpressionCaseInsensitive
+                                                      error:nil];
+  if([regex numberOfMatchesInString:mName options:0 range:NSMakeRange(0, mName.length)] > 0)
+  {
+    self.typeValue = kMVAlbumTypeLive;
+    [regex replaceMatchesInString:mName options:0
+                            range:NSMakeRange(0, mName.length) withTemplate:@""];
+  }
+
+  // Feat stuff replacements
+  pattern = @"\\[feat\\. .[^\\]]*\\]";
+  regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                    options:NSRegularExpressionCaseInsensitive
+                                                      error:nil];
   [regex replaceMatchesInString:mName options:0 range:NSMakeRange(0, mName.length) withTemplate:@""];
   
   pattern = @"\\(feat\\. .[^\\)]*\\)";
@@ -129,7 +160,7 @@
                                                       error:nil];
   [regex replaceMatchesInString:mName options:0 range:NSMakeRange(0, mName.length) withTemplate:@""];
   
-  shortName_ = mName;
+  self.shortName = mName;
 }
 
 @end

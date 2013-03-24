@@ -125,6 +125,7 @@
 		4C3913AB16E502AA00A13059 /* NSString+Levenshtein.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Levenshtein.m"; sourceTree = "<group>"; };
 		4C4465C61618BA3700F8D4E3 /* MVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVView.h; sourceTree = "<group>"; };
 		4C4465C71618BA3700F8D4E3 /* MVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVView.m; sourceTree = "<group>"; };
+		4C4BEC2216FFB501005C7C54 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
 		4C4FD4D216BD544D005DC397 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = ../Settings.bundle; sourceTree = "<group>"; };
 		4C5140821606786100279CA0 /* MVAlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAlbumCell.h; sourceTree = "<group>"; };
 		4C5140831606786100279CA0 /* MVAlbumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAlbumCell.m; sourceTree = "<group>"; };
@@ -651,9 +652,10 @@
 		4C39065F1606341300155E4E /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				4C4BEC2216FFB501005C7C54 /* Model 2.xcdatamodel */,
 				4C3906601606341300155E4E /* Model.xcdatamodel */,
 			);
-			currentVersion = 4C3906601606341300155E4E /* Model.xcdatamodel */;
+			currentVersion = 4C4BEC2216FFB501005C7C54 /* Model 2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
